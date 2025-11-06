@@ -17,11 +17,11 @@ public class LevelOneEnd : MonoBehaviour
     }
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Player" || col.gameObject.tag == "Soul") currentNumber++;
+        if (col.gameObject.tag == "Player" || (col.gameObject.tag == "Soul" && !col.isTrigger)) currentNumber++;
     }
 
     void OnTriggerExit(Collider col)
     {
-        if (col.gameObject.tag == "Player" || col.gameObject.tag == "Soul") currentNumber--;
+        if (col.gameObject.tag == "Player" || (col.gameObject.tag == "Soul" && !col.isTrigger)) currentNumber--;
     }
 }
