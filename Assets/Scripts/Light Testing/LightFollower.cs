@@ -23,11 +23,9 @@ public class LightFollower : MonoBehaviour
     public bool loop = false;
 
 
-    // Lantern mode fields
     private Lantern currentLantern = null;
     private bool isInsideLantern = false;
 
-    // Path traversal fields
     private List<Vector3> pathPoints = new List<Vector3>();
     private int currentIndex = 0;
     private bool isMovingAlongPath = false;

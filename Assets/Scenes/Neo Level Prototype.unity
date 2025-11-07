@@ -3527,16 +3527,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 744dd5584568b454093c8cd51d042d8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lightReflection: {fileID: 1355064701}
   followerObject: {fileID: 447507901}
+  lightReflection: {fileID: 1355064701}
   player: {fileID: 447507902}
   lightModeToggle: {fileID: 447507911}
   moveSpeed: 70
   startKey: 113
-  loop: 0
   moveForwardKey: 119
   moveBackwardKey: 115
   exitLanternKey: 32
+  loop: 0
 --- !u!43 &450897051
 Mesh:
   m_ObjectHideFlags: 0
