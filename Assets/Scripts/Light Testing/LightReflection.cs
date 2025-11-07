@@ -52,6 +52,14 @@ public class LightReflection : MonoBehaviour
     private Mirror mirror;
     [Space]
 
+
+    [Header("Lantern Collision")]
+    public LayerMask lanternLayer;
+    public bool lanternHit;
+    private Lantern lantern;
+    public Lantern currentLanternHit;
+    [Space]
+
     [Header("Debug Visualization")]
     public GameObject obstructionPointMarkerPrefab;
     public GameObject imagePointMarkerPrefab;
@@ -101,7 +109,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer);
 
             //No Lens Collision + End of Ray:
             if (!ClosestValidHit(hits, lensesHit, out RaycastHit hit))
@@ -122,9 +130,10 @@ public class LightReflection : MonoBehaviour
             prism = hit.collider.GetComponent<Prism>() ?? hit.collider.GetComponentInParent<Prism>();
             burnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
             mirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
+            lantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
 
             //Null Object Checks:
-            if (lens == null && prism == null && burnable == null && mirror == null)
+            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null)
             {
                 laserPoints.Add(ObjectPosition + ObjectDirection * remainingLazerDistance);
                 break;
@@ -160,6 +169,14 @@ public class LightReflection : MonoBehaviour
                 mirrorHit = true;
                 HandleMirrorHit(hit, mirror, ref ObjectPosition, ref ObjectDirection, ref remainingLazerDistance);
                 continue;
+            }
+
+            //Lantern Collision:
+            if (lantern != null)
+            {
+                lanternHit = true;
+                HandleLanternHit(hit);
+                break;
             }
         }
 
@@ -280,7 +297,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(currentPos, currentDir);
-            RaycastHit[] hits = Physics.RaycastAll(ray, remaining, lensLayer | prismLayer | burnableLayer | mirrorLayer);
+            RaycastHit[] hits = Physics.RaycastAll(ray, remaining, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer);
 
             //No Collision + End of Ray:
             if (!ClosestValidHit(hits, hitLenses, out RaycastHit hit))
@@ -302,6 +319,7 @@ public class LightReflection : MonoBehaviour
             Prism hitPrism = hit.collider.GetComponent<Prism>() ?? hit.collider.GetComponentInParent<Prism>();
             Burnable hitBurnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
             Mirror hitMirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
+            Lantern hitLantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
 
             //Lens Collision:
             if (hitLens != null)
@@ -365,6 +383,16 @@ public class LightReflection : MonoBehaviour
                 HandleMirrorHit(hit, hitMirror, ref currentPos, ref currentDir, ref remaining);
 
                 continue;
+            }
+
+            //Lantern Collision:
+            if (hitLantern != null)
+            {
+                points.Add(hit.point);
+                if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
+                HandleLanternHit(hit);
+
+                break;
             }
 
             //Collision with non-lens Surface:
@@ -439,6 +467,24 @@ public class LightReflection : MonoBehaviour
         }
     }
 
+    private void HandleLanternHit(RaycastHit hit)
+    {
+        var currentLantern = 
+        lantern = hit.collider.GetComponent<Lantern>();
+        if (lantern != null)
+        {
+            lanternHit = true;
+            currentLanternHit = lantern;
+
+            laserPoints.Add(hit.point);
+            obstructionPoints.Add(hit.point);
+        }
+        else
+        {
+            lanternHit = false;
+        }
+    }
+
     private void ClearMarkers()
     {
         foreach (var marker in laserPointMarkers)
@@ -453,6 +499,7 @@ public class LightReflection : MonoBehaviour
         prismHit = false;
         burnableHit = false;
         mirrorHit = false;
+        lanternHit = false;
     }
 
     private void ClearPrismSplits()
@@ -553,7 +600,7 @@ public class LightReflection : MonoBehaviour
         //Ray Setup:
         Ray obstructionRay = new Ray(currentHitPoint, toImageDir);
         float rayDistance = toImageDistance + extraDistanceUsed;
-        RaycastHit[] obstructionHits = Physics.RaycastAll(obstructionRay, rayDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer);
+        RaycastHit[] obstructionHits = Physics.RaycastAll(obstructionRay, rayDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer);
 
 
         //No Lens Collision: [Return False Since This Function is Used to Check Multiple Lens Collisions]
@@ -564,6 +611,7 @@ public class LightReflection : MonoBehaviour
         var hitMirror = obstructionHit.collider.GetComponent<Mirror>() ?? obstructionHit.collider.GetComponentInParent<Mirror>();
         var hitPrism = obstructionHit.collider.GetComponent<Prism>() ?? obstructionHit.collider.GetComponentInParent<Prism>();
         var hitBurnable = obstructionHit.collider.GetComponent<Burnable>() ?? obstructionHit.collider.GetComponentInParent<Burnable>();
+        var hitLantern = obstructionHit.collider.GetComponent<Lantern>() ?? obstructionHit.collider.GetComponentInParent<Lantern>();
 
         //Lens Collison:
         if (nextLens != null)
@@ -664,6 +712,24 @@ public class LightReflection : MonoBehaviour
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;
             nextDirection = toImageDir;
+
+            return true;
+        }
+        else if (hitLantern != null)
+        {
+            lanternHit = true;
+
+            //Mark hit:
+            obstructionPoints.Add(obstructionHit.point);
+            laserPoints.Add(obstructionHit.point);
+
+            HandleLanternHit(obstructionHit);
+
+            totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
+            finalImagePoint = obstructionHit.point;
+            nextPosition = obstructionHit.point;
+            nextDirection = toImageDir;
+
             return true;
         }
 
