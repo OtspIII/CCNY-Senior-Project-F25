@@ -1,12 +1,8 @@
 using NUnit.Framework;
 //using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static UnityEngine.UI.Image;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine.Timeline;
-using UnityEditor.PackageManager;
+
 
 
 [RequireComponent(typeof(LineRenderer))]
@@ -614,7 +610,7 @@ public class LightReflection : MonoBehaviour
             }
         }
         //Mirror Collision:
-        else if(hitMirror != null)
+        else if (hitMirror != null)
         {
             mirrorHit = true;
 

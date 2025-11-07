@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Exit
   - Moveable
+  - Soul
   layers:
   - Default
   - TransparentFX

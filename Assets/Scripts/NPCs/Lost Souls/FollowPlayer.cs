@@ -28,6 +28,10 @@ public class FollowPlayer : MonoBehaviour
             if (agent.isStopped) agent.isStopped = false;
             agent.SetDestination(player.transform.position);
         }
+        else
+        {
+            if (!agent.isStopped) agent.isStopped = true;
+        }
     }
 
     void OnTriggerEnter(Collider col)

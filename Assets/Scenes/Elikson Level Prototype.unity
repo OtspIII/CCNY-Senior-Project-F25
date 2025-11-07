@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.020158425, g: 0.0010679952, b: 0.05660379, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.078
@@ -31982,6 +31982,18 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1348501951}
+    - target: {fileID: 8923418038452167596, guid: 8998d3143b982dc4a83195ce3479ef8d, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8923418038452167596, guid: 8998d3143b982dc4a83195ce3479ef8d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_ActionId
+      value: f0a6f415-a21f-42b6-a899-7a74a3a4e026
+      objectReference: {fileID: 0}
+    - target: {fileID: 8923418038452167596, guid: 8998d3143b982dc4a83195ce3479ef8d, type: 3}
+      propertyPath: m_ActionEvents.Array.data[7].m_ActionName
+      value: Gameplay/Grab
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -33665,6 +33677,9 @@ MonoBehaviour:
   camOrientation: {fileID: 0}
   grab: {fileID: 0}
   state: 0
+  isAiming: 0
+  yawTarget: {fileID: 0}
+  lightTool: {fileID: 0}
 --- !u!54 &2116212399
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1091,7 +1091,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87971769}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 6ef59a5e9be1f254ea4580595988404b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3454,6 +3454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f81db832932ae4f9fe0d67012e6824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lightSource: {fileID: 0}
   playerControl: 1
   moveSpeed: 6
   jumpForce: 10
@@ -3467,6 +3468,7 @@ MonoBehaviour:
   maxSlopeAngle: 40
   camOrientation: {fileID: 703674394}
   grab: {fileID: 0}
+  item: {fileID: 0}
   state: 0
   isAiming: 0
   yawTarget: {fileID: 617082048}
