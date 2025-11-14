@@ -476,8 +476,21 @@ public class LightReflection : MonoBehaviour
             lanternHit = true;
             currentLanternHit = lantern;
 
+            //Increment The Lantern Activation Time:
+            lantern.hitsThisFrame++;
+
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
+
+            //If Enough Increments & Bool Becomes True:
+            if (lantern.activeLantern && LanternTravel.Instance != null)
+            {
+                //If The Hit Lantern IS NOT In The List:
+                if (!LanternTravel.Instance.ActivatedLanterns.Contains(lantern))
+                {
+                    LanternTravel.Instance.ActivatedLanterns.Add(lantern);
+                }
+            }
         }
         else
         {
