@@ -32,7 +32,7 @@ public class LanternTravel : MonoBehaviour
     public float travelRange = 5f;
     [Space]
     public Color LanternTargetTraversalColor;
-    public float capsuleLength = 3f; 
+    public float capsuleLength = 3f;
     public float capsuleRadius = 1f;
 
     [Header("Movement Settings: ")]
@@ -67,6 +67,13 @@ public class LanternTravel : MonoBehaviour
             }
             return;
         }
+        else
+        {
+            if (followerObject.transform.position != currentLantern.transform.position)
+            {
+                //followerObject.transform.position = currentLantern.transform.position;
+            }
+        }
 
         //Lantern Exit:
         if (Input.GetKeyDown(exitLanternKey))
@@ -82,8 +89,8 @@ public class LanternTravel : MonoBehaviour
             StartCoroutine(MoveToLantern(target));
         }
     }
-    
-    
+
+
     private void UpdateVisibleLanterns()
     {
         //Clear Range List:
@@ -94,7 +101,7 @@ public class LanternTravel : MonoBehaviour
             if (lantern == null || lantern.lanternCore == null) continue;
 
             //Calculate Range Distance:
-            float dist = Vector3.Distance(followerObject.transform.position, lantern.lanternCore.position);
+            float dist = Vector3.Distance(followerObject.transform.position, new Vector3(lantern.lanternCore.position.x, lantern.lanternCore.position.y - 2.5f, lantern.lanternCore.position.z));
 
             //If Range Distance is within Travel Range:
             if (dist <= travelRange)
@@ -137,7 +144,7 @@ public class LanternTravel : MonoBehaviour
         if (targetLantern == null || targetLantern.lanternCore == null) yield break;
 
         Vector3 startPos = transform.position;
-        Vector3 endPos = targetLantern.lanternCore.position;
+        Vector3 endPos = new Vector3(targetLantern.lanternCore.position.x, targetLantern.lanternCore.position.y - 2.5f, targetLantern.lanternCore.position.z);
 
         float elapsed = 0f;
         float duration = Vector3.Distance(startPos, endPos) / moveSpeed;
