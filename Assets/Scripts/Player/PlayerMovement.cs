@@ -62,6 +62,8 @@ public class PlayerMovement : MonoBehaviour
     public bool isAiming;
     [SerializeField] Transform yawTarget;
     [SerializeField] GameObject lightTool;
+    [SerializeField] LineRenderer line;
+    [SerializeField] GameObject playerModel;
 
     void Awake()
     {
@@ -74,6 +76,11 @@ public class PlayerMovement : MonoBehaviour
 
         gm = GameManager.instance;
         rb = GetComponent<Rigidbody>();
+
+        line.material = new Material(Shader.Find("Sprites/Default"));
+        line.startWidth = 0.01f;
+        line.endWidth = 0.01f;
+        line.positionCount = 2;
     }
 
     void PlayerInput()
@@ -117,11 +124,14 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (rb.isKinematic) return;
         Movement();
     }
 
     void Update()
     {
+        //Debug.Log(camOrientation.localEulerAngles);
+        Teleport();
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
@@ -188,10 +198,7 @@ public class PlayerMovement : MonoBehaviour
 
             forward.Normalize();
             right.Normalize();
-            move = -forward * moveDirection.x + right * moveDirection.z;
         }
-
-        //Debug.Log(OnSlope());
 
         if (OnSlope() && !exitingSlope)
         {
@@ -214,7 +221,13 @@ public class PlayerMovement : MonoBehaviour
         rb.useGravity = !OnSlope();
 
         // Handle rotation while player is not grabbing an object or aiming lightbeam
-        if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
+        if (isAiming)
+        {
+            float angleDiff = Vector3.SignedAngle(transform.forward, camOrientation.forward, Vector3.up);
+            Debug.Log(angleDiff);
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+        }
+        else if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
@@ -235,21 +248,60 @@ public class PlayerMovement : MonoBehaviour
         rb.linearDamping = grounded ? groundDrag : 0;
     }
 
+    void Teleport()
+    {
+        if (!isAiming)
+        {
+            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.2f);
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, transform.position + transform.forward * 3.0f);
+
+            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded)
+            {
+                rb.isKinematic = true;
+                playerModel.SetActive(false);
+                transform.position = new Vector3(line.GetPosition(1).x, transform.position.y, line.GetPosition(1).z);
+                line.enabled = false;
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+        }
+        else
+        {
+            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.2f);
+            line.SetPosition(0, transform.position);
+            line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
+
+            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded)
+            {
+                rb.isKinematic = true;
+                playerModel.SetActive(false);
+                float y = line.GetPosition(1).y <= transform.position.y ? transform.position.y : line.GetPosition(1).y;
+                transform.position = new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z);
+                line.enabled = false;
+                Invoke(nameof(ResetJump), jumpCooldown);
+            }
+        }
+    }
+
     void Jump()
     {
         exitingSlope = true;
 
         // Always start with Y Vel at 0
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        rb.linearVelocity += Vector3.up * jumpForce;
+        //rb.linearVelocity += Vector3.forward * jumpForce;
     }
 
     void ResetJump()
     {
+
         // Reset jump variables
         canJump = true;
         exitingSlope = false;
+        rb.isKinematic = false;
+        line.enabled = true;
+        playerModel.SetActive(true);
     }
 
     bool OnSlope()
