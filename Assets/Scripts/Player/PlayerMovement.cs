@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -64,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject lightTool;
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
+    [SerializeField] GameObject aura;
 
     void Awake()
     {
@@ -97,14 +99,6 @@ public class PlayerMovement : MonoBehaviour
             // Move in direction of camera
             moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") + orientation.right * Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.Space) && canJump && grounded && state != PlayerState.grabbing)
-        {
-            canJump = false;
-            Jump();
-            Invoke(nameof(ResetJump), jumpCooldown); // Wait before resetting jump
-        }
-
-
         // Check if player is facing moveable object
         if (grab != null)
         {
@@ -117,6 +111,7 @@ public class PlayerMovement : MonoBehaviour
         }
         isAiming = Input.GetMouseButton(1);
 
+        if (item == null) return;
         if (!item.activeInHierarchy) return;
         if (Input.GetMouseButtonDown(1)) LightSwitch(true);
         else if (Input.GetMouseButtonUp(1)) LightSwitch(false);
@@ -221,13 +216,14 @@ public class PlayerMovement : MonoBehaviour
         rb.useGravity = !OnSlope();
 
         // Handle rotation while player is not grabbing an object or aiming lightbeam
-        if (isAiming)
-        {
-            float angleDiff = Vector3.SignedAngle(transform.forward, camOrientation.forward, Vector3.up);
-            Debug.Log(angleDiff);
-            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
-        }
-        else if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
+        // if (isAiming)
+        // {
+        //     //float angleDiff = Vector3.SignedAngle(transform.forward, camOrientation.forward, Vector3.up);
+        //     //Debug.Log(angleDiff);
+        //     //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+        // }
+        // else 
+        if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
@@ -253,6 +249,7 @@ public class PlayerMovement : MonoBehaviour
         if (!isAiming)
         {
             bool clear = !Physics.Raycast(transform.position, transform.forward, 3.2f);
+            Debug.Log(clear);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + transform.forward * 3.0f);
 
@@ -260,6 +257,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.isKinematic = true;
                 playerModel.SetActive(false);
+                aura.SetActive(false);
                 transform.position = new Vector3(line.GetPosition(1).x, transform.position.y, line.GetPosition(1).z);
                 line.enabled = false;
                 Invoke(nameof(ResetJump), jumpCooldown);
@@ -270,11 +268,12 @@ public class PlayerMovement : MonoBehaviour
             bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.2f);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
-
             if (clear && Input.GetKeyDown(KeyCode.Space) && grounded)
             {
+                Debug.Log("YERRR");
                 rb.isKinematic = true;
                 playerModel.SetActive(false);
+                aura.SetActive(false);
                 float y = line.GetPosition(1).y <= transform.position.y ? transform.position.y : line.GetPosition(1).y;
                 transform.position = new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z);
                 line.enabled = false;
@@ -302,6 +301,7 @@ public class PlayerMovement : MonoBehaviour
         rb.isKinematic = false;
         line.enabled = true;
         playerModel.SetActive(true);
+        aura.SetActive(true);
     }
 
     bool OnSlope()

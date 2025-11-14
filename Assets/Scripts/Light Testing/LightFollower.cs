@@ -7,7 +7,7 @@ public class LightFollower : MonoBehaviour
     [Header("References: ")]
     public GameObject followerObject;
     public LightReflection lightReflection;
-    public PlayerController player;
+    public PlayerMovement player;
     public LightModeToggle lightModeToggle;
 
 
@@ -19,7 +19,7 @@ public class LightFollower : MonoBehaviour
     public KeyCode exitLanternKey = KeyCode.Space;
     [Space]
 
-  
+
     public bool loop = false;
 
 
@@ -133,7 +133,7 @@ public class LightFollower : MonoBehaviour
             else
             {
                 //Enable Player HitBoxes & Other Components:
-                player.enabled = true; 
+                player.enabled = true;
                 if (lightModeToggle != null) lightModeToggle.enabled = true;
                 if (lightReflection != null) lightReflection.enabled = true;
 
@@ -163,7 +163,7 @@ public class LightFollower : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
         //Re-Assign Current Position & Lantern:
         transform.position = endPos;
         currentLantern = targetLantern;
