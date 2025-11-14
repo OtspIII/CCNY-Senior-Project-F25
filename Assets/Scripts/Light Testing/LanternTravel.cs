@@ -19,6 +19,7 @@ public class LanternTravel : MonoBehaviour
 
     [Header("References: ")]
     public PlayerMovement player; //*Adjust For Exisiting Player Schemtic We Use*
+    public Rigidbody rb;
     [Space]
     public GameObject followerObject;
     public LightReflection lightReflection;
@@ -159,6 +160,7 @@ public class LanternTravel : MonoBehaviour
     {
         //Disable Player HitBoxes & Other Components:
         player.enabled = false;
+        rb.isKinematic = true;
         if (lightModeToggle != null) lightModeToggle.enabled = false;
         if (lightReflection != null) lightReflection.enabled = false;
 
@@ -171,6 +173,7 @@ public class LanternTravel : MonoBehaviour
 
         //Enable Player HitBoxes & Other Components:
         player.enabled = true;
+        rb.isKinematic = false;
         if (lightModeToggle != null) lightModeToggle.enabled = true;
         if (lightReflection != null) lightReflection.enabled = true;
 
