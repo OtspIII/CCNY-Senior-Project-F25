@@ -1565,7 +1565,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4cf5a6a91f15cd642bf970c2a7c4f623, type: 2}
+  - {fileID: 2100000, guid: 41e19276919e86545b8002eda300c1aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4977,6 +4977,8 @@ MonoBehaviour:
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
+  unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
+  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
 --- !u!1 &515326093
 GameObject:
   m_ObjectHideFlags: 0
@@ -6791,6 +6793,8 @@ MonoBehaviour:
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
+  unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
+  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
 --- !u!1 &685751027
 GameObject:
   m_ObjectHideFlags: 0
@@ -15904,7 +15908,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4cf5a6a91f15cd642bf970c2a7c4f623, type: 2}
+  - {fileID: 2100000, guid: 41e19276919e86545b8002eda300c1aa, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -20784,6 +20788,7 @@ GameObject:
   - component: {fileID: 1514343921}
   - component: {fileID: 1514343920}
   - component: {fileID: 1514343924}
+  - component: {fileID: 1514343925}
   m_Layer: 10
   m_Name: Draw Bridge
   m_TagString: Untagged
@@ -20907,6 +20912,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1514343925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514343919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657cb6eb8a907104da8d486e151a7ddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rope: {fileID: 873611645}
+  ground: {fileID: 371505606}
 --- !u!1 &1520205867
 GameObject:
   m_ObjectHideFlags: 0
@@ -21940,6 +21959,8 @@ MonoBehaviour:
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
+  unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
+  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
 --- !u!1 &1584147314
 GameObject:
   m_ObjectHideFlags: 0
@@ -24075,6 +24096,8 @@ MonoBehaviour:
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
+  unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
+  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
 --- !u!1 &1683522542
 GameObject:
   m_ObjectHideFlags: 0
@@ -28726,6 +28749,8 @@ MonoBehaviour:
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
+  unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
+  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
