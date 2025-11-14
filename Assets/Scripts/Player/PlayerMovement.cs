@@ -1,10 +1,12 @@
 using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     GameManager gm;
+
+    // Maybe temporary -- to turn off lightsource while not aiming 
+    [SerializeField] GameObject lightSource;
     // Get only instance of player script 
     public static PlayerMovement player;
 
@@ -13,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] float moveSpeed;
-    float maxSpeed = 4.5f;
+    float maxSpeed = 7.5f;
     [Space(5)]
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
@@ -32,12 +34,18 @@ public class PlayerMovement : MonoBehaviour
 
     [Space(15)]
     public Transform camOrientation; // Grab orientation for rotation
+    public Transform aimCamOrientation; // ^Same for when aiming
 
     [Space(15)]
     [Header("Grab Objects")]
     // Moveable object script
     public GrabObject grab = null;
     bool moveObj;
+
+    [Space(15)]
+    [Header("Held Items")]
+    // Will make static if we only ever need one 
+    public GameObject item;
 
     [Space(15)]
     public PlayerState state;
@@ -51,6 +59,9 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rb;
     Vector3 moveDirection;
     RaycastHit floorHit;
+    public bool isAiming;
+    [SerializeField] Transform yawTarget;
+    [SerializeField] GameObject lightTool;
 
     void Awake()
     {
@@ -68,7 +79,7 @@ public class PlayerMovement : MonoBehaviour
     void PlayerInput()
     {
         // Get forward position from camera Y rotation
-        Transform orientation = camOrientation;
+        Transform orientation = isAiming ? aimCamOrientation : camOrientation;
         orientation.localEulerAngles = new Vector3(0f, orientation.localEulerAngles.y, 0f);
 
         // Get keyboard input
@@ -91,12 +102,17 @@ public class PlayerMovement : MonoBehaviour
         if (grab != null)
         {
             moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, 0.6f, isGround);
-            //Debug.DrawLine(transform.position, new Vector3(transform.position.x + 0.6f, transform.position.y, transform.position.z), Color.magenta);
+            //Debug.DrawLine(transform.position, new Vector3(transform.position.x - 0.6f, transform.position.y - 0.2f, transform.position.z), Color.magenta);
         }
         else
         {
             if (moveObj) moveObj = false;
         }
+        isAiming = Input.GetMouseButton(1);
+
+        if (!item.activeInHierarchy) return;
+        if (Input.GetMouseButtonDown(1)) LightSwitch(true);
+        else if (Input.GetMouseButtonUp(1)) LightSwitch(false);
     }
 
     void FixedUpdate()
@@ -120,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
 
             moveSpeed = 2.7f; // Limit player speed while grabbing
 
+            // THIS ALL SHOULDNT BE IN PLAYER SCRIPT BUT I'LL LEAVE FOR NOW 
             if (grab != null)
             {
                 // Signals to object script to remove itself from grab variable
@@ -130,6 +147,9 @@ public class PlayerMovement : MonoBehaviour
 
                 // Make kinematic when moving backward
                 grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
+
+                // Unfreezes position constraints and prevents rotation
+                grab.rb.constraints = RigidbodyConstraints.FreezeRotation;
 
                 // Make lighter so player can push object forward
                 grab.rb.mass = 1.0f;
@@ -143,11 +163,14 @@ public class PlayerMovement : MonoBehaviour
                 grab.transform.SetParent(null);
                 grab.rb.isKinematic = false;
                 grab.rb.mass = 50.0f;
+
+                // Freeze everything but Y position 
+                grab.rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
             }
 
             state = PlayerState.walking;
 
-            moveSpeed = 5.0f; // Reset speed
+            moveSpeed = 8.0f;
         }
     }
 
@@ -155,7 +178,20 @@ public class PlayerMovement : MonoBehaviour
     {
         // Create move Vector from player inputs on X and Z axis
         Vector3 move = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
+        if (isAiming)
+        {
+            Vector3 forward = aimCamOrientation.forward;
+            Vector3 right = aimCamOrientation.right;
 
+            forward.y = rb.linearVelocity.y;
+            right.y = 0;
+
+            forward.Normalize();
+            right.Normalize();
+            move = -forward * moveDirection.x + right * moveDirection.z;
+        }
+
+        //Debug.Log(OnSlope());
 
         if (OnSlope() && !exitingSlope)
         {
@@ -168,17 +204,17 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Limit movement in air
-            rb.linearVelocity = (grounded) ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
-
-            // Clamp magnitude while on ground
-            if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
+            rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
         }
+
+        // Clamp magnitude while on ground
+        if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
 
         // Turn off gravity on slope
         rb.useGravity = !OnSlope();
 
-        // Handle rotation while player is not grabbing an object
-        if (moveDirection != Vector3.zero && state != PlayerState.grabbing)
+        // Handle rotation while player is not grabbing an object or aiming lightbeam
+        if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
@@ -196,7 +232,7 @@ public class PlayerMovement : MonoBehaviour
         //Debug.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y - 1.2f, transform.position.z), Color.magenta);
 
         // Handle drag
-        rb.linearDamping = (grounded) ? groundDrag : 0;
+        rb.linearDamping = grounded ? groundDrag : 0;
     }
 
     void Jump()
@@ -217,10 +253,17 @@ public class PlayerMovement : MonoBehaviour
     }
 
     bool OnSlope()
-    {
-        if (Physics.Raycast(new Vector3(transform.position.x, transform.position.y, transform.position.z), Vector3.down, out slopeHit, 1.2f))
+    {   //Physics.Raycast(new Vector3(transform.position.x, transform.position.y, transform.position.z), Vector3.down, out slopeHit, 1.2f)
+        if (Physics.BoxCast(transform.position, transform.localScale * 0.25f, Vector3.down, out slopeHit, transform.rotation, 1.2f, isGround))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal); // Calculate slope steepness
+
+            // Slide down if slope is too steep
+            if (angle > maxSlopeAngle && angle != 0)
+            {
+                rb.AddForce(Vector3.down * 60.0f, ForceMode.Force);
+            }
+
             return angle < maxSlopeAngle && angle != 0;
         }
 
@@ -230,6 +273,11 @@ public class PlayerMovement : MonoBehaviour
     Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    void LightSwitch(bool active)
+    {
+        lightSource.SetActive(active);
     }
 
     void OnCollisionEnter(Collision col)

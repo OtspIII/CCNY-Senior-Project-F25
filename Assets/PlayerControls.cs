@@ -136,6 +136,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Grab"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0a6f415-a21f-42b6-a899-7a74a3a4e026"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -285,11 +294,22 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8afd58b7-0135-4ffe-8a75-b7e092d2d44c"",
-                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SwitchAbility"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b6c96b4-78d4-47c9-a4aa-a95aee90103b"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Grab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -419,6 +439,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
         m_Gameplay_SwitchShoulder = m_Gameplay.FindAction("SwitchShoulder", throwIfNotFound: true);
         m_Gameplay_SwitchAbility = m_Gameplay.FindAction("SwitchAbility", throwIfNotFound: true);
+        m_Gameplay_Grab = m_Gameplay.FindAction("Grab", throwIfNotFound: true);
         // CameraControls
         m_CameraControls = asset.FindActionMap("CameraControls", throwIfNotFound: true);
         m_CameraControls_Look = m_CameraControls.FindAction("Look", throwIfNotFound: true);
@@ -509,6 +530,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Aim;
     private readonly InputAction m_Gameplay_SwitchShoulder;
     private readonly InputAction m_Gameplay_SwitchAbility;
+    private readonly InputAction m_Gameplay_Grab;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -540,6 +562,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Gameplay/SwitchAbility".
         /// </summary>
         public InputAction @SwitchAbility => m_Wrapper.m_Gameplay_SwitchAbility;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Grab".
+        /// </summary>
+        public InputAction @Grab => m_Wrapper.m_Gameplay_Grab;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -581,6 +607,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SwitchAbility.started += instance.OnSwitchAbility;
             @SwitchAbility.performed += instance.OnSwitchAbility;
             @SwitchAbility.canceled += instance.OnSwitchAbility;
+            @Grab.started += instance.OnGrab;
+            @Grab.performed += instance.OnGrab;
+            @Grab.canceled += instance.OnGrab;
         }
 
         /// <summary>
@@ -607,6 +636,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SwitchAbility.started -= instance.OnSwitchAbility;
             @SwitchAbility.performed -= instance.OnSwitchAbility;
             @SwitchAbility.canceled -= instance.OnSwitchAbility;
+            @Grab.started -= instance.OnGrab;
+            @Grab.performed -= instance.OnGrab;
+            @Grab.canceled -= instance.OnGrab;
         }
 
         /// <summary>
@@ -789,6 +821,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwitchAbility(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Grab" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnGrab(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "CameraControls" which allows adding and removing callbacks.

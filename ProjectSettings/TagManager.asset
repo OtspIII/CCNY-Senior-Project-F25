@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Exit
+  - Moveable
+  - Soul
   layers:
   - Default
   - TransparentFX
@@ -21,6 +23,9 @@ TagManager:
   - Lantern
   - 
   - 
+  - Moveable
+  - 
+  - Aura
   - 
   - 
   - 

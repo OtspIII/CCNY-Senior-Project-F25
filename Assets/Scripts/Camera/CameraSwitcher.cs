@@ -11,7 +11,7 @@ public class CameraSwitcher : MonoBehaviour
     [SerializeField] private CinemachineCamera aimCam; // will be used to switch btwn those two cams
     [SerializeField] private CinemachineInputAxisController inputAxisController;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private PlayerController player;
+    //[SerializeField] private PlayerController player;
     [SerializeField] private GameObject crosshairUI;
     [SerializeField] private PlayerControls input;
 
@@ -38,7 +38,7 @@ public class CameraSwitcher : MonoBehaviour
     void Update()
     {
         bool aimPressed = aimAction.IsPressed();
-        player.isAiming = aimPressed;
+        PlayerMovement.player.isAiming = aimPressed;
 
         if (aimPressed && !isAiming)
         {

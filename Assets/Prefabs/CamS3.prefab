@@ -280,8 +280,7 @@ MonoBehaviour:
   aimCam: {fileID: 8172034224387316222}
   inputAxisController: {fileID: 7297175276033667967}
   mainCamera: {fileID: 766759017800752886}
-  player: {fileID: 0}
-  crosshairUI: {fileID: 0}
+  crosshairUI: {fileID: 4668403635689655414, guid: 3d49f221470116d4ab5e4084e3110998, type: 3}
 --- !u!1 &2555714238862758384
 GameObject:
   m_ObjectHideFlags: 0
