@@ -144,7 +144,7 @@ public class LanternTravel : MonoBehaviour
         if (targetLantern == null || targetLantern.lanternCore == null) yield break;
 
         Vector3 startPos = transform.position;
-        Vector3 endPos = new Vector3(targetLantern.lanternCore.position.x, targetLantern.lanternCore.position.y - 2.5f, targetLantern.lanternCore.position.z);
+        Vector3 endPos = targetLantern.lanternCore.position;
 
         float elapsed = 0f;
         float duration = Vector3.Distance(startPos, endPos) / moveSpeed;
