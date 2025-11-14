@@ -1,23 +1,46 @@
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class CamZoom : MonoBehaviour
 {
-    [SerializeField]
-    float zoomSpeed = 6.0f, smoothness = 5.0f, min = 2.0f, max = 40.0f;
+    [Header("Cinemachine")]
+    [SerializeField] private CinemachineOrbitalFollow orbitalFollow;
 
-    private float currentZoom = 3.5f;
-    private Camera cam;
-    void Awake()
+    [Header("Zoom Settings")]
+    [SerializeField] private float minZoom = 0.25f;   // closest
+    [SerializeField] private float maxZoom = 2.5f;    // farthest
+    [SerializeField] private float zoomSpeed = 5f;    // how fast zoom reacts
+    [SerializeField] private float smoothness = 10f;  // how smooth the zoom is
+
+    private float targetZoom;
+
+    private void Start()
     {
-        cam = GetComponentInChildren<Camera>();
+        if (orbitalFollow == null)
+            orbitalFollow = GetComponent<CinemachineOrbitalFollow>();
+
+        // Initialize target zoom from current camera setting
+        targetZoom = orbitalFollow.RadialAxis.Value;
     }
 
-    void Update()
+    private void Update()
     {
-        //measure how far player scrolls each frame and apply it to zoom
-        currentZoom = Mathf.Clamp(value: currentZoom - Input.mouseScrollDelta.y * zoomSpeed * Time.deltaTime, min, max);
+        float scroll = Input.mouseScrollDelta.y;
 
-        //smooth transition when zoom changes
-        cam.orthographicSize = Mathf.Lerp(a: cam.orthographicSize, b: currentZoom, t: smoothness * Time.deltaTime);
+        if (Mathf.Abs(scroll) > 0.01f)
+        {
+            // Apply zoom direction (invert scroll if needed)
+            targetZoom -= scroll * zoomSpeed * Time.deltaTime;
+
+            // Clamp the zoom distance
+            targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
+        }
+
+        // Smoothly interpolate zoom, not instantly snap
+        orbitalFollow.RadialAxis.Value = Mathf.Lerp(
+            orbitalFollow.RadialAxis.Value,
+            targetZoom,
+            Time.deltaTime * smoothness
+        );
     }
 }

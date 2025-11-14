@@ -1,5 +1,6 @@
 using System;
 using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,6 +22,8 @@ public class AimCameraController : MonoBehaviour
     [SerializeField] private CinemachineThirdPersonFollow aimCam;
 
     [SerializeField] private float shoulderSwitchSpeed = 5f;
+
+    [SerializeField] private Transform playerModel;
 
     private float yaw;
     private float pitch;
@@ -78,23 +81,43 @@ public class AimCameraController : MonoBehaviour
         yaw += look.x * sensitivity;
         pitch -= look.y * sensitivity;
 
+        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
+
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
 
         aimCam.CameraSide = Mathf.Lerp(aimCam.CameraSide, targetCameraSide, Time.deltaTime * shoulderSwitchSpeed);
     }
 
+    private void LateUpdate()
+    {
+        if (playerModel != null)
+        {
+            float yawOnly = yawTarget.eulerAngles.y;
+            Quaternion offset = Quaternion.Euler(-90f, 0f, 0f);
+
+            playerModel.rotation = Quaternion.Euler(0f, yawOnly, 0f) * offset;
+        }
+    }
+
     internal void SetYawPitchFromCameraForward(Transform cameraTransform)
     {
-        Vector3 flatForward = cameraTransform.forward;
-        flatForward.y = 0;
+        Vector3 forward = cameraTransform.forward;
 
+        // gets yaw from flattened forward
+        Vector3 flatForward = new Vector3(forward.x, 0f, forward.z);
         if (flatForward.sqrMagnitude < 0.001f)
             return;
 
         yaw = Quaternion.LookRotation(flatForward).eulerAngles.y;
 
+        // calculates pitch from camera forward
+        pitch = -Mathf.Asin(forward.y) * Mathf.Rad2Deg;
+        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
+
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         pitchTarget.localRotation = Quaternion.Euler(0f, 0f, 0f); // resets the pitch to 0
+
+        aimCam.ForceCameraPosition(cameraTransform.position, cameraTransform.rotation);
     }
 }
