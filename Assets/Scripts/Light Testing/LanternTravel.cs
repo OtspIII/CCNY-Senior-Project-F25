@@ -69,9 +69,9 @@ public class LanternTravel : MonoBehaviour
         }
         else
         {
-            if (followerObject.transform.position != currentLantern.transform.position)
+            if (followerObject.transform.position != currentLantern.lanternCore.transform.position)
             {
-                //followerObject.transform.position = currentLantern.transform.position;
+                followerObject.transform.position = currentLantern.lanternCore.transform.position;
             }
         }
 
@@ -101,7 +101,7 @@ public class LanternTravel : MonoBehaviour
             if (lantern == null || lantern.lanternCore == null) continue;
 
             //Calculate Range Distance:
-            float dist = Vector3.Distance(followerObject.transform.position, new Vector3(lantern.lanternCore.position.x, lantern.lanternCore.position.y - 2.5f, lantern.lanternCore.position.z));
+            float dist = Vector3.Distance(followerObject.transform.position, lantern.lanternCore.position);
 
             //If Range Distance is within Travel Range:
             if (dist <= travelRange)

@@ -4123,7 +4123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b6402585d867541abddd097af72998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lanternCore: {fileID: 494803669}
+  lanternCore: {fileID: 163817759}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -5524,7 +5524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b6402585d867541abddd097af72998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lanternCore: {fileID: 674529279}
+  lanternCore: {fileID: 1683522546}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -18854,7 +18854,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b6402585d867541abddd097af72998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lanternCore: {fileID: 1557728190}
+  lanternCore: {fileID: 1072407069}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -20989,7 +20989,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b6402585d867541abddd097af72998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lanternCore: {fileID: 1669590394}
+  lanternCore: {fileID: 1470252745}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -25320,7 +25320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b6402585d867541abddd097af72998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lanternCore: {fileID: 6160031703005406929}
+  lanternCore: {fileID: 1115287924}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
