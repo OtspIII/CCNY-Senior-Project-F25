@@ -18,7 +18,7 @@ public class LanternTravel : MonoBehaviour
 
 
     [Header("References: ")]
-    public PlayerController player; //*Adjust For Exisiting Player Schemtic We Use*
+    public PlayerMovement player; //*Adjust For Exisiting Player Schemtic We Use*
     [Space]
     public GameObject followerObject;
     public LightReflection lightReflection;
