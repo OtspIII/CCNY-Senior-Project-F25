@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Lantern : MonoBehaviour
@@ -25,6 +26,11 @@ public class Lantern : MonoBehaviour
     [Header("Current Info: ")]
     public float currentActivation = 0f;
     public int hitsThisFrame = 0;
+
+    [Header("Lantern Colors: ")]
+
+    public Material unlitMaterial;
+    public Material litMaterial;
 
     private void Start()
     {
@@ -61,6 +67,22 @@ public class Lantern : MonoBehaviour
                     currentActivation = 0f;
                 }
             }
+        }
+
+        if (LanternTravel.Instance.currentLantern == this)
+        {
+            // add flicker
+        }
+        else if (activeLantern)
+        {
+            //Set To litMaterial:
+            GetComponent<Renderer>().material = litMaterial;
+
+        }
+        else
+        {
+            //Set To unlitMaterial:
+            GetComponent<Renderer>().material = unlitMaterial;
         }
     }
 

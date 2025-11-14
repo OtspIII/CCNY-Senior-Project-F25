@@ -8,7 +8,7 @@ public class LanternTravel : MonoBehaviour
     public List<Lantern> ActivatedLanterns;
     [SerializeField] private List<Lantern> visibleLanterns = new List<Lantern>();
     [Space]
-    [SerializeField] private Lantern currentLantern = null;
+    [SerializeField] public Lantern currentLantern = null;
     [SerializeField] private Lantern target;
     [Space]
     [SerializeField] private bool isInsideLantern = false;
@@ -159,6 +159,7 @@ public class LanternTravel : MonoBehaviour
 
         //Re-Assign Current Position & Lantern:
         transform.position = endPos;
+
         currentLantern = targetLantern;
     }
 
