@@ -12448,6 +12448,7 @@ MonoBehaviour:
   pitchMax: 80
   aimCam: {fileID: 774314305}
   shoulderSwitchSpeed: 5
+  playerModel: {fileID: 0}
 --- !u!114 &774314305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14088,6 +14089,7 @@ GameObject:
   - component: {fileID: 1022782297}
   - component: {fileID: 1022782296}
   - component: {fileID: 1022782298}
+  - component: {fileID: 1022782300}
   m_Layer: 0
   m_Name: ThirdPersonCam
   m_TagString: Untagged
@@ -14216,7 +14218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ScanRecursively: 1
   SuppressInputWhileBlending: 1
-  IgnoreTimeScale: 0
+  IgnoreTimeScale: 1
   m_ControllerManager:
     Controllers:
     - Name: Look Orbit X
@@ -14303,6 +14305,23 @@ MonoBehaviour:
       BarrelClipping: 0.25
       Anamorphism: 0
   BlendHint: 0
+--- !u!114 &1022782300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022782294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 652db6ea8a843c14385bfc4a606aa3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitalFollow: {fileID: 1022782297}
+  minZoom: 0.25
+  maxZoom: 2.5
+  zoomSpeed: 5
+  smoothness: 10
 --- !u!43 &1023671958
 Mesh:
   m_ObjectHideFlags: 0
