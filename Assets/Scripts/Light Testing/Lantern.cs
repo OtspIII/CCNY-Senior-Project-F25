@@ -78,7 +78,6 @@ public class Lantern : MonoBehaviour
 =======
 
 
-
         if (LanternTravel.Instance.currentLantern == this)
         {
             // Start flicker animation
