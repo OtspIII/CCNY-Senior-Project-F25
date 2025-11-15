@@ -4038,11 +4038,6 @@ Mesh:
   m_MeshOptimizationFlags: 1
   m_StreamData:
     serializedVersion: 2
-<<<<<<< Updated upstream
-    offset: 0
-    size: 0
-    path: 
-=======
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
@@ -4502,7 +4497,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
->>>>>>> Stashed changes
 --- !u!1 &515326093
 GameObject:
   m_ObjectHideFlags: 0
@@ -5851,8 +5845,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 672429535}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-<<<<<<< Updated upstream
-=======
 --- !u!1 &674529278
 GameObject:
   m_ObjectHideFlags: 0
@@ -6082,7 +6074,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 685751027}
   m_CullTransparentMesh: 1
->>>>>>> Stashed changes
 --- !u!43 &686122841
 Mesh:
   m_ObjectHideFlags: 0
@@ -19250,8 +19241,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
-=======
 --- !u!1 &1554754840
 GameObject:
   m_ObjectHideFlags: 0
@@ -19757,7 +19746,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
->>>>>>> Stashed changes
 --- !u!1 &1584147314
 GameObject:
   m_ObjectHideFlags: 0
@@ -21442,20 +21430,12 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-<<<<<<< Updated upstream
-  - component: {fileID: 1683522546}
-  - component: {fileID: 1683522545}
-  - component: {fileID: 1683522544}
-  - component: {fileID: 1683522543}
-  - component: {fileID: 1683522547}
-=======
   - component: {fileID: 1669590394}
   - component: {fileID: 1669590397}
   - component: {fileID: 1669590396}
   - component: {fileID: 1669590395}
   - component: {fileID: 1669590398}
   - component: {fileID: 1669590399}
->>>>>>> Stashed changes
   m_Layer: 12
   m_Name: Lantern 4
   m_TagString: Untagged
@@ -21535,10 +21515,6 @@ MeshFilter:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< Updated upstream
-  m_GameObject: {fileID: 1683522542}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-=======
   m_GameObject: {fileID: 1669590393}
   m_Mesh: {fileID: -5495902117074765545, guid: e193c80fafffc1044925b8511d2c6c3f, type: 3}
 --- !u!114 &1669590398
@@ -21601,7 +21577,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
->>>>>>> Stashed changes
 --- !u!4 &1683522546
 Transform:
   m_ObjectHideFlags: 0
@@ -25320,8 +25295,6 @@ RectTransform:
   m_AnchoredPosition: {x: -910, y: -490}
   m_SizeDelta: {x: 0.5, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
-<<<<<<< Updated upstream
-=======
 --- !u!4 &543450651905085293
 Transform:
   m_ObjectHideFlags: 0
@@ -25648,7 +25621,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
->>>>>>> Stashed changes
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
