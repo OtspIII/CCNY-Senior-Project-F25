@@ -31,6 +31,8 @@ public class Lantern : MonoBehaviour
 
     public Material unlitMaterial;
     public Material litMaterial;
+    bool flicker;
+    Animator anim;
 
     private void Start()
     {
@@ -41,6 +43,8 @@ public class Lantern : MonoBehaviour
                 LanternTravel.Instance.ActivatedLanterns.Add(this);
             }
         }
+
+        anim = GetComponent<Animator>();
     }
 
 
@@ -71,7 +75,16 @@ public class Lantern : MonoBehaviour
 
         if (LanternTravel.Instance.currentLantern == this)
         {
-            // add flicker
+            // Start flicker animation
+            if (!flicker)
+            {
+                anim.SetTrigger("Flicker");
+                flicker = true;
+            }
+        }
+        else if (flicker)
+        {
+            flicker = false;
         }
         else if (activeLantern)
         {
