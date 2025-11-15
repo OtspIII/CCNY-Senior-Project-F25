@@ -8,7 +8,7 @@ public class LanternTravel : MonoBehaviour
     public List<Lantern> ActivatedLanterns;
     [SerializeField] private List<Lantern> visibleLanterns = new List<Lantern>();
     [Space]
-    [SerializeField] private Lantern currentLantern = null;
+    [SerializeField] public Lantern currentLantern = null;
     [SerializeField] private Lantern target;
     [Space]
     [SerializeField] private bool isInsideLantern = false;
@@ -32,7 +32,7 @@ public class LanternTravel : MonoBehaviour
     public float travelRange = 5f;
     [Space]
     public Color LanternTargetTraversalColor;
-    public float capsuleLength = 3f; 
+    public float capsuleLength = 3f;
     public float capsuleRadius = 1f;
 
     [Header("Movement Settings: ")]
@@ -82,8 +82,8 @@ public class LanternTravel : MonoBehaviour
             StartCoroutine(MoveToLantern(target));
         }
     }
-    
-    
+
+
     private void UpdateVisibleLanterns()
     {
         //Clear Range List:

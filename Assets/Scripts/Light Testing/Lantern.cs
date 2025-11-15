@@ -27,15 +27,12 @@ public class Lantern : MonoBehaviour
     public float currentActivation = 0f;
     public int hitsThisFrame = 0;
 
-<<<<<<< Updated upstream
-=======
     [Header("Lantern Colors: ")]
 
     public Material unlitMaterial;
     public Material litMaterial;
     Animator anim;
 
->>>>>>> Stashed changes
     private void Start()
     {
         if (activeLantern && LanternTravel.Instance != null)
@@ -74,8 +71,6 @@ public class Lantern : MonoBehaviour
                 }
             }
         }
-<<<<<<< Updated upstream
-=======
 
 
         if (LanternTravel.Instance.currentLantern == this)
@@ -105,7 +100,6 @@ public class Lantern : MonoBehaviour
             //Set To unlitMaterial:
             GetComponent<Renderer>().material = unlitMaterial;
         }
->>>>>>> Stashed changes
     }
 
 }
