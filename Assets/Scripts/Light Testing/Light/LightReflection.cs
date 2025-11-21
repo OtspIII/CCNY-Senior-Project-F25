@@ -56,6 +56,14 @@ public class LightReflection : MonoBehaviour
     public Lantern currentLanternHit;
     [Space]
 
+    [Header("Projector Collision")]
+    public LayerMask projectorLayer;
+    public bool projectorHit;
+    private Projector projector;
+    public Transform parentObjectForRotation;  // Set this from Projector when updating
+    public Quaternion lightRotationOffset = Quaternion.identity;
+    [Space]
+
     [Header("Debug Visualization")]
     public GameObject obstructionPointMarkerPrefab;
     public GameObject imagePointMarkerPrefab;
@@ -105,7 +113,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer);
 
             //No Lens Collision + End of Ray:
             if (!ClosestValidHit(hits, lensesHit, out RaycastHit hit))
@@ -127,9 +135,10 @@ public class LightReflection : MonoBehaviour
             burnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
             mirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
             lantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
+            projector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();   
 
             //Null Object Checks:
-            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null)
+            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null)
             {
                 laserPoints.Add(ObjectPosition + ObjectDirection * remainingLazerDistance);
                 break;
@@ -172,6 +181,14 @@ public class LightReflection : MonoBehaviour
             {
                 lanternHit = true;
                 HandleLanternHit(hit);
+                break;
+            }
+
+            //Projector Collision:
+            if (projector != null)
+            {
+                projectorHit = true;
+                HandleProjectorHit(hit);
                 break;
             }
         }
@@ -293,7 +310,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(currentPos, currentDir);
-            RaycastHit[] hits = Physics.RaycastAll(ray, remaining, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer);
+            RaycastHit[] hits = Physics.RaycastAll(ray, remaining, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer);
 
             //No Collision + End of Ray:
             if (!ClosestValidHit(hits, hitLenses, out RaycastHit hit))
@@ -316,6 +333,7 @@ public class LightReflection : MonoBehaviour
             Burnable hitBurnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
             Mirror hitMirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
             Lantern hitLantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
+            Projector hitProjector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();
 
             //Lens Collision:
             if (hitLens != null)
@@ -387,6 +405,16 @@ public class LightReflection : MonoBehaviour
                 points.Add(hit.point);
                 if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
                 HandleLanternHit(hit);
+
+                break;
+            }
+
+            //Projector Collision:
+            if (hitProjector != null)
+            {
+                points.Add(hit.point);
+                if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
+                HandleProjectorHit(hit);
 
                 break;
             }
@@ -465,7 +493,6 @@ public class LightReflection : MonoBehaviour
 
     private void HandleLanternHit(RaycastHit hit)
     {
-        var currentLantern = 
         lantern = hit.collider.GetComponent<Lantern>();
         if (lantern != null)
         {
@@ -494,6 +521,98 @@ public class LightReflection : MonoBehaviour
         }
     }
 
+    private void HandleProjectorHit(RaycastHit hit)
+    {
+        projector = hit.collider.GetComponent<Projector>();
+        if (projector != null)
+        {
+            projectorHit = true;
+
+            projector.RegisterHit();
+
+            //Set Beam Light Rotation Parent & Offset:
+            if (projector.beamLight != null)
+            {
+                projector.beamLight.parentObjectForRotation = projector.ParentObject;
+                projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
+            }
+
+            //Update Beam Light Reflection:
+            UpdateProjectorLightReflection(projector);
+
+            laserPoints.Add(hit.point);
+            obstructionPoints.Add(hit.point);
+        }
+        else
+        {
+            projectorHit = false;
+        }
+    }
+
+    private void UpdateProjectorLightReflection(Projector projector)
+    {
+        if (projector == null || projector.beamLight == null || projector.ParentObject == null) return;
+
+        //Set Beam Light Position -> Beam Root Position:
+        projector.beamLight.transform.position = projector.beamRoot.position;
+
+        //Set Beam Light Rotation -> Parent Object Rotation + Offset:
+        projector.beamLight.transform.rotation = projector.ParentObject.rotation * projector.lightRotationOffset;
+
+        //Calculate New Distance Based on Hits This Frame:
+        float newDistance = Mathf.Max(projector.hitsThisFrame * projector.lengthPerHit, 0.001f);
+
+        //Update Beam Light Parameters:
+        projector.beamLight.lazerDistance = newDistance;
+        projector.beamLight.laserWidth = projector.beamWidth;
+
+        //Update Beam Light Visual:
+        projector.beamLight.UpdateLaserVisual();
+    }
+
+    public void UpdateLaserVisual()
+    {
+        //Ensure Line Renderer is Assigned:
+        if (lineRenderer == null)
+        {
+            lineRenderer = GetComponent<LineRenderer>();
+            if (lineRenderer == null)
+            {
+                Debug.LogWarning("LineRenderer component missing!");
+                return;
+            }
+        }
+
+        //Set Line Renderer Width:
+        lineRenderer.startWidth = laserWidth;
+        lineRenderer.endWidth = laserWidth;
+
+        laserPoints.Clear();
+
+        //Calculate Final Rotation:
+        Quaternion finalRotation = parentObjectForRotation.rotation * lightRotationOffset;
+
+        //Calculate Output Direction (+Y in Local Space):
+        Vector3 outputDirection = finalRotation * Vector3.up;
+
+        //Calculate Axis (-Z in Local Space):
+        Vector3 axis = finalRotation * -Vector3.forward;
+
+        //Calculate Beam Direction (Perpendicular to Axis and Output Direction):
+        Vector3 beamDirection = Vector3.Cross(axis, outputDirection).normalized;
+
+        //Calculate Origin Point:
+        Vector3 origin = transform.position;
+
+        //Calculate Laser Points:
+        laserPoints.Add(origin);
+        laserPoints.Add(origin + beamDirection * lazerDistance);
+
+        //Update Line Renderer Positions:
+        lineRenderer.positionCount = laserPoints.Count;
+        lineRenderer.SetPositions(laserPoints.ToArray());
+    }
+
     private void ClearMarkers()
     {
         foreach (var marker in laserPointMarkers)
@@ -509,6 +628,7 @@ public class LightReflection : MonoBehaviour
         burnableHit = false;
         mirrorHit = false;
         lanternHit = false;
+        projectorHit = false;
     }
 
     private void ClearPrismSplits()
@@ -609,7 +729,7 @@ public class LightReflection : MonoBehaviour
         //Ray Setup:
         Ray obstructionRay = new Ray(currentHitPoint, toImageDir);
         float rayDistance = toImageDistance + extraDistanceUsed;
-        RaycastHit[] obstructionHits = Physics.RaycastAll(obstructionRay, rayDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer);
+        RaycastHit[] obstructionHits = Physics.RaycastAll(obstructionRay, rayDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer);
 
 
         //No Lens Collision: [Return False Since This Function is Used to Check Multiple Lens Collisions]
@@ -621,6 +741,7 @@ public class LightReflection : MonoBehaviour
         var hitPrism = obstructionHit.collider.GetComponent<Prism>() ?? obstructionHit.collider.GetComponentInParent<Prism>();
         var hitBurnable = obstructionHit.collider.GetComponent<Burnable>() ?? obstructionHit.collider.GetComponentInParent<Burnable>();
         var hitLantern = obstructionHit.collider.GetComponent<Lantern>() ?? obstructionHit.collider.GetComponentInParent<Lantern>();
+        var hitProjector = obstructionHit.collider.GetComponent<Projector>() ?? obstructionHit.collider.GetComponentInParent<Projector>();
 
         //Lens Collison:
         if (nextLens != null)
@@ -681,7 +802,7 @@ public class LightReflection : MonoBehaviour
 
             HandleMirrorHit(obstructionHit, hitMirror, ref currentHitPoint, ref toImageDir, ref toImageDistance);
 
-            // Update outputs
+            //Update outputs:
             finalImagePoint = currentHitPoint;
             nextPosition = currentHitPoint;
             nextDirection = toImageDir;
@@ -689,6 +810,7 @@ public class LightReflection : MonoBehaviour
 
             return true;
         }
+        //Prism Collision:
         else if (hitPrism != null)
         {
             prismHit = true;
@@ -699,6 +821,7 @@ public class LightReflection : MonoBehaviour
 
             HandlePrismHit(obstructionHit, hitPrism, toImageDir, toImageDistance);
 
+            //Update outputs:
             totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;
@@ -706,6 +829,7 @@ public class LightReflection : MonoBehaviour
 
             return true;
         }
+        //Burnable Collision:
         else if (hitBurnable != null)
         {
             burnableHit = true;
@@ -717,6 +841,7 @@ public class LightReflection : MonoBehaviour
 
             HandleBurnableHit(obstructionHit);
 
+            //Update outputs:
             totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;
@@ -724,6 +849,7 @@ public class LightReflection : MonoBehaviour
 
             return true;
         }
+        //Lantern Collision:
         else if (hitLantern != null)
         {
             lanternHit = true;
@@ -734,6 +860,26 @@ public class LightReflection : MonoBehaviour
 
             HandleLanternHit(obstructionHit);
 
+            //Update outputs:
+            totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
+            finalImagePoint = obstructionHit.point;
+            nextPosition = obstructionHit.point;
+            nextDirection = toImageDir;
+
+            return true;
+        }
+        //Projector Collision:
+        else if (hitProjector != null)
+        {
+            projectorHit = true;
+
+            //Mark hit:
+            obstructionPoints.Add(obstructionHit.point);
+            laserPoints.Add(obstructionHit.point);
+
+            HandleProjectorHit(obstructionHit);
+
+            //Update outputs:
             totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;

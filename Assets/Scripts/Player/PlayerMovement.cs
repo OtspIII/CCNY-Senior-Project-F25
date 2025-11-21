@@ -1,5 +1,4 @@
-using System;
-using JetBrains.Annotations;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -66,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
+    public Lantern lantern;
 
     void Awake()
     {
@@ -248,38 +248,71 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!isAiming)
         {
+            // Make sure target position isn't inside of something
             bool clear = !Physics.Raycast(transform.position, transform.forward, 3.2f);
-            Debug.Log(clear);
+            //Debug.Log(clear);
+
+            // Draw line for debug
+            // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + transform.forward * 3.0f);
 
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded)
+            // Check for jump
+            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
             {
-                rb.isKinematic = true;
-                playerModel.SetActive(false);
-                aura.SetActive(false);
-                transform.position = new Vector3(line.GetPosition(1).x, transform.position.y, line.GetPosition(1).z);
+                canJump = false;
+                rb.isKinematic = true; // player unaffected by physics
+                playerModel.SetActive(false); // Make player invisible
+                exitingSlope = true;
+                aura.SetActive(false); // Turn off lightball thing
+                StartCoroutine(FlashTeleport(line.GetPosition(1))); // Lerp player to position
+                //transform.position = new Vector3(line.GetPosition(1).x, transform.position.y, line.GetPosition(1).z);
                 line.enabled = false;
                 Invoke(nameof(ResetJump), jumpCooldown);
             }
         }
         else
         {
+            // Comments above
             bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.2f);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded)
+
+            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
             {
-                Debug.Log("YERRR");
+                canJump = false;
                 rb.isKinematic = true;
                 playerModel.SetActive(false);
+                exitingSlope = true;
                 aura.SetActive(false);
                 float y = line.GetPosition(1).y <= transform.position.y ? transform.position.y : line.GetPosition(1).y;
-                transform.position = new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z);
+                StartCoroutine(FlashTeleport(new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z)));
+                //transform.position = new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z);
                 line.enabled = false;
                 Invoke(nameof(ResetJump), jumpCooldown);
             }
         }
+    }
+
+    // Thanks, Josh!
+    IEnumerator FlashTeleport(Vector3 target)
+    {
+        Vector3 startPos = transform.position;
+        Vector3 endPos = target;
+
+        float elapsed = 0f;
+        float duration = Vector3.Distance(startPos, endPos) / 20f;
+
+        // lerp to target
+        while (elapsed < duration)
+        {
+            transform.position = Vector3.Lerp(new Vector3(startPos.x, transform.position.y, startPos.z), endPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // snap position
+        transform.position = endPos;
     }
 
     void Jump()

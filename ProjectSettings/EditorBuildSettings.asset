@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Elikson Stomach Level Prototype.unity
     guid: cb3230e971403d7438f8263cfd314cf4
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Level2Demo.unity
     guid: 9da4e786e3fd5994290edcb50a421250
+  - enabled: 1
+    path: Assets/Scenes/Neo Level Prototype.unity
+    guid: 0f1b8a1b62f7b5046bd9133c64ca0dfd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
