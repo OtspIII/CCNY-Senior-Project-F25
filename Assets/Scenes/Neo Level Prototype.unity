@@ -18492,7 +18492,7 @@ PrefabInstance:
       objectReference: {fileID: 1781147100}
     - target: {fileID: 4497920910483292203, guid: 5a8d661db02f06d4f9cacce1343f5a32, type: 3}
       propertyPath: m_VersionIndex
-      value: 26
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 5965215178032430894, guid: 5a8d661db02f06d4f9cacce1343f5a32, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18556,7 +18556,7 @@ PrefabInstance:
       objectReference: {fileID: 1777707791}
     - target: {fileID: 8310797263568784332, guid: 5a8d661db02f06d4f9cacce1343f5a32, type: 3}
       propertyPath: m_VersionIndex
-      value: 18
+      value: 21
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30641,6 +30641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5677a46855e53b04daa3d6a57e13da35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soul: {fileID: 0}
   currentNumber: 0
 --- !u!135 &9043885080923016843
 SphereCollider:

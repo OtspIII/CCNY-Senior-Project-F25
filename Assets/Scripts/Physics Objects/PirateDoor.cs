@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PirateDoor : MonoBehaviour
 {
+    [SerializeField] Transform soul;
     HingeJoint joint;
     JointMotor motor;
     [SerializeField] int currentNumber = 0;
@@ -14,6 +15,16 @@ public class PirateDoor : MonoBehaviour
 
     void Update()
     {
+        if (soul != null)
+        {
+            if (Vector3.Distance(soul.position, transform.position) > 20.0f)
+            {
+                soul.gameObject.GetComponent<FollowPlayer>().tagged = false;
+                soul = null;
+                currentNumber--;
+            }
+        }
+
         if (currentNumber == numberToWin)
         {
             if (motor.targetVelocity > 0f)
@@ -40,9 +51,11 @@ public class PirateDoor : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Soul" && !col.isTrigger)
+        if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowPlayer>().tagged)
         {
+            col.GetComponent<FollowPlayer>().tagged = true;
             currentNumber++;
+            soul = col.transform;
         }
     }
 
@@ -50,7 +63,7 @@ public class PirateDoor : MonoBehaviour
     {
         if (col.gameObject.tag == "Soul" && !col.isTrigger)
         {
-            currentNumber--;
+            //currentNumber--;
         }
     }
 }
