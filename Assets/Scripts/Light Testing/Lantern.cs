@@ -35,6 +35,7 @@ public class Lantern : MonoBehaviour
     Animator anim;
     Light light;
 
+
     private void Start()
     {
         if (activeLantern && LanternTravel.Instance != null)
@@ -100,6 +101,26 @@ public class Lantern : MonoBehaviour
             //Set To unlitMaterial:
             if (light.enabled) light.enabled = false;
             GetComponent<Renderer>().material = unlitMaterial;
+        }
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (!activeLantern) return;
+
+        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern == null)
+        {
+            PlayerMovement.player.lantern = this;
+        }
+    }
+
+    void OnTriggerExit(Collider col)
+    {
+        if (!activeLantern) return;
+
+        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern != null)
+        {
+            PlayerMovement.player.lantern = null;
         }
     }
 

@@ -65,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
+    public Lantern lantern;
 
     void Awake()
     {
