@@ -33,6 +33,7 @@ public class Lantern : MonoBehaviour
     public Material litMaterial;
     bool flicker;
     Animator anim;
+    Light light;
 
     private void Start()
     {
@@ -45,6 +46,7 @@ public class Lantern : MonoBehaviour
         }
 
         anim = GetComponent<Animator>();
+        light = GetComponent<Light>();
     }
 
 
@@ -89,12 +91,14 @@ public class Lantern : MonoBehaviour
         else if (activeLantern)
         {
             //Set To litMaterial:
+            if (!light.enabled) light.enabled = true;
             GetComponent<Renderer>().material = litMaterial;
 
         }
         else
         {
             //Set To unlitMaterial:
+            if (light.enabled) light.enabled = false;
             GetComponent<Renderer>().material = unlitMaterial;
         }
     }
