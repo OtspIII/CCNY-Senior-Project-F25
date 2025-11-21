@@ -11,7 +11,7 @@ public class LanternTravel : MonoBehaviour
     [SerializeField] public Lantern currentLantern = null;
     [SerializeField] private Lantern target;
     [Space]
-    [SerializeField] private bool isInsideLantern = false;
+    [SerializeField] public bool isInsideLantern = false;
     [Space]
     public static LanternTravel Instance;
 
@@ -55,9 +55,11 @@ public class LanternTravel : MonoBehaviour
         //Initial Lantern Entry:
         if (!isInsideLantern)
         {
-            if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
+            //if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
+            if (PlayerMovement.player.lantern != null && Input.GetKeyDown(enterLanternKey))
             {
-                currentLantern = lightReflection.currentLanternHit;
+                currentLantern = PlayerMovement.player.lantern;
+                //currentLantern = lightReflection.currentLanternHit;
 
                 if (currentLantern != null)
                 {
@@ -169,7 +171,8 @@ public class LanternTravel : MonoBehaviour
         //Disable Player HitBoxes & Other Components:
         player.enabled = false;
         rb.isKinematic = true;
-        if (lightModeToggle != null) lightModeToggle.enabled = false;
+        //if (lightModeToggle != null) lightModeToggle.enabled = false;
+        if(!lightModeToggle.inLantern) lightModeToggle.inLantern = true;
         if (lightReflection != null) lightReflection.enabled = false;
 
         isInsideLantern = true;
@@ -182,7 +185,8 @@ public class LanternTravel : MonoBehaviour
         //Enable Player HitBoxes & Other Components:
         player.enabled = true;
         rb.isKinematic = false;
-        if (lightModeToggle != null) lightModeToggle.enabled = true;
+        //if (lightModeToggle != null) lightModeToggle.enabled = true;
+        if(lightModeToggle.inLantern) lightModeToggle.inLantern = false;
         if (lightReflection != null) lightReflection.enabled = true;
 
 

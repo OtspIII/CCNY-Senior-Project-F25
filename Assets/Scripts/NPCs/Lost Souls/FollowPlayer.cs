@@ -7,6 +7,7 @@ public class FollowPlayer : MonoBehaviour
     PlayerMovement player;
     NavMeshAgent agent;
     bool awakened;
+    public bool tagged;
 
     void Start()
     {
