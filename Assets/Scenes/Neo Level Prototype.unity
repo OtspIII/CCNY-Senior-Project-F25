@@ -4367,7 +4367,7 @@ MonoBehaviour:
   playerControl: 1
   moveSpeed: 6
   jumpForce: 10
-  jumpCooldown: 0.5
+  jumpCooldown: 0.3
   airMult: 0.6
   isGround:
     serializedVersion: 2
