@@ -6,6 +6,7 @@ public class RebakeNav : MonoBehaviour
 {
     [SerializeField] NavMeshSurface surface;
     [SerializeField] GameObject attached, connectedBody;
+    [SerializeField] GameObject obstacle;
     bool fin;
     Rigidbody rb;
 
@@ -24,6 +25,7 @@ public class RebakeNav : MonoBehaviour
     {
         if (col.gameObject == attached && !fin)
         {
+            if (obstacle != null) obstacle.SetActive(false);
             surface.BuildNavMesh();
             if (!rb.isKinematic) rb.isKinematic = true;
             fin = true;
