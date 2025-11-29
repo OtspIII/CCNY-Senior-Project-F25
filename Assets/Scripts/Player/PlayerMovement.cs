@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    Vector3 startPos;
     GameManager gm;
 
     // Maybe temporary -- to turn off lightsource while not aiming 
@@ -73,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
+        startPos = transform.position;
         Physics.gravity = new Vector3(0, -27f, 0);
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -125,6 +127,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (transform.position.y < -10.0f)
+        {
+            transform.position = startPos;
+        }
         //Debug.Log(camOrientation.localEulerAngles);
         Teleport();
         if (playerControl) PlayerInput();

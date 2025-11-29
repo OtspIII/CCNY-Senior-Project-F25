@@ -11,7 +11,7 @@ public class MoveLantern : MonoBehaviour
     {
         if (burnable == null && !inPosition) StartCoroutine(MoveToPosition(target.position));
     }
-
+    //Thanks, Josh!
     IEnumerator MoveToPosition(Vector3 target)
     {
         Vector3 startPos = transform.position;
@@ -30,6 +30,7 @@ public class MoveLantern : MonoBehaviour
 
         // snap position
         transform.position = endPos;
+        GetComponentInChildren<SphereCollider>().enabled = true;
         inPosition = true;
     }
 }
