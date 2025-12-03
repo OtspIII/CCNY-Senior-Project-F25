@@ -113,7 +113,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer, QueryTriggerInteraction.Ignore);
 
             //No Lens Collision + End of Ray:
             if (!ClosestValidHit(hits, lensesHit, out RaycastHit hit))
@@ -135,7 +135,7 @@ public class LightReflection : MonoBehaviour
             burnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
             mirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
             lantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
-            projector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();   
+            projector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();
 
             //Null Object Checks:
             if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null)

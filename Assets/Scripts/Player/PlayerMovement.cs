@@ -255,7 +255,9 @@ public class PlayerMovement : MonoBehaviour
         if (!isAiming)
         {
             // Make sure target position isn't inside of something
-            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.2f);
+            // Ignores collider
+            // ~21 is arbitrary, added to cast doesn't ignore any actual layer 
+            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, ~21, QueryTriggerInteraction.Ignore);
             //Debug.Log(clear);
 
             // Draw line for debug
@@ -280,7 +282,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Comments above
-            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.2f);
+            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, ~21, QueryTriggerInteraction.Ignore);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
 

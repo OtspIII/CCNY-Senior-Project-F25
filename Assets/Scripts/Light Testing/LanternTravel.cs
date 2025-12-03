@@ -172,7 +172,7 @@ public class LanternTravel : MonoBehaviour
         player.enabled = false;
         rb.isKinematic = true;
         //if (lightModeToggle != null) lightModeToggle.enabled = false;
-        if(!lightModeToggle.inLantern) lightModeToggle.inLantern = true;
+        if (!lightModeToggle.inLantern) lightModeToggle.inLantern = true;
         if (lightReflection != null) lightReflection.enabled = false;
 
         isInsideLantern = true;
@@ -186,7 +186,7 @@ public class LanternTravel : MonoBehaviour
         player.enabled = true;
         rb.isKinematic = false;
         //if (lightModeToggle != null) lightModeToggle.enabled = true;
-        if(lightModeToggle.inLantern) lightModeToggle.inLantern = false;
+        if (lightModeToggle.inLantern) lightModeToggle.inLantern = false;
         if (lightReflection != null) lightReflection.enabled = true;
 
 
