@@ -7,10 +7,14 @@ public class PirateDoor : MonoBehaviour
     JointMotor motor;
     [SerializeField] int currentNumber = 0;
     int numberToWin = 1;
+    [SerializeField] GameObject soulHead, soulBody;
+    [SerializeField] Material radiantSoul, unlitSoul;
     void Start()
     {
         joint = GetComponent<HingeJoint>();
         motor = joint.motor;
+        soulHead.GetComponent<Renderer>().material = unlitSoul;
+        soulBody.GetComponent<Renderer>().material = unlitSoul;
     }
 
     void Update()
@@ -21,6 +25,8 @@ public class PirateDoor : MonoBehaviour
             {
                 soul.gameObject.GetComponent<FollowPlayer>().tagged = false;
                 soul = null;
+                soulHead.GetComponent<Renderer>().material = unlitSoul;
+                soulBody.GetComponent<Renderer>().material = unlitSoul;
                 currentNumber--;
             }
         }
@@ -54,6 +60,8 @@ public class PirateDoor : MonoBehaviour
         if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowPlayer>().tagged)
         {
             col.GetComponent<FollowPlayer>().tagged = true;
+            soulHead.GetComponent<Renderer>().material = radiantSoul;
+            soulBody.GetComponent<Renderer>().material = radiantSoul;
             currentNumber++;
             soul = col.transform;
         }

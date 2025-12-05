@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    Vector3 startPos;
+    public Vector3 startPos;
     GameManager gm;
 
     // Maybe temporary -- to turn off lightsource while not aiming 
@@ -69,6 +69,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
     public Lantern lantern;
+    [SerializeField] LayerMask allLayersExceptPhase;
+    public bool checkpoint;
 
     void Awake()
     {
@@ -134,15 +136,27 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (transform.position.y < -10.0f)
-        {
-            transform.position = startPos;
-        }
+
         //Debug.Log(camOrientation.localEulerAngles);
         Teleport();
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
+
+        if (transform.position.y < -10.0f || checkpoint)
+        {
+            rb.isKinematic = true;
+            canJump = false;
+            rb.isKinematic = true; // player unaffected by physics
+            playerModel.SetActive(false); // Make player invisible
+            exitingSlope = true;
+            aura.SetActive(false); // Turn off lightball thing
+            line.enabled = false;
+            transform.position = startPos;
+            Invoke(nameof(ResetJump), jumpCooldown);
+            if (checkpoint) checkpoint = false;
+        }
+
     }
 
     void StateHandler()
@@ -167,7 +181,6 @@ public class PlayerMovement : MonoBehaviour
                 //     grab.gameObject.AddComponent<FixedJoint>();
                 // }
 
-                return;
                 // Make kinematic when moving backward
                 grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
 
@@ -188,9 +201,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (grab != null)
             {
-                return;
                 // Unparent player and make object static again
-                //grab.rb.isKinematic = true;
+                grab.rb.isKinematic = true;
                 grab.rb.mass = 50.0f;
 
                 // Freeze everything but Y position on object
@@ -204,7 +216,7 @@ public class PlayerMovement : MonoBehaviour
 
             state = PlayerState.walking;
 
-            moveSpeed = 7.0f;
+            moveSpeed = 5.5f;
         }
     }
 
@@ -237,12 +249,11 @@ public class PlayerMovement : MonoBehaviour
             // Limit movement in air
             //rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
             Vector3 v = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
-            Debug.Log(v);
             rb.AddForce(v - rb.linearVelocity, ForceMode.VelocityChange);
         }
 
         // Clamp magnitude while on ground
-        if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
+        //if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
 
         // Turn off gravity on slope
         rb.useGravity = !OnSlope();
@@ -255,14 +266,15 @@ public class PlayerMovement : MonoBehaviour
         //     //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
         // }
         // else 
+
         if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
-            //float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
-            //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+            float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
         }
         else
         {
-            //rb.angularVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
     }
 
@@ -282,9 +294,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            // ~21 is arbitrary, added so cast doesn't ignore any actual layer 
-            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, ~21, QueryTriggerInteraction.Ignore);
-            //Debug.Log(clear);
+            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
 
             // Draw line for debug
             // Eventually will switch to raycast or something
@@ -308,7 +318,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Comments above
-            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, ~21, QueryTriggerInteraction.Ignore);
+            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
 
@@ -331,16 +341,16 @@ public class PlayerMovement : MonoBehaviour
     // Thanks, Josh!
     IEnumerator FlashTeleport(Vector3 target)
     {
-        Vector3 startPos = transform.position;
+        Vector3 start = transform.position;
         Vector3 endPos = target;
 
         float elapsed = 0f;
-        float duration = Vector3.Distance(startPos, endPos) / 20f;
+        float duration = Vector3.Distance(start, endPos) / 20f;
 
         // lerp to target
         while (elapsed < duration)
         {
-            transform.position = Vector3.Lerp(new Vector3(startPos.x, transform.position.y, startPos.z), endPos, elapsed / duration);
+            transform.position = Vector3.Lerp(new Vector3(start.x, transform.position.y, start.z), endPos, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -361,7 +371,6 @@ public class PlayerMovement : MonoBehaviour
 
     void ResetJump()
     {
-
         // Reset jump variables
         canJump = true;
         exitingSlope = false;
@@ -403,7 +412,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (col.gameObject.tag == "Exit")
         {
-            gm.ResetScene(); // Restart demo
+            //gm.ResetScene(); // Restart demo
         }
     }
 }
