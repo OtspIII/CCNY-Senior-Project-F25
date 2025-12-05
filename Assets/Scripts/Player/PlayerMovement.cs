@@ -41,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Grab Objects")]
     // Moveable object script
     public GrabObject grab = null;
+    [SerializeField] LayerMask moveable;
+    RaycastHit moveHit;
     bool moveObj;
 
     [Space(15)]
@@ -102,15 +104,20 @@ public class PlayerMovement : MonoBehaviour
             moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") + orientation.right * Input.GetAxisRaw("Horizontal");
 
         // Check if player is facing moveable object
-        if (grab != null)
-        {
-            moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, 0.6f, isGround);
-            //Debug.DrawLine(transform.position, new Vector3(transform.position.x - 0.6f, transform.position.y - 0.2f, transform.position.z), Color.magenta);
-        }
-        else
-        {
-            if (moveObj) moveObj = false;
-        }
+        // if (grab != null)
+        // {
+        //     moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, 0.6f, isGround);
+        //     //Debug.DrawLine(transform.position, new Vector3(transform.position.x - 0.6f, transform.position.y - 0.2f, transform.position.z), Color.magenta);
+        // }
+        // else
+        // {
+        //     if (moveObj) moveObj = false;
+        // }
+
+        moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, out moveHit, 0.7f, moveable);
+        if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
+        else grab = null;
+
         isAiming = Input.GetMouseButton(1);
 
         if (item == null) return;
@@ -145,43 +152,59 @@ public class PlayerMovement : MonoBehaviour
         {
             state = PlayerState.grabbing;
 
-            moveSpeed = 2.7f; // Limit player speed while grabbing
+            moveSpeed = 2.0f; // Limit player speed while grabbing
+
+            // Free player rotation
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
 
             // THIS ALL SHOULDNT BE IN PLAYER SCRIPT BUT I'LL LEAVE FOR NOW 
             if (grab != null)
             {
-                // Signals to object script to remove itself from grab variable
-                grab.isGrabbed = true;
+                // if(grab.gameObject.GetComponent<FixedJoint>() == null)
+                // {
+                //     FixedJoint newJoint;
+                //     newJoint.
+                //     grab.gameObject.AddComponent<FixedJoint>();
+                // }
 
-                // Set player as object parent
-                grab.transform.SetParent(this.transform);
-
+                return;
                 // Make kinematic when moving backward
                 grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
 
                 // Unfreezes position constraints and prevents rotation
                 grab.rb.constraints = RigidbodyConstraints.FreezeRotation;
 
+                // Set player as object parent
+                grab.transform.SetParent(this.transform);
+
                 // Make lighter so player can push object forward
-                grab.rb.mass = 1.0f;
+                grab.rb.mass = 0.5f;
+
+                // Signals to object script to remove itself from grab variable
+                grab.isGrabbed = true;
             }
         }
         else
         {
             if (grab != null)
             {
+                return;
                 // Unparent player and make object static again
-                grab.transform.SetParent(null);
-                grab.rb.isKinematic = false;
+                //grab.rb.isKinematic = true;
                 grab.rb.mass = 50.0f;
 
-                // Freeze everything but Y position 
+                // Freeze everything but Y position on object
                 grab.rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+
+                // Freeze everything but Y rotation on player 
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+                grab.transform.SetParent(null);
             }
 
             state = PlayerState.walking;
 
-            moveSpeed = 8.0f;
+            moveSpeed = 7.0f;
         }
     }
 
@@ -212,7 +235,10 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Limit movement in air
-            rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
+            //rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
+            Vector3 v = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
+            Debug.Log(v);
+            rb.AddForce(v - rb.linearVelocity, ForceMode.VelocityChange);
         }
 
         // Clamp magnitude while on ground
@@ -231,12 +257,12 @@ public class PlayerMovement : MonoBehaviour
         // else 
         if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
-            float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
-            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+            //float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
+            //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
         }
         else
         {
-            rb.angularVelocity = Vector3.zero;
+            //rb.angularVelocity = Vector3.zero;
         }
     }
 
@@ -256,7 +282,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            // ~21 is arbitrary, added to cast doesn't ignore any actual layer 
+            // ~21 is arbitrary, added so cast doesn't ignore any actual layer 
             bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, ~21, QueryTriggerInteraction.Ignore);
             //Debug.Log(clear);
 
