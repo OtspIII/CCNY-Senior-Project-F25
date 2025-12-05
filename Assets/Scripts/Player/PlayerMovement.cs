@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    Vector3 startPos;
+    public Vector3 startPos;
     GameManager gm;
 
     // Maybe temporary -- to turn off lightsource while not aiming 
@@ -41,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Grab Objects")]
     // Moveable object script
     public GrabObject grab = null;
+    [SerializeField] LayerMask moveable;
+    RaycastHit moveHit;
     bool moveObj;
 
     [Space(15)]
@@ -67,6 +69,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
     public Lantern lantern;
+    [SerializeField] LayerMask allLayersExceptPhase;
+    public bool checkpoint;
 
     void Awake()
     {
@@ -102,15 +106,20 @@ public class PlayerMovement : MonoBehaviour
             moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") + orientation.right * Input.GetAxisRaw("Horizontal");
 
         // Check if player is facing moveable object
-        if (grab != null)
-        {
-            moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, 0.6f, isGround);
-            //Debug.DrawLine(transform.position, new Vector3(transform.position.x - 0.6f, transform.position.y - 0.2f, transform.position.z), Color.magenta);
-        }
-        else
-        {
-            if (moveObj) moveObj = false;
-        }
+        // if (grab != null)
+        // {
+        //     moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, 0.6f, isGround);
+        //     //Debug.DrawLine(transform.position, new Vector3(transform.position.x - 0.6f, transform.position.y - 0.2f, transform.position.z), Color.magenta);
+        // }
+        // else
+        // {
+        //     if (moveObj) moveObj = false;
+        // }
+
+        moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, out moveHit, 0.7f, moveable);
+        if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
+        else grab = null;
+
         isAiming = Input.GetMouseButton(1);
 
         if (item == null) return;
@@ -127,15 +136,27 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (transform.position.y < -10.0f)
-        {
-            transform.position = startPos;
-        }
+
         //Debug.Log(camOrientation.localEulerAngles);
         Teleport();
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
+
+        if (transform.position.y < -10.0f || checkpoint)
+        {
+            rb.isKinematic = true;
+            canJump = false;
+            rb.isKinematic = true; // player unaffected by physics
+            playerModel.SetActive(false); // Make player invisible
+            exitingSlope = true;
+            aura.SetActive(false); // Turn off lightball thing
+            line.enabled = false;
+            transform.position = startPos;
+            Invoke(nameof(ResetJump), jumpCooldown);
+            if (checkpoint) checkpoint = false;
+        }
+
     }
 
     void StateHandler()
@@ -145,16 +166,20 @@ public class PlayerMovement : MonoBehaviour
         {
             state = PlayerState.grabbing;
 
-            moveSpeed = 2.7f; // Limit player speed while grabbing
+            moveSpeed = 2.0f; // Limit player speed while grabbing
+
+            // Free player rotation
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
 
             // THIS ALL SHOULDNT BE IN PLAYER SCRIPT BUT I'LL LEAVE FOR NOW 
             if (grab != null)
             {
-                // Signals to object script to remove itself from grab variable
-                grab.isGrabbed = true;
-
-                // Set player as object parent
-                grab.transform.SetParent(this.transform);
+                // if(grab.gameObject.GetComponent<FixedJoint>() == null)
+                // {
+                //     FixedJoint newJoint;
+                //     newJoint.
+                //     grab.gameObject.AddComponent<FixedJoint>();
+                // }
 
                 // Make kinematic when moving backward
                 grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
@@ -162,8 +187,14 @@ public class PlayerMovement : MonoBehaviour
                 // Unfreezes position constraints and prevents rotation
                 grab.rb.constraints = RigidbodyConstraints.FreezeRotation;
 
+                // Set player as object parent
+                grab.transform.SetParent(this.transform);
+
                 // Make lighter so player can push object forward
-                grab.rb.mass = 1.0f;
+                grab.rb.mass = 0.5f;
+
+                // Signals to object script to remove itself from grab variable
+                grab.isGrabbed = true;
             }
         }
         else
@@ -171,17 +202,21 @@ public class PlayerMovement : MonoBehaviour
             if (grab != null)
             {
                 // Unparent player and make object static again
-                grab.transform.SetParent(null);
-                grab.rb.isKinematic = false;
+                grab.rb.isKinematic = true;
                 grab.rb.mass = 50.0f;
 
-                // Freeze everything but Y position 
+                // Freeze everything but Y position on object
                 grab.rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+
+                // Freeze everything but Y rotation on player 
+                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+                grab.transform.SetParent(null);
             }
 
             state = PlayerState.walking;
 
-            moveSpeed = 8.0f;
+            moveSpeed = 5.5f;
         }
     }
 
@@ -212,11 +247,13 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Limit movement in air
-            rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
+            //rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
+            Vector3 v = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
+            rb.AddForce(v - rb.linearVelocity, ForceMode.VelocityChange);
         }
 
         // Clamp magnitude while on ground
-        if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
+        //if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
 
         // Turn off gravity on slope
         rb.useGravity = !OnSlope();
@@ -229,6 +266,7 @@ public class PlayerMovement : MonoBehaviour
         //     //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
         // }
         // else 
+
         if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
@@ -255,8 +293,8 @@ public class PlayerMovement : MonoBehaviour
         if (!isAiming)
         {
             // Make sure target position isn't inside of something
-            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.2f);
-            //Debug.Log(clear);
+            // Ignores collider
+            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
 
             // Draw line for debug
             // Eventually will switch to raycast or something
@@ -280,7 +318,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Comments above
-            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.2f);
+            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
 
@@ -303,16 +341,16 @@ public class PlayerMovement : MonoBehaviour
     // Thanks, Josh!
     IEnumerator FlashTeleport(Vector3 target)
     {
-        Vector3 startPos = transform.position;
+        Vector3 start = transform.position;
         Vector3 endPos = target;
 
         float elapsed = 0f;
-        float duration = Vector3.Distance(startPos, endPos) / 20f;
+        float duration = Vector3.Distance(start, endPos) / 20f;
 
         // lerp to target
         while (elapsed < duration)
         {
-            transform.position = Vector3.Lerp(new Vector3(startPos.x, transform.position.y, startPos.z), endPos, elapsed / duration);
+            transform.position = Vector3.Lerp(new Vector3(start.x, transform.position.y, start.z), endPos, elapsed / duration);
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -333,7 +371,6 @@ public class PlayerMovement : MonoBehaviour
 
     void ResetJump()
     {
-
         // Reset jump variables
         canJump = true;
         exitingSlope = false;
@@ -375,7 +412,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (col.gameObject.tag == "Exit")
         {
-            gm.ResetScene(); // Restart demo
+            //gm.ResetScene(); // Restart demo
         }
     }
 }

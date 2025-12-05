@@ -22,6 +22,7 @@ public class CameraSwitcher : MonoBehaviour
 
     private AimCameraController aimCamController;
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,13 +33,19 @@ public class CameraSwitcher : MonoBehaviour
         input = new PlayerControls();
         input.Enable();
         aimAction = input.Gameplay.Aim;
+
+        // For some reason, the camera is wonky when player first enters a lantern
+        // unless this function has run at least once 
+        // Running this function at start is a temp fix 
+        ExitAimMode();
     }
 
     // Update is called once per frame
     void Update()
     {
-        bool aimPressed = aimAction.IsPressed();
-        PlayerMovement.player.isAiming = aimPressed;
+        //bool aimPressed = aimAction.IsPressed();
+
+        bool aimPressed = Input.GetMouseButton(1);
 
         if (aimPressed && !isAiming)
         {
