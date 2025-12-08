@@ -97,13 +97,40 @@ public class PlayerMovement : MonoBehaviour
         Transform orientation = isAiming ? aimCamOrientation : camOrientation;
         orientation.localEulerAngles = new Vector3(0f, orientation.localEulerAngles.y, 0f);
 
-        // Get keyboard input
+        float verticalInput = Input.GetAxisRaw("Vertical");
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+
+
         if (state == PlayerState.grabbing)
-            // Prevent left or right movement while grabbing
-            moveDirection = transform.forward * Input.GetAxisRaw("Vertical"); //(orientation.right * Input.GetAxisRaw("Horizontal") * 0.2f);
+        {
+           
+            // prevents diagonal movement/sliding when pushing obj
+            Vector3 intent;
+
+            // checks if player is facing more North/South or East/West
+            if (Mathf.Abs(transform.forward.z) > Mathf.Abs(transform.forward.x))
+            {
+                // if the player is facing Z axis. Lock movement to Z.
+                intent = Vector3.forward * Mathf.Sign(transform.forward.z);
+            }
+            else
+            {
+                // if the player is facing X axis. Lock movement to X.
+                intent = Vector3.right * Mathf.Sign(transform.forward.x);
+            }
+
+            // only allow forward/backward movement relative to the chosen axis
+            moveDirection = intent * verticalInput;
+        }
         else
-            // Move in direction of camera
-            moveDirection = orientation.forward * Input.GetAxisRaw("Vertical") + orientation.right * Input.GetAxisRaw("Horizontal");
+        {
+            
+            // Move in direction of camera's flat orientation
+            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+
+            // Ensure diagonal movement isn't faster
+            if (moveDirection.magnitude > 1) moveDirection.Normalize();
+        }
 
         // Check if player is facing moveable object
         // if (grab != null)
