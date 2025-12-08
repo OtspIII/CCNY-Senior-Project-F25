@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (state == PlayerState.grabbing)
         {
-           
+
             // prevents diagonal movement/sliding when pushing obj
             Vector3 intent;
 
@@ -124,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            
+
             // Move in direction of camera's flat orientation
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -201,13 +201,6 @@ public class PlayerMovement : MonoBehaviour
             // THIS ALL SHOULDNT BE IN PLAYER SCRIPT BUT I'LL LEAVE FOR NOW 
             if (grab != null)
             {
-                // if(grab.gameObject.GetComponent<FixedJoint>() == null)
-                // {
-                //     FixedJoint newJoint;
-                //     newJoint.
-                //     grab.gameObject.AddComponent<FixedJoint>();
-                // }
-
                 // Make kinematic when moving backward
                 grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
 
