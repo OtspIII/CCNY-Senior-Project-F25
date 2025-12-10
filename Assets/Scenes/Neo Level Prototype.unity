@@ -5015,6 +5015,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1097715
   checkpoint: 0
+  inLantern: 0
+  movementKeys: 77000000610000007300000064000000
 --- !u!136 &447507914
 CapsuleCollider:
   m_ObjectHideFlags: 0

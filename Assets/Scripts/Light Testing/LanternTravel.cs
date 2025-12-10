@@ -181,9 +181,9 @@ public class LanternTravel : MonoBehaviour
     private void ExitLanternMode()
     {
         isInsideLantern = false;
-
         //Enable Player HitBoxes & Other Components:
         player.enabled = true;
+        player.FixCamOrientation();
         rb.isKinematic = false;
         //if (lightModeToggle != null) lightModeToggle.enabled = true;
         if (lightModeToggle.inLantern) lightModeToggle.inLantern = false;

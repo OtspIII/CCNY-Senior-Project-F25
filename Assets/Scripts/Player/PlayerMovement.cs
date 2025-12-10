@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -71,6 +72,11 @@ public class PlayerMovement : MonoBehaviour
     public Lantern lantern;
     [SerializeField] LayerMask allLayersExceptPhase;
     public bool checkpoint;
+    public bool inLantern;
+    bool moveH, moveV;
+    bool canMove = true;
+    [SerializeField] List<KeyCode> movementKeys;
+    KeyCode currentMoveKey;
 
     void Awake()
     {
@@ -100,9 +106,41 @@ public class PlayerMovement : MonoBehaviour
         float verticalInput = Input.GetAxisRaw("Vertical");
         float horizontalInput = Input.GetAxisRaw("Horizontal");
 
-
         if (state == PlayerState.grabbing)
         {
+            foreach (KeyCode key in movementKeys)
+            {
+                if (Input.GetKey(key) && canMove)
+                {
+                    canMove = false;
+                    currentMoveKey = key;
+                }
+            }
+
+            if (!canMove && Input.GetKeyUp(currentMoveKey))
+            {
+                canMove = true;
+            }
+
+            if (currentMoveKey == KeyCode.W || currentMoveKey == KeyCode.S)
+            {
+                horizontalInput = 0f;
+                moveV = true;
+            }
+            else
+            {
+                moveV = false;
+            }
+
+            if (currentMoveKey == KeyCode.A || currentMoveKey == KeyCode.D)
+            {
+                verticalInput = 0f;
+                moveH = true;
+            }
+            else
+            {
+                moveH = false;
+            }
 
             // prevents diagonal movement/sliding when pushing obj
             Vector3 intent;
@@ -120,7 +158,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             // only allow forward/backward movement relative to the chosen axis
-            moveDirection = intent * verticalInput;
+            moveDirection = intent * verticalInput + orientation.right * horizontalInput;
         }
         else
         {
@@ -202,7 +240,9 @@ public class PlayerMovement : MonoBehaviour
             if (grab != null)
             {
                 // Make kinematic when moving backward
-                grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
+                //grab.rb.isKinematic = Input.GetAxisRaw("Vertical") < 0f || Input.GetAxisRaw("Horizontal") != 0 ? true : false;
+                grab.rb.isKinematic = (moveV && Input.GetAxisRaw("Vertical") < 0f) || moveH ? true : false;
+
 
                 // Unfreezes position constraints and prevents rotation
                 grab.rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -285,12 +325,14 @@ public class PlayerMovement : MonoBehaviour
         //     //Debug.Log(angleDiff);
         //     //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
         // }
-        // else 
+        // else
 
         if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+            //Vector3 v = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+            //rb.AddTorque(v - rb.angularVelocity, ForceMode.VelocityChange);
         }
         else
         {
@@ -314,12 +356,12 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
+            bool clear = !Physics.Raycast(transform.position, new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
 
             // Draw line for debug
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
-            line.SetPosition(1, transform.position + transform.forward * 3.0f);
+            line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
             if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
@@ -327,6 +369,7 @@ public class PlayerMovement : MonoBehaviour
                 canJump = false;
                 rb.isKinematic = true; // player unaffected by physics
                 playerModel.SetActive(false); // Make player invisible
+                transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, camOrientation.localEulerAngles.y, transform.localEulerAngles.z);
                 exitingSlope = true;
                 aura.SetActive(false); // Turn off lightball thing
                 StartCoroutine(FlashTeleport(line.GetPosition(1))); // Lerp player to position
@@ -426,6 +469,11 @@ public class PlayerMovement : MonoBehaviour
     void LightSwitch(bool active)
     {
         lightSource.SetActive(active);
+    }
+
+    public void FixCamOrientation()
+    {
+        //playerModel.transform.localEulerAngles = transform.localEulerAngles;
     }
 
     void OnCollisionEnter(Collision col)
