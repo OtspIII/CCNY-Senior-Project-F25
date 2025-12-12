@@ -66,14 +66,14 @@ public class PirateDoor : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        /*if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowPlayer>().tagged)
+        if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowTarget>().tagged)
         {
-            col.GetComponent<FollowPlayer>().tagged = true;
+            col.GetComponent<FollowTarget>().tagged = true;
             soulHead.GetComponent<Renderer>().material = radiantSoul;
             soulBody.GetComponent<Renderer>().material = radiantSoul;
             currentNumber++;
             soul = col.transform;
-        }*/
+        }
     }
 
     void OnTriggerExit(Collider col)

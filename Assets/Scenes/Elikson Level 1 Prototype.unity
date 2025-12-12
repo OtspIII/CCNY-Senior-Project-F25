@@ -4389,7 +4389,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.1
+  m_Intensity: 0.2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -20991,6 +20991,7 @@ MonoBehaviour:
     m_Bits: 32768
   item: {fileID: 1346946733}
   state: 0
+  moveDirection: {x: 0, y: 0, z: 0}
   isAiming: 0
   yawTarget: {fileID: 2135755392}
   lightTool: {fileID: 1346946733}
@@ -21002,6 +21003,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1089473
   checkpoint: 0
+  inLantern: 0
+  movementKeys: 
 --- !u!136 &1284590771
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -21356,8 +21359,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1348324833}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 53.19, y: 54.56, z: -57.89}
+  m_LocalRotation: {x: 0.1521233, y: 0.000000096757255, z: -0.0000000148923585, w: 0.98836154}
+  m_LocalPosition: {x: 53.94, y: 54.66353, z: -64.658585}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
