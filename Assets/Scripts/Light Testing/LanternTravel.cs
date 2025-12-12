@@ -56,9 +56,9 @@ public class LanternTravel : MonoBehaviour
         if (!isInsideLantern)
         {
             //if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
-            if (PlayerMovement.player.lantern != null && Input.GetKeyDown(enterLanternKey))
+            if (PlayerMovement.player.lantern != null && Input.GetKeyDown(enterLanternKey) && player.state != PlayerMovement.PlayerState.grabbing)
             {
-                currentLantern = PlayerMovement.player.lantern;
+                currentLantern = player.lantern;
                 //currentLantern = lightReflection.currentLanternHit;
 
                 if (currentLantern != null)
@@ -181,7 +181,6 @@ public class LanternTravel : MonoBehaviour
     private void ExitLanternMode()
     {
         isInsideLantern = false;
-
         //Enable Player HitBoxes & Other Components:
         player.enabled = true;
         rb.isKinematic = false;
