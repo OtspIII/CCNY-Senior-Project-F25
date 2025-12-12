@@ -23,7 +23,7 @@ public class PirateDoor : MonoBehaviour
         {
             if (Vector3.Distance(soul.position, transform.position) > 20.0f)
             {
-                soul.gameObject.GetComponent<FollowPlayer>().tagged = false;
+                soul.gameObject.GetComponent<FollowTarget>().tagged = false;
                 soul = null;
                 soulHead.GetComponent<Renderer>().material = unlitSoul;
                 soulBody.GetComponent<Renderer>().material = unlitSoul;
@@ -57,9 +57,9 @@ public class PirateDoor : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowPlayer>().tagged)
+        if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowTarget>().tagged)
         {
-            col.GetComponent<FollowPlayer>().tagged = true;
+            col.GetComponent<FollowTarget>().tagged = true;
             soulHead.GetComponent<Renderer>().material = radiantSoul;
             soulBody.GetComponent<Renderer>().material = radiantSoul;
             currentNumber++;

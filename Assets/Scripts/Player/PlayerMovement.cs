@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -61,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     Rigidbody rb;
-    Vector3 moveDirection;
+    public Vector3 moveDirection;
     RaycastHit floorHit;
     public bool isAiming;
     [SerializeField] Transform yawTarget;
@@ -72,6 +73,11 @@ public class PlayerMovement : MonoBehaviour
     public Lantern lantern;
     [SerializeField] LayerMask allLayersExceptPhase;
     public bool checkpoint;
+    public bool inLantern;
+    bool moveH, moveV;
+    bool canMove = true;
+    [SerializeField] List<KeyCode> movementKeys;
+    KeyCode currentMoveKey;
 
     void Awake()
     {
@@ -86,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
         gm = GameManager.instance;
         rb = GetComponent<Rigidbody>();
 
-        line.material = new Material(Shader.Find("Sprites/Default"));
+        //line.material = new Material(Shader.Find("Sprites/Default"));
         line.startWidth = 0.01f;
         line.endWidth = 0.01f;
         line.positionCount = 2;
@@ -101,31 +107,67 @@ public class PlayerMovement : MonoBehaviour
         float verticalInput = Input.GetAxisRaw("Vertical");
         float horizontalInput = Input.GetAxisRaw("Horizontal");
 
-
         if (state == PlayerState.grabbing)
         {
+
+            // Check for most recent key pressed
+            foreach (KeyCode key in movementKeys)
+            {
+                if (Input.GetKey(key) && canMove)
+                {
+                    canMove = false;
+                    currentMoveKey = key;
+                }
+            }
+
+            // Limit movement to current key held down
+            if (!canMove && Input.GetKeyUp(currentMoveKey))
+            {
+                canMove = true;
+            }
+
+            // Prevent horizontal movement while moving object forward/back
+            if (currentMoveKey == KeyCode.W || currentMoveKey == KeyCode.S)
+            {
+                horizontalInput = 0f;
+                moveV = true;
+            }
+            else
+            {
+                moveV = false;
+            }
+
+            // Prevent vertical movement while moving object left/right
+            if (currentMoveKey == KeyCode.A || currentMoveKey == KeyCode.D)
+            {
+                verticalInput = 0f;
+                moveH = true;
+            }
+            else
+            {
+                moveH = false;
+            }
 
             // prevents diagonal movement/sliding when pushing obj
             Vector3 intent;
 
             // checks if player is facing more North/South or East/West
-            if (Mathf.Abs(transform.forward.z) > Mathf.Abs(transform.forward.x))
+            if (Mathf.Abs(yawTarget.forward.z) > Mathf.Abs(yawTarget.forward.x))
             {
                 // if the player is facing Z axis. Lock movement to Z.
-                intent = Vector3.forward * Mathf.Sign(transform.forward.z);
+                intent = Vector3.forward * Mathf.Sign(yawTarget.forward.z);
             }
             else
             {
                 // if the player is facing X axis. Lock movement to X.
-                intent = Vector3.right * Mathf.Sign(transform.forward.x);
+                intent = Vector3.right * Mathf.Sign(yawTarget.forward.x);
             }
 
-            // only allow forward/backward movement relative to the chosen axis
-            moveDirection = intent * verticalInput;
+            // only allow movement relative to the chosen axis
+            moveDirection = intent * verticalInput + yawTarget.right * horizontalInput;
         }
         else
         {
-
             // Move in direction of camera's flat orientation
             moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
@@ -133,18 +175,7 @@ public class PlayerMovement : MonoBehaviour
             if (moveDirection.magnitude > 1) moveDirection.Normalize();
         }
 
-        // Check if player is facing moveable object
-        // if (grab != null)
-        // {
-        //     moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, 0.6f, isGround);
-        //     //Debug.DrawLine(transform.position, new Vector3(transform.position.x - 0.6f, transform.position.y - 0.2f, transform.position.z), Color.magenta);
-        // }
-        // else
-        // {
-        //     if (moveObj) moveObj = false;
-        // }
-
-        moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), transform.forward, out moveHit, 0.7f, moveable);
+        moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), yawTarget.forward, out moveHit, 0.7f, moveable);
         if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
         else grab = null;
 
@@ -190,7 +221,7 @@ public class PlayerMovement : MonoBehaviour
     void StateHandler()
     {
         // Check if player is holding left click while facing moveable object
-        if (Input.GetMouseButton(0) && moveObj)
+        if (Input.GetMouseButton(0) && moveObj && !isAiming)
         {
             state = PlayerState.grabbing;
 
@@ -202,8 +233,8 @@ public class PlayerMovement : MonoBehaviour
             // THIS ALL SHOULDNT BE IN PLAYER SCRIPT BUT I'LL LEAVE FOR NOW 
             if (grab != null)
             {
-                // Make kinematic when moving backward
-                grab.rb.isKinematic = (Input.GetAxisRaw("Vertical") < 0f) ? true : false;
+                // Make kinematic when moving backward, left, or right
+                grab.rb.isKinematic = (moveV && Input.GetAxisRaw("Vertical") < 0f) || moveH ? true : false;
 
                 // Unfreezes position constraints and prevents rotation
                 grab.rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -247,14 +278,14 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
         if (isAiming)
         {
-            Vector3 forward = aimCamOrientation.forward;
-            Vector3 right = aimCamOrientation.right;
+            // Vector3 forward = aimCamOrientation.forward;
+            // Vector3 right = aimCamOrientation.right;
 
-            forward.y = rb.linearVelocity.y;
-            right.y = 0;
+            // forward.y = rb.linearVelocity.y;
+            // right.y = 0;
 
-            forward.Normalize();
-            right.Normalize();
+            // forward.Normalize();
+            // right.Normalize();
         }
 
         if (OnSlope() && !exitingSlope)
@@ -279,19 +310,14 @@ public class PlayerMovement : MonoBehaviour
         // Turn off gravity on slope
         rb.useGravity = !OnSlope();
 
-        // Handle rotation while player is not grabbing an object or aiming lightbeam
-        // if (isAiming)
-        // {
-        //     //float angleDiff = Vector3.SignedAngle(transform.forward, camOrientation.forward, Vector3.up);
-        //     //Debug.Log(angleDiff);
-        //     //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
-        // }
-        // else 
 
+        // Handle rotation
         if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
-            float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
-            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+            float angleDiff = Vector3.SignedAngle(yawTarget.forward, moveDirection, Vector3.up);
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.15f, rb.angularVelocity.z);
+            //Vector3 v = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
+            //rb.AddTorque(v - rb.angularVelocity * 1.5f, ForceMode.Force);
         }
         else
         {
@@ -306,7 +332,7 @@ public class PlayerMovement : MonoBehaviour
         //Debug.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y - 1.2f, transform.position.z), Color.magenta);
 
         // Handle drag
-        rb.linearDamping = grounded ? groundDrag : 0;
+        //rb.linearDamping = grounded ? groundDrag : 0;
     }
 
     void Teleport()
@@ -315,12 +341,12 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            bool clear = !Physics.Raycast(transform.position, transform.forward, 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
+            bool clear = !Physics.Raycast(transform.position, new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
 
             // Draw line for debug
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
-            line.SetPosition(1, transform.position + transform.forward * 3.0f);
+            line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
             if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
@@ -328,6 +354,7 @@ public class PlayerMovement : MonoBehaviour
                 canJump = false;
                 rb.isKinematic = true; // player unaffected by physics
                 playerModel.SetActive(false); // Make player invisible
+                transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, camOrientation.localEulerAngles.y, transform.localEulerAngles.z);
                 exitingSlope = true;
                 aura.SetActive(false); // Turn off lightball thing
                 StartCoroutine(FlashTeleport(line.GetPosition(1))); // Lerp player to position
@@ -427,6 +454,13 @@ public class PlayerMovement : MonoBehaviour
     void LightSwitch(bool active)
     {
         lightSource.SetActive(active);
+    }
+
+    public void FixCamOrientation()
+    {
+        Quaternion offset = Quaternion.Euler(-90f, 0f, 0f);
+
+        transform.rotation = Quaternion.Euler(0f, yawTarget.localEulerAngles.y, 0f) * offset;
     }
 
     void OnCollisionEnter(Collision col)
