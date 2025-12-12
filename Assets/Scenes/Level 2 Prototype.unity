@@ -2272,7 +2272,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 94a53494cbdfad74ebc2c702164727ac, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 0c82b382cfa0a1345b9c7edc9246dced, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &186988450
 Transform:
@@ -16797,7 +16797,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentObject: {fileID: 759468138}
-  PlayerObject: {fileID: 0}
+  PlayerObject: {fileID: 447507903}
   lightRotationOffset: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
   beamRoot: {fileID: 688336959}
   beamMesh: {fileID: 1590749254}
@@ -24410,9 +24410,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   surface: {fileID: 186988449}
-  attached: {fileID: 0}
+  groundToHit: {fileID: 371505606}
   connectedBody: {fileID: 873611645}
   obstacle: {fileID: 0}
+  soul: {fileID: 1121906595}
 --- !u!1 &1520205867
 GameObject:
   m_ObjectHideFlags: 0
@@ -24944,7 +24945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ParentObject: {fileID: 1545828252}
-  PlayerObject: {fileID: 0}
+  PlayerObject: {fileID: 447507903}
   lightRotationOffset: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
   beamRoot: {fileID: 1976246942}
   beamMesh: {fileID: 302131647}
@@ -34121,6 +34122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soul: {fileID: 0}
   currentNumber: 0
+  numberToWin: 1
   soulHead: {fileID: 2053777340}
   soulBody: {fileID: 1652783927}
   radiantSoul: {fileID: 2100000, guid: cd853407fd71ec440aff2b77a883f49e, type: 2}
