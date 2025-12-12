@@ -3,7 +3,10 @@ using UnityEngine;
 public class Projector : MonoBehaviour
 {
     [Header("References: ")]
-    public Transform ParentObject;  
+    public Transform ParentObject;
+    public Transform PlayerObject;
+    [Space]
+    private Vector3 baseRotationEuler;
     public Quaternion lightRotationOffset = Quaternion.identity;
     [Space]
     public Transform beamRoot;       
@@ -11,6 +14,8 @@ public class Projector : MonoBehaviour
 
     [Header("Beam Settings: ")]
     public LightReflection beamLight;
+    [Space]
+    public float maxAngle = 90f;
     [Space]
     public float beamWidth = 0.2f;
     public float beamHeight = 0.2f;
@@ -30,6 +35,9 @@ public class Projector : MonoBehaviour
 
         if (beamRoot != null)
             beamRoot.gameObject.SetActive(false);
+
+        //Store Base Rotation Euler Angles (Inspector Values):
+        baseRotationEuler = lightRotationOffset.eulerAngles;
     }
 
     private void LateUpdate()
@@ -86,5 +94,36 @@ public class Projector : MonoBehaviour
         //Position Beam Mesh to Extend Forward from Beam Root (-x):
         beamMesh.localPosition = new Vector3(-correctedLength * 0.5f, 0f, 0f);
         
+    }
+
+    public bool UpdateYOffeset()
+    {
+        //Null Checks:
+        if (PlayerObject == null || ParentObject == null) return false;
+
+        //Calculate Direction to Player on XZ Plane:
+        Vector3 toPlayer = PlayerObject.position - ParentObject.position;
+        toPlayer.y = 0f;
+        toPlayer.Normalize();
+
+        //Calculate Parent's Back Direction on XZ Plane:
+        Vector3 parentBack = ParentObject.right;
+        parentBack.y = 0f;
+        parentBack.Normalize();
+
+        //Calculate Angle Between Parent's Back and Direction to Player:
+        float angleToPlayer = Vector3.SignedAngle(parentBack, toPlayer, Vector3.up);
+
+        //Check if Angle Exceeds Max Angle:
+        if (angleToPlayer < -maxAngle || angleToPlayer > maxAngle) return false;
+
+        //Apply Rotation Offset:
+        lightRotationOffset = Quaternion.Euler(baseRotationEuler.x, (angleToPlayer + baseRotationEuler.y), baseRotationEuler.z);
+
+        //Visualization:
+        Debug.DrawRay(ParentObject.position, parentBack * 5f, Color.blue);
+        Debug.DrawRay(ParentObject.position, toPlayer * 5f, Color.green);
+
+        return true;
     }
 }
