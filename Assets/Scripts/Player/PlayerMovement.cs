@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    //GITHUB WTF IS WRONG
     public Vector3 startPos;
     GameManager gm;
 
