@@ -528,6 +528,11 @@ public class LightReflection : MonoBehaviour
         {
             projectorHit = true;
 
+            //Check Valid Projection Angle:
+            bool validProjection = projector.UpdateYOffeset();
+            if (!validProjection) return;
+
+            //Register Hit:
             projector.RegisterHit();
 
             //Set Beam Light Rotation Parent & Offset:
