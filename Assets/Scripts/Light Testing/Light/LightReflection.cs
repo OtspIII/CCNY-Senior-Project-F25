@@ -40,6 +40,9 @@ public class LightReflection : MonoBehaviour
     public LayerMask burnableLayer;
     public bool burnableHit;
     private Burnable burnable;
+    public Transform fireParent;
+    public GameObject firePrefab;
+    bool playFire;
     [Space]
 
     [Header("Mirror Collision: ")]
@@ -98,6 +101,11 @@ public class LightReflection : MonoBehaviour
         ClearPrismSplits();
         ClearSplitRayMarkers();
 
+        if (burnable == null && lantern == null && playFire)
+        {
+            DestoryFireVFX();
+        }
+
         //Laser Setup:
         Vector3 ObjectPosition = transform.position;
         Vector3 ObjectDirection = transform.up;
@@ -114,6 +122,20 @@ public class LightReflection : MonoBehaviour
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
             hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer, QueryTriggerInteraction.Ignore);
+
+            if (playFire)
+            {
+                // Remove fire VFX if beam stops hitting lantern or burnable
+                bool extinguish = true;
+
+                for (int i = 0; i < hits.Length; i++)
+                {
+                    if (hits[i].transform.tag == "Burn")
+                        extinguish = false;
+                }
+
+                if (extinguish) DestoryFireVFX();
+            }
 
             //No Lens Collision + End of Ray:
             if (!ClosestValidHit(hits, lensesHit, out RaycastHit hit))
@@ -441,6 +463,16 @@ public class LightReflection : MonoBehaviour
 
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
+
+            // Get position for fire VFX
+            fireParent.position = obstructionPoints[0];
+
+            if (!playFire)
+            {
+                // Create fire
+                Instantiate(firePrefab, fireParent.position, Quaternion.identity, fireParent);
+                playFire = true;
+            }
         }
         else
         {
@@ -505,13 +537,29 @@ public class LightReflection : MonoBehaviour
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
 
+            //Vector3 pointDirection = (obstructionPoints[0] - PlayerMovement.player.transform.position).normalized;
+            //Vector3 targetPoint = obstructionPoints[0] - pointDirection;
+
             //If Enough Increments & Bool Becomes True:
             if (lantern.activeLantern && LanternTravel.Instance != null)
             {
                 //If The Hit Lantern IS NOT In The List:
                 if (!LanternTravel.Instance.ActivatedLanterns.Contains(lantern))
                 {
+                    DestoryFireVFX();
                     LanternTravel.Instance.ActivatedLanterns.Add(lantern);
+                }
+            }
+            else if (!lantern.activeLantern)
+            {
+                // Get fire VFX position when lantern is unlit
+                fireParent.position = obstructionPoints[0];
+
+                if (!playFire)
+                {
+                    // Create fire
+                    Instantiate(firePrefab, fireParent.position, Quaternion.identity, fireParent);
+                    playFire = true;
                 }
             }
         }
@@ -927,5 +975,15 @@ public class LightReflection : MonoBehaviour
                 laserPointMarkers.Add(marker);
             }
         }
+    }
+
+    public void DestoryFireVFX()
+    {
+        GameObject[] fire = GameObject.FindGameObjectsWithTag("Fire");
+        foreach (GameObject f in fire)
+        {
+            Destroy(f);
+        }
+        playFire = false;
     }
 }

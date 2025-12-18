@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class FollowTarget : MonoBehaviour
 {
     [SerializeField] Transform target;
+    [SerializeField] GameObject text;
     NavMeshAgent agent;
     public bool awakened;
     public bool tagged;
@@ -31,6 +32,7 @@ public class FollowTarget : MonoBehaviour
         else
         {
             if (!agent.isStopped) agent.isStopped = true;
+            if (text != null && !text.activeInHierarchy) text.SetActive(true);
         }
     }
 

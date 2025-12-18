@@ -3,7 +3,7 @@ using UnityEngine;
 public class TempPlank : MonoBehaviour
 {
     bool startTimer;
-    float targetTime = 1.0f;
+    [SerializeField] float targetTime = 1.0f;
     [SerializeField] GameObject floor;
     Rigidbody rb;
 

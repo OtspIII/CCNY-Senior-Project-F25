@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] float moveSpeed;
-    float maxSpeed = 7.5f;
+    float maxFallSpeed = 20.0f;
     [Space(5)]
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
@@ -60,7 +60,6 @@ public class PlayerMovement : MonoBehaviour
         grabbing,
         light,
     }
-
     Rigidbody rb;
     public Vector3 moveDirection;
     RaycastHit floorHit;
@@ -78,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
     bool canMove = true;
     [SerializeField] List<KeyCode> movementKeys;
     KeyCode currentMoveKey;
+    SunWheelController sunWheel;
 
     void Awake()
     {
@@ -91,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
 
         gm = GameManager.instance;
         rb = GetComponent<Rigidbody>();
+        sunWheel = SunWheelController.Instance;
 
         //line.material = new Material(Shader.Find("Sprites/Default"));
         line.startWidth = 0.01f;
@@ -183,8 +184,23 @@ public class PlayerMovement : MonoBehaviour
 
         if (item == null) return;
         if (!item.activeInHierarchy) return;
-        if (Input.GetMouseButtonDown(1)) LightSwitch(true);
-        else if (Input.GetMouseButtonUp(1)) LightSwitch(false);
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            LightSwitch(true);
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            LightSwitch(false);
+
+            // Remove fire VFX if player stops aiming whil burning
+            // TEMPORARY
+            if (GameObject.FindGameObjectWithTag("Fire") != null)
+            {
+                transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
+            }
+        }
+
     }
 
     void FixedUpdate()
@@ -201,6 +217,7 @@ public class PlayerMovement : MonoBehaviour
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
+        SunWheelHandler();
 
         if (transform.position.y < -10.0f || checkpoint)
         {
@@ -268,7 +285,7 @@ public class PlayerMovement : MonoBehaviour
 
             state = PlayerState.walking;
 
-            moveSpeed = 5.5f;
+            moveSpeed = isAiming ? 0.7f : 5.5f;
         }
     }
 
@@ -276,7 +293,7 @@ public class PlayerMovement : MonoBehaviour
     {
         // Create move Vector from player inputs on X and Z axis
         Vector3 move = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
-        if (isAiming)
+        if (!isAiming)
         {
             // Vector3 forward = aimCamOrientation.forward;
             // Vector3 right = aimCamOrientation.right;
@@ -294,7 +311,8 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = GetSlopeMoveDirection() * moveSpeed;
 
             // Prevent bump effect when running upward
-            if (rb.linearVelocity.y > 0f) rb.AddForce(Vector3.down * 80.0f, ForceMode.Force);
+            if (moveDirection == Vector3.zero) rb.linearVelocity = Vector3.zero;
+            else if (rb.linearVelocity.y > 0f) rb.AddForce(Vector3.down * 80.0f, ForceMode.Force);
         }
         else
         {
@@ -302,6 +320,9 @@ public class PlayerMovement : MonoBehaviour
             //rb.linearVelocity = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
             Vector3 v = grounded ? move : new Vector3(move.x * airMult, rb.linearVelocity.y, move.z * airMult);
             rb.AddForce(v - rb.linearVelocity, ForceMode.VelocityChange);
+
+            // Clamp fall speed
+            if (rb.linearVelocity.magnitude > maxFallSpeed) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxFallSpeed);
         }
 
         // Clamp magnitude while on ground
@@ -366,7 +387,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Comments above
-            bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
+            /*bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
 
@@ -382,7 +403,7 @@ public class PlayerMovement : MonoBehaviour
                 //transform.position = new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z);
                 line.enabled = false;
                 Invoke(nameof(ResetJump), jumpCooldown);
-            }
+            }*/
         }
     }
 
@@ -456,11 +477,20 @@ public class PlayerMovement : MonoBehaviour
         lightSource.SetActive(active);
     }
 
-    public void FixCamOrientation()
+    void SunWheelHandler()
     {
-        Quaternion offset = Quaternion.Euler(-90f, 0f, 0f);
-
-        transform.rotation = Quaternion.Euler(0f, yawTarget.localEulerAngles.y, 0f) * offset;
+        if (sunWheel.unlockedAbilities[sunWheel.centerIndex] == SunSpike.SunSpikeType.Telescope)
+        {
+            if (!item.activeInHierarchy) item.SetActive(true);
+        }
+        else
+        {
+            if (item.activeInHierarchy)
+            {
+                if (item.transform.GetChild(0).gameObject.activeInHierarchy) item.transform.GetChild(0).gameObject.SetActive(false);
+                item.SetActive(false);
+            }
+        }
     }
 
     void OnCollisionEnter(Collision col)
