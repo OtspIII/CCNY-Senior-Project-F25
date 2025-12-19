@@ -5,9 +5,8 @@ using Unity.AI.Navigation;
 public class RebakeNav : MonoBehaviour
 {
     [SerializeField] NavMeshSurface surface;
-    [SerializeField] GameObject groundToHit, connectedBody;
+    [SerializeField] GameObject attached, connectedBody;
     [SerializeField] GameObject obstacle;
-    [SerializeField] FollowTarget soul;
     bool fin;
     Rigidbody rb;
 
@@ -19,19 +18,16 @@ public class RebakeNav : MonoBehaviour
     void Update()
     {
         if (connectedBody == null && !fin && rb.isKinematic)
-        {
             rb.isKinematic = false;
-        }
     }
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject == groundToHit && !fin)
+        if (col.gameObject == attached && !fin)
         {
             if (obstacle != null) obstacle.SetActive(false);
             surface.BuildNavMesh();
             if (!rb.isKinematic) rb.isKinematic = true;
-            soul.awakened = true;
             fin = true;
         }
     }

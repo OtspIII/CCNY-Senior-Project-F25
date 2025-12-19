@@ -6,7 +6,7 @@ public class PirateDoor : MonoBehaviour
     HingeJoint joint;
     JointMotor motor;
     [SerializeField] int currentNumber = 0;
-    [SerializeField] int numberToWin = 1;
+    int numberToWin = 1;
     [SerializeField] GameObject soulHead, soulBody;
     [SerializeField] Material radiantSoul, unlitSoul;
     void Start()
@@ -21,24 +21,18 @@ public class PirateDoor : MonoBehaviour
     {
         if (soul != null)
         {
-            /*if (Vector3.Distance(soul.position, transform.position) > 20.0f)
+            if (Vector3.Distance(soul.position, transform.position) > 20.0f)
             {
                 soul.gameObject.GetComponent<FollowPlayer>().tagged = false;
                 soul = null;
                 soulHead.GetComponent<Renderer>().material = unlitSoul;
                 soulBody.GetComponent<Renderer>().material = unlitSoul;
                 currentNumber--;
-            }*/
+            }
         }
-
-
 
         if (currentNumber == numberToWin)
         {
-            if (soulHead.GetComponent<Renderer>().material != radiantSoul) soulHead.GetComponent<Renderer>().material = radiantSoul;
-            if (soulBody.GetComponent<Renderer>().material != radiantSoul) soulBody.GetComponent<Renderer>().material = radiantSoul;
-
-
             if (motor.targetVelocity > 0f)
             {
                 motor.targetVelocity *= -1;
@@ -50,9 +44,6 @@ public class PirateDoor : MonoBehaviour
         }
         else
         {
-            if (soulHead.GetComponent<Renderer>().material != unlitSoul) soulHead.GetComponent<Renderer>().material = unlitSoul;
-            if (soulBody.GetComponent<Renderer>().material != unlitSoul) soulBody.GetComponent<Renderer>().material = unlitSoul;
-
             if (motor.targetVelocity < 0f)
             {
                 motor.targetVelocity *= -1;
@@ -66,9 +57,9 @@ public class PirateDoor : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowTarget>().tagged)
+        if (col.gameObject.tag == "Soul" && !col.isTrigger && !col.GetComponent<FollowPlayer>().tagged)
         {
-            col.GetComponent<FollowTarget>().tagged = true;
+            col.GetComponent<FollowPlayer>().tagged = true;
             soulHead.GetComponent<Renderer>().material = radiantSoul;
             soulBody.GetComponent<Renderer>().material = radiantSoul;
             currentNumber++;
