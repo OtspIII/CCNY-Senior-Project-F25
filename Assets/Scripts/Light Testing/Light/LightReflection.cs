@@ -465,6 +465,8 @@ public class LightReflection : MonoBehaviour
             obstructionPoints.Add(hit.point);
 
             // Get position for fire VFX
+
+            if (obstructionPoints.Count < 1) return;
             fireParent.position = obstructionPoints[0];
 
             if (!playFire)

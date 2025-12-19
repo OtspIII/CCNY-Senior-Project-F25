@@ -85,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
+        item.SetActive(false);
         startPos = transform.position;
         Physics.gravity = new Vector3(0, -27f, 0);
         Cursor.lockState = CursorLockMode.Locked;
