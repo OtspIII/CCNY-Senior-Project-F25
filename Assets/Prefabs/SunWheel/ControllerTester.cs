@@ -25,6 +25,9 @@ public class SunWheelController : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        centerIndex = 0;
+        telescopeUnlocked = false;
+        if (unlockedAbilities.Count > 0) unlockedAbilities.Remove(unlockedAbilities[1]);
     }
 
     void Start()
