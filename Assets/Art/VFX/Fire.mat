@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FireForm:
-        m_Texture: {fileID: 2800000, guid: aaae42214b82cc741b92f8735c16568b, type: 3}
+        m_Texture: {fileID: 2800000, guid: f6dc1529f8d07bb41a143a77e0e4687f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
