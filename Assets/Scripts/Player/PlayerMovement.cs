@@ -337,7 +337,7 @@ public class PlayerMovement : MonoBehaviour
         if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
-            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.7f, rb.angularVelocity.z);
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.15f, rb.angularVelocity.z);
             Debug.Log(rb.angularVelocity.y);
             //Vector3 v = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
             //rb.AddTorque(v - rb.angularVelocity * 1.5f, ForceMode.Force);

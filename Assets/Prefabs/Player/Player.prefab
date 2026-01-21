@@ -354,7 +354,7 @@ MonoBehaviour:
   capsuleRadius: 3
   moveSpeed: 100
   enterLanternKey: 113
-  exitLanternKey: 32
+  exitLanternKey: 113
   moveLanternKey: 323
   isTraveling: 0
 --- !u!1 &3131787222639509743
