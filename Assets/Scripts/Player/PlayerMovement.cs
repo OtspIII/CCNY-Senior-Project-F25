@@ -45,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     public GrabObject grab = null;
     [SerializeField] LayerMask moveable;
     RaycastHit moveHit;
+    public bool nearHandle;
     bool moveObj;
 
     [Space(15)]
@@ -177,7 +178,7 @@ public class PlayerMovement : MonoBehaviour
             if (moveDirection.magnitude > 1) moveDirection.Normalize();
         }
 
-        moveObj = Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), yawTarget.forward, out moveHit, 0.7f, moveable);
+        moveObj = nearHandle && Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), yawTarget.forward, out moveHit, 0.7f, moveable);
         if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
         else grab = null;
 
