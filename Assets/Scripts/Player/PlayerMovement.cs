@@ -192,9 +192,29 @@ public class PlayerMovement : MonoBehaviour
         if (rb.isKinematic) return;
         Movement();
     }
+    private void OnEnable()
+    {
+        PromptTrigger.OnFPVToggle += HandleFPVChange;
+    }
+
+    private void OnDisable()
+    {
+        PromptTrigger.OnFPVToggle -= HandleFPVChange;
+    }
+
+    private void HandleFPVChange(bool isFPVActive)
+    {
+        canMove = !isFPVActive;
+
+        if (isFPVActive) 
+        { 
+            GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        }
+    }
 
     void Update()
     {
+        if (!canMove) return;
 
         //Debug.Log(camOrientation.localEulerAngles);
         Teleport();
@@ -470,4 +490,5 @@ public class PlayerMovement : MonoBehaviour
             //gm.ResetScene(); // Restart demo
         }
     }
+
 }
