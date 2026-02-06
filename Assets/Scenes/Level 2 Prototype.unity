@@ -3018,6 +3018,79 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a80522d92db408741b1b14ed6668a0b4, type: 3}
+--- !u!1001 &280525285
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7350412238253776735, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: speechText
+      value: Help me cross over!
+      objectReference: {fileID: 0}
+    - target: {fileID: 7350412238253776735, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: detectionRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7962654530444586366, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_Name
+      value: SpeechBubble
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503347328111667951, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 8503347328111667951, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -15.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9973468
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.072796755
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 8.349
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758255109804583219, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ee1e8eb4bc18f3c4ead4705cbbf12187, type: 3}
 --- !u!1 &302131646
 GameObject:
   m_ObjectHideFlags: 0
@@ -5211,7 +5284,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e200dd8ad288faf40b2781b138735b2c, type: 2}
+  - {fileID: 2100000, guid: 4e38383c2b80a6949b93635298eec3c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -25485,7 +25558,7 @@ MonoBehaviour:
   maxAngle: 90
   beamWidth: 0.25
   beamHeight: 0.25
-  lengthPerHit: 1
+  lengthPerHit: 1.5
   hitsThisFrame: 0
 --- !u!1 &1545828249
 GameObject:
@@ -31531,7 +31604,7 @@ MonoBehaviour:
   pointPrefab: {fileID: 4127368241999370233, guid: aca2756778b43414faa115be364f63d0, type: 3}
   laserDistance: 1
   laserWidth: 0.01
-  lineMaterial: {fileID: 2100000, guid: 4cf5a6a91f15cd642bf970c2a7c4f623, type: 2}
+  lineMaterial: {fileID: 2100000, guid: 4e38383c2b80a6949b93635298eec3c8, type: 2}
   lensLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -34928,3 +35001,4 @@ SceneRoots:
   - {fileID: 243762077}
   - {fileID: 651983382}
   - {fileID: 841300161}
+  - {fileID: 280525285}

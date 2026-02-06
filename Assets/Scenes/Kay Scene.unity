@@ -340,18 +340,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3624198619155857653, guid: aab7e2966a764d541bcd860a3d152c8a, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8ce3275efd51b9f479365996c928ae40, type: 2}
-    - target: {fileID: 3914035781707071259, guid: aab7e2966a764d541bcd860a3d152c8a, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8ce3275efd51b9f479365996c928ae40, type: 2}
-    - target: {fileID: 4477972991857967021, guid: aab7e2966a764d541bcd860a3d152c8a, type: 3}
-      propertyPath: m_Name
-      value: Outer Flame
-      objectReference: {fileID: 0}
     - target: {fileID: 6298833543534466963, guid: aab7e2966a764d541bcd860a3d152c8a, type: 3}
       propertyPath: m_Name
       value: FireVFX
@@ -395,10 +383,6 @@ PrefabInstance:
     - target: {fileID: 7496310613409798099, guid: aab7e2966a764d541bcd860a3d152c8a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7621085948797443013, guid: aab7e2966a764d541bcd860a3d152c8a, type: 3}
-      propertyPath: m_Name
-      value: Inner Flame
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

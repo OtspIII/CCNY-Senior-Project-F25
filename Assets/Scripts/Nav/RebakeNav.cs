@@ -8,6 +8,7 @@ public class RebakeNav : MonoBehaviour
     [SerializeField] GameObject groundToHit, connectedBody;
     [SerializeField] GameObject obstacle;
     [SerializeField] FollowTarget soul;
+    [SerializeField] GameObject soulText;
     bool fin;
     Rigidbody rb;
 
@@ -32,6 +33,8 @@ public class RebakeNav : MonoBehaviour
             surface.BuildNavMesh();
             if (!rb.isKinematic) rb.isKinematic = true;
             soul.awakened = true;
+            transform.tag = "Untagged";
+            if (soulText != null) Destroy(soulText);
             fin = true;
         }
     }
