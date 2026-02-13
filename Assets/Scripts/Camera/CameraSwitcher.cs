@@ -93,4 +93,19 @@ public class CameraSwitcher : MonoBehaviour
 
         inputAxisController.enabled = false; // freelook cam cannot rotate
     }
+
+    public void UpdateTargets(Transform newTarget)
+    {
+        // updates freelook cam
+        freelookCam.Follow = newTarget;
+        freelookCam.LookAt = newTarget;
+
+        aimCam.Follow = newTarget;
+        aimCam.LookAt = newTarget;
+
+        freelookCam.OnTargetObjectWarped(newTarget, newTarget.position - freelookCam.transform.position);
+        aimCam.OnTargetObjectWarped(newTarget, newTarget.position - aimCam.transform.position);
+
+        SnapFreeLookBehindPlayer();
+    }
 }
