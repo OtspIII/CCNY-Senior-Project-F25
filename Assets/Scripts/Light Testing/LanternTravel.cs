@@ -40,6 +40,7 @@ public class LanternTravel : MonoBehaviour
     public KeyCode enterLanternKey = KeyCode.Q;
     public KeyCode exitLanternKey = KeyCode.Space;
     public KeyCode moveLanternKey = KeyCode.Mouse0;
+    public bool isTraveling;
 
 
     private void Awake()
@@ -56,7 +57,7 @@ public class LanternTravel : MonoBehaviour
         if (!isInsideLantern)
         {
             //if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
-            if (PlayerMovement.player.lantern != null && Input.GetKeyDown(enterLanternKey))
+            if (player.lantern != null && Input.GetKeyDown(enterLanternKey) && !isTraveling && player.state != PlayerMovement.PlayerState.grabbing)
             {
                 currentLantern = PlayerMovement.player.lantern;
                 //currentLantern = lightReflection.currentLanternHit;
@@ -78,7 +79,7 @@ public class LanternTravel : MonoBehaviour
         }
 
         //Lantern Exit:
-        if (Input.GetKeyDown(exitLanternKey))
+        if (Input.GetKeyDown(exitLanternKey) && !isTraveling)
         {
             ExitLanternMode();
             return;
@@ -86,7 +87,7 @@ public class LanternTravel : MonoBehaviour
 
         //Lantern -> Lantern Traversal:
         target = GetLanternInView();
-        if (target != null && Input.GetKeyDown(moveLanternKey))
+        if (target != null && Input.GetKeyDown(moveLanternKey) && !isTraveling)
         {
             StartCoroutine(MoveToLantern(target));
         }
@@ -129,6 +130,10 @@ public class LanternTravel : MonoBehaviour
             capsuleRadius
         );
 
+        // Prevent travel if something is blocking way to lantern
+        for (int i = 0; i < hits.Length; i++)
+            if (hits[i].tag == "Obstruction") return null;
+
         //Capsule Hit Detection:
         foreach (var hit in hits)
         {
@@ -144,6 +149,8 @@ public class LanternTravel : MonoBehaviour
     private IEnumerator MoveToLantern(Lantern targetLantern)
     {
         if (targetLantern == null || targetLantern.lanternCore == null) yield break;
+
+        isTraveling = true;
 
         Vector3 startPos = transform.position;
         Vector3 endPos = targetLantern.lanternCore.position;
@@ -163,6 +170,8 @@ public class LanternTravel : MonoBehaviour
         transform.position = endPos;
 
         currentLantern = targetLantern;
+
+        isTraveling = false;
     }
 
 

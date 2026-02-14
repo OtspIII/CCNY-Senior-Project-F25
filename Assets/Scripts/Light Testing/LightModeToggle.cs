@@ -13,15 +13,15 @@ public class LightModeToggle : MonoBehaviour
 
     void Update()
     {
-        if(inLantern || Input.GetMouseButton(1))
+        if (inLantern || Input.GetMouseButton(1))
         {
             //Using M2 to match Aiming Key From Player Controller:
-            if (lightAuraFollower != null) lightAuraFollower.SetAuraActive(false);
+            //if (lightAuraFollower != null) lightAuraFollower.SetAuraActive(false);
             if (lightAimingTool != null) lightAimingTool.gameObject.SetActive(true);
         }
         else
         {
-            if (lightAuraFollower != null && !inLantern) lightAuraFollower.SetAuraActive(true);
+            //if (lightAuraFollower != null && !inLantern) lightAuraFollower.SetAuraActive(true);
             if (lightAimingTool != null) lightAimingTool.gameObject.SetActive(false);
         }
     }

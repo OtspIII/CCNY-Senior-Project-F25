@@ -6,6 +6,7 @@ public class GrabObject : MonoBehaviour
     public Rigidbody rb;
     Collider col;
     public bool isGrabbed;
+    bool applyMaterial;
 
     // No friction
     [SerializeField] PhysicsMaterial pm;
@@ -30,9 +31,15 @@ public class GrabObject : MonoBehaviour
 
         // Add friction when player is moving object
         if (isGrabbed)
+        {
+            if (applyMaterial) applyMaterial = false;
             col.material = null;
-        else if (col.material != null)
+        }
+        else if (col.material != applyMaterial)
+        {
+            applyMaterial = true;
             col.material = pm;
+        }
     }
 
 

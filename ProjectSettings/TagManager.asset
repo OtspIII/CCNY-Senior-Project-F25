@@ -8,6 +8,9 @@ TagManager:
   - Moveable
   - Soul
   - Game Manager
+  - Fire
+  - Obstruction
+  - Burn
   layers:
   - Default
   - TransparentFX
@@ -34,7 +37,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Shadows
   - 
   - 
   - 

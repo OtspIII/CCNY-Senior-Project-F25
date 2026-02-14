@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
             ResetScene();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.B))
         {
             Application.Quit();
         }
