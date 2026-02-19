@@ -2913,7 +2913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a813ee87ef6d0054ca1450f2b731aca5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.72
+      value: -6.64
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a813ee87ef6d0054ca1450f2b731aca5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5138,6 +5138,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Plank (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1317170113103961355, guid: a9f49ae7c731fd14cb078bf6fe0d9f55, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f5365536d557a174eb880a137c5941e6, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5907,7 +5911,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2967fa6e83155b244b445277788ed780, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 85.81
+      value: 86.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2967fa6e83155b244b445277788ed780, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5915,7 +5919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2967fa6e83155b244b445277788ed780, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.92
+      value: -6.78
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2967fa6e83155b244b445277788ed780, type: 3}
       propertyPath: m_LocalRotation.w
