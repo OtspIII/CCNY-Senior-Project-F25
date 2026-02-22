@@ -24,10 +24,18 @@ Material:
   disabledShaderPasses:
   - MOTIONVECTORS
   - DepthOnly
-  m_LockedProperties: 
+  m_LockedProperties: _FresnelPower
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _GlitterTexture:
+        m_Texture: {fileID: 2800000, guid: a760422507a2128458158cc065b4dfa6, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Main_Texture:
         m_Texture: {fileID: 2800000, guid: e424b538e0617f343be990ddf1e52481, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -48,23 +56,40 @@ Material:
     m_Floats:
     - _AlphaClip: 1
     - _AlphaToMask: 0
-    - _Blend: 1
+    - _Blend: 2
     - _CastShadows: 1
     - _Cull: 2
-    - _DstBlend: 10
+    - _DissolveAmount: 0.5
+    - _DistortionScale: 10
+    - _DistortionStrength: 0.01
+    - _DstBlend: 1
+    - _FresnelPower: 1.6
     - _Fresnel_Power: 2.08
+    - _GlitterOffset: 0.7
+    - _Glow: 0
+    - _NoiseRoationSpeed: 0
+    - _NoiseScale: 88
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _Surface: 1
+    - _Thickness: 0.25
     - _Threshold: 0
     - _ZTest: 4
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
     - _Base_Color: {r: 0, g: 0, b: 0, a: 0}
+    - _Bits: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 0, g: 0.06666665, b: 0.7490196, a: 1}
+    - _DistortionScroll: {r: -0.1, g: 0, b: 0, a: 0}
+    - _FresnelColor: {r: 0, g: 1.501355, b: 22.627417, a: 0}
     - _Fresnel_Color: {r: 0, g: 1.501355, b: 16.94838, a: 0}
+    - _GlitterScale: {r: 1, g: 1, b: 0, a: 0}
+    - _MainColor: {r: 0.1568627, g: 0.06666667, b: 0.7490196, a: 1}
     - _Main_Color: {r: 0, g: 0, b: 0, a: 0}
+    - _NoiseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Scroll: {r: 0, g: 0.15, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &5088230988739293526
