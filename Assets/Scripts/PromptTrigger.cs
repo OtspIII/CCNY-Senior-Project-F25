@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 
 public class PromptTrigger : MonoBehaviour
 {
-
+    [SerializeField] TempBurn burn;
     [SerializeField] private GameObject uiElement;
     [SerializeField] private CinemachineCamera fpvCamera;
 
@@ -32,6 +32,7 @@ public class PromptTrigger : MonoBehaviour
     void ToggleFPV()
     {
         isUsingFPV = !isUsingFPV;
+        burn.refraction = !burn.refraction;
 
         if (isUsingFPV)
         {
@@ -59,7 +60,7 @@ public class PromptTrigger : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
-        {   
+        {
             isPlayerInside = false;
             isUsingFPV = false;
             fpvCamera.Priority = 5;
