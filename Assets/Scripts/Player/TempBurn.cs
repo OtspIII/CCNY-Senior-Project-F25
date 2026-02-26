@@ -10,7 +10,6 @@ public class TempBurn : MonoBehaviour
     public bool refraction;
     [SerializeField] CinemachineCamera cam;
 
-    //[SerializeField] LayerMask burn;
     void Start()
     {
         line = GetComponent<LineRenderer>();
