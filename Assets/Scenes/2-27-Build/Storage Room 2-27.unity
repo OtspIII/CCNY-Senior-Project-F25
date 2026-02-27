@@ -740,6 +740,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -7433,6 +7437,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -12264,6 +12272,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -40590,7 +40602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bb7d52679e416848aee81e1cba2e05f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levelName: Captain Quarters 2-27
+  levelName: Sarah_Kitchen
 --- !u!1001 &663923928
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -49182,6 +49194,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -49777,6 +49793,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -78139,6 +78159,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -78225,6 +78249,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
