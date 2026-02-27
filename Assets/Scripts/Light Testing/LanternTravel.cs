@@ -24,6 +24,7 @@ public class LanternTravel : MonoBehaviour
     public GameObject followerObject;
     public LightReflection lightReflection;
     public LightModeToggle lightModeToggle;
+    [SerializeField] private LayerMask lanternMask;
 
     [Header("Travel Parameters: ")]
     public Transform cameraTransform;
@@ -47,11 +48,59 @@ public class LanternTravel : MonoBehaviour
     {
         if (Instance == null) Instance = this;
     }
+    
 
     private void Update()
     {
         //Clear Visible Lantern List:
         UpdateVisibleLanterns();
+        
+        if (isInsideLantern && Input.GetKeyDown(KeyCode.T))
+        {
+            Debug.Log("---- LANTERN DEBUG ----");
+
+            if (cameraTransform == null)
+            {
+                Debug.Log("cameraTransform is NULL (GetLanternInView will fail).");
+                return;
+            }
+
+            Vector3 start = cameraTransform.position;
+            Vector3 end = start + cameraTransform.forward * capsuleLength;
+
+            Debug.Log($"Camera: {cameraTransform.name} pos={start} fwd={cameraTransform.forward}");
+            Debug.Log($"Capsule: start={start} end={end} r={capsuleRadius}");
+
+            Debug.Log($"Visible lanterns ({visibleLanterns.Count}):");
+            foreach (var l in visibleLanterns)
+                Debug.Log($"  - {l.name}");
+
+            // Show what the capsule is actually hitting
+            Collider[] hits = Physics.OverlapCapsule(start, end, capsuleRadius, lanternMask, QueryTriggerInteraction.Collide);
+
+            Debug.Log($"Capsule hits ({hits.Length}):");
+            foreach (var h in hits)
+            {
+                Lantern lit = h.GetComponentInParent<Lantern>();
+                Debug.Log($"  - collider: {h.name} (layer {LayerMask.LayerToName(h.gameObject.layer)}) parentLantern={(lit ? lit.name : "NONE")}");
+            }
+
+            Lantern targetCheck = GetLanternInView();
+            Debug.Log($"Lantern In View (GetLanternInView): {(targetCheck ? targetCheck.name : "NONE")}");
+            
+            var hitsAll = Physics.OverlapCapsule(start, end, capsuleRadius, ~0, QueryTriggerInteraction.Collide);
+            Debug.Log($"Capsule hits ALL ({hitsAll.Length})");
+
+            var hitsLantern = Physics.OverlapCapsule(start, end, capsuleRadius, lanternMask, QueryTriggerInteraction.Collide);
+            Debug.Log($"Capsule hits LANTERN MASK ({hitsLantern.Length})");
+            
+            foreach (var l in ActivatedLanterns)
+            {
+                float d = Vector3.Distance(followerObject.transform.position, l.lanternCore.position);
+                Debug.Log($"Dist from follower to {l.name}: {d:F2} (range {travelRange})");
+            }
+            
+        }
 
         //Initial Lantern Entry:
         if (!isInsideLantern)
@@ -116,7 +165,7 @@ public class LanternTravel : MonoBehaviour
     }
 
 
-    private Lantern GetLanternInView()
+   /* private Lantern GetLanternInView()
     {
         //Variables For Capsule Range:
         Vector3 start = cameraTransform.position;
@@ -129,28 +178,51 @@ public class LanternTravel : MonoBehaviour
             end,
             capsuleRadius
         );
-
-        // Prevent travel if something is blocking way to lantern
-        for (int i = 0; i < hits.Length; i++)
-            if (hits[i].tag == "Obstruction") return null;
+        
 
         //Capsule Hit Detection:
         foreach (var hit in hits)
         {
-            Lantern lit = hit.GetComponent<Lantern>();
+            Lantern lit = hit.GetComponentInParent<Lantern>();
 
             //Accept Only if => [IN RANGE LIST] & [NOT CURRENT LANTERN]:
             if (lit != null && visibleLanterns.Contains(lit) && lit != currentLantern) return lit;
         }
         return null;
-    }
+    }*/
+   
+   private Lantern GetLanternInView()
+   {
+       if (cameraTransform == null) return null;
 
+       Vector3 origin = cameraTransform.position;
+       Lantern best = null;
+       float bestScore = float.NegativeInfinity;
 
+       foreach (Lantern lit in visibleLanterns)
+       {
+           if (lit == null) continue;
+           if (lit == currentLantern) continue;
+
+           Vector3 to = (lit.lanternCore.position - origin).normalized;
+           float score = Vector3.Dot(cameraTransform.forward, to);
+           
+           if (score > 0.5f && score > bestScore)
+           {
+               bestScore = score;
+               best = lit;
+           }
+       }
+
+       return best;
+   }
     private IEnumerator MoveToLantern(Lantern targetLantern)
     {
         if (targetLantern == null || targetLantern.lanternCore == null) yield break;
 
         isTraveling = true;
+        if (currentLantern != null & currentLantern.aimCollider != null)
+            currentLantern.aimCollider.enabled = true;
 
         Vector3 startPos = transform.position;
         Vector3 endPos = targetLantern.lanternCore.position;
@@ -170,13 +242,32 @@ public class LanternTravel : MonoBehaviour
         transform.position = endPos;
 
         currentLantern = targetLantern;
+        
+        if (currentLantern != null && currentLantern.aimCollider != null)
+            currentLantern.aimCollider.enabled = false;
 
         isTraveling = false;
+    }
+    
+    public void RegisterActivatedLantern(Lantern lantern)
+    {
+        if (lantern == null) return;
+
+        if (ActivatedLanterns == null)
+            ActivatedLanterns = new List<Lantern>();
+
+        if (!ActivatedLanterns.Contains(lantern))
+        {
+            ActivatedLanterns.Add(lantern);
+            Debug.Log($"[LanternTravel] Registered: {lantern.name} (total {ActivatedLanterns.Count})");
+        }
     }
 
 
     private void EnterLanternMode()
     {
+        if (currentLantern != null && currentLantern.aimCollider != null)
+            currentLantern.aimCollider.enabled = false;
         //Disable Player HitBoxes & Other Components:
         player.enabled = false;
         rb.isKinematic = true;
@@ -186,10 +277,14 @@ public class LanternTravel : MonoBehaviour
 
         isInsideLantern = true;
     }
+    
 
     private void ExitLanternMode()
     {
         isInsideLantern = false;
+        
+        if (currentLantern != null && currentLantern.aimCollider != null)
+            currentLantern.aimCollider.enabled = true;
 
         //Enable Player HitBoxes & Other Components:
         player.enabled = true;

@@ -20,9 +20,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
     float maxFallSpeed = 20.0f;
     [Space(5)]
+    
+    [SerializeField] float teleportForce;
+    [SerializeField] float teleportCooldown;
+    [SerializeField] float airMult;
+    bool canTeleport = true;
+    
+    [SerializeField] KeyCode jumpKey = KeyCode.LeftShift;
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
-    [SerializeField] float airMult;
     bool canJump = true;
 
     [Header("Ground Check")]
@@ -86,14 +92,14 @@ public class PlayerMovement : MonoBehaviour
     }
     void Start()
     {
-        item.SetActive(false);
+        if (item != null) item.SetActive(false);
         startPos = transform.position;
         Physics.gravity = new Vector3(0, -27f, 0);
         Cursor.lockState = CursorLockMode.Locked;
 
         gm = GameManager.instance;
         rb = GetComponent<Rigidbody>();
-        sunWheel = SunWheelController.Instance;
+        //sunWheel = SunWheelController.Instance;
 
         //line.material = new Material(Shader.Find("Sprites/Default"));
         line.startWidth = 0.01f;
@@ -183,8 +189,14 @@ public class PlayerMovement : MonoBehaviour
         else grab = null;
 
         isAiming = Input.GetMouseButton(1);
+        LightSwitch(isAiming);
 
-        if (item == null) return;
+        if (Input.GetKeyDown(jumpKey))
+        {
+            TryJump();
+        }
+
+       /* if (item == null) return;
         if (!item.activeInHierarchy) return;
 
         if (Input.GetMouseButtonDown(1))
@@ -201,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
             }
-        }
+        } */
 
     }
 
@@ -239,19 +251,19 @@ public class PlayerMovement : MonoBehaviour
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
-        SunWheelHandler();
+        //SunWheelHandler();
 
         if (transform.position.y < -10.0f || checkpoint)
         {
             rb.isKinematic = true;
-            canJump = false;
+            canTeleport = false;
             rb.isKinematic = true; // player unaffected by physics
             playerModel.SetActive(false); // Make player invisible
             exitingSlope = true;
             aura.SetActive(false); // Turn off lightball thing
             line.enabled = false;
             transform.position = startPos;
-            Invoke(nameof(ResetJump), jumpCooldown);
+            Invoke(nameof(ResetTeleport), teleportCooldown);
             if (checkpoint) checkpoint = false;
         }
 
@@ -393,9 +405,9 @@ public class PlayerMovement : MonoBehaviour
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
+            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canTeleport)
             {
-                canJump = false;
+                canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
                 playerModel.SetActive(false); // Make player invisible
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, camOrientation.localEulerAngles.y, transform.localEulerAngles.z);
@@ -404,7 +416,7 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(FlashTeleport(line.GetPosition(1))); // Lerp player to position
                 //transform.position = new Vector3(line.GetPosition(1).x, transform.position.y, line.GetPosition(1).z);
                 line.enabled = false;
-                Invoke(nameof(ResetJump), jumpCooldown);
+                Invoke(nameof(ResetTeleport), teleportCooldown);
             }
         }
         else
@@ -451,9 +463,25 @@ public class PlayerMovement : MonoBehaviour
         transform.position = endPos;
     }
 
+    void TryJump()
+    {
+        if (!grounded) return;
+        if (!canJump) return;
+        if (rb.isKinematic) return;
+        
+        canJump = false;
+        Jump();
+        Invoke(nameof(ResetJump), jumpCooldown);
+    }
+
     void Jump()
     {
         exitingSlope = true;
+        
+        Vector3 v = rb.linearVelocity;
+        if (v.y < 0f) v.y = 0f;
+        v.y = jumpForce;
+        rb.linearVelocity = v;
 
         // Always start with Y Vel at 0
         //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -463,8 +491,13 @@ public class PlayerMovement : MonoBehaviour
 
     void ResetJump()
     {
-        // Reset jump variables
         canJump = true;
+    }
+
+    void ResetTeleport()
+    {
+        // Reset jump variables
+        canTeleport = true;
         exitingSlope = false;
         rb.isKinematic = false;
         line.enabled = true;
@@ -500,7 +533,7 @@ public class PlayerMovement : MonoBehaviour
         lightSource.SetActive(active);
     }
 
-    void SunWheelHandler()
+    /*void SunWheelHandler()
     {
         if (sunWheel.unlockedAbilities[sunWheel.centerIndex] == SunSpike.SunSpikeType.Telescope)
         {
@@ -514,7 +547,7 @@ public class PlayerMovement : MonoBehaviour
                 item.SetActive(false);
             }
         }
-    }
+    }*/
 
     void OnCollisionEnter(Collision col)
     {
