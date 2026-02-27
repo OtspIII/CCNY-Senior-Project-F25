@@ -1,11 +1,15 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Burnable : MonoBehaviour
 {
     [Header("Burn Settings: ")]
     public bool isMultipleLensesEffected = false;
     public float burnTime;
+
+    public bool destroyOnComplete = true;
+    public UnityEvent onBurnComplete;
     [HideInInspector] public int hitsThisFrame = 0;
     [SerializeField] private float currentBurnTime = 0f;
 
@@ -21,6 +25,7 @@ public class Burnable : MonoBehaviour
 
     private Renderer objectRenderer;
     private Material materialInstance;
+    private bool completed;
 
 
     private void Awake()
@@ -35,34 +40,45 @@ public class Burnable : MonoBehaviour
     }
     private void Update()
     {
+        if (completed)
+        {
+            hitsThisFrame = 0;
+            return;
+        }
         if (hitsThisFrame > 0)
         {
             ApplyBurn(Time.deltaTime);
-            hitsThisFrame = 0; 
+            hitsThisFrame = 0;
         }
+        hitsThisFrame = 0;
     }
 
     public void ApplyBurn(float deltaTime)
     {
-        float burnIncrement = deltaTime / burnTime * (isMultipleLensesEffected ? hitsThisFrame : 1);
+        float multiplier = isMultipleLensesEffected ? hitsThisFrame : 1f;
+        float burnIncrement = (deltaTime / Mathf.Max(0.001f, burnTime)) * multiplier;
 
-        currentBurnTime += burnIncrement;
-        currentBurnTime = Mathf.Clamp01(currentBurnTime);
-        if (!isMultipleLensesEffected) hitsThisFrame = 1;
-        Debug.Log(hitsThisFrame);
-
+        currentBurnTime = Mathf.Clamp01(currentBurnTime + burnIncrement);
         UpdateMaterial();
 
+        //if (!isMultipleLensesEffected) hitsThisFrame = 1;
+        //Debug.Log(hitsThisFrame);
+
         //Destroy After Threshold Is Met:
-        if (currentBurnTime >= 1f)
+        if (currentBurnTime >= 1f && !completed)
         {
-            Destroy(gameObject);
+            completed = true;
+            Debug.Log($"Burn complete on {gameObject.name}");
+            onBurnComplete?.Invoke();
+
+            if (destroyOnComplete)
+                Destroy(gameObject);
         }
     }
 
     private void UpdateMaterial()
     {
-        if (objectRenderer == null) return;
+        if (objectRenderer == null || materialInstance == null) return;
 
         if (currentBurnTime < initalColorBreach)
         {
