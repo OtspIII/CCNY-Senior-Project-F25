@@ -5,8 +5,8 @@ public class ShadowCheck : MonoBehaviour
     // Raycast from all corners of an object toward player to determine whether its in shadow 
     // Source: https://discussions.unity.com/t/regarding-the-shadow-how-can-i-tell-if-the-player-enters-the-shadow/923294/6
 
-    [SerializeField] Transform[] corners = new Transform[4];
-    [SerializeField] bool[] isHittingPlayer = new bool[4];
+    [SerializeField] Transform[] corners;
+    [SerializeField] bool[] isHittingPlayer;
     [SerializeField] Transform player;
     public bool isInShadow;
     LayerMask layerMask;
@@ -17,8 +17,14 @@ public class ShadowCheck : MonoBehaviour
     }
     void Start()
     {
-        for (int i = 0; i < isHittingPlayer.Length; i++) isHittingPlayer[i] = true;
-        for (int i = 0; i < corners.Length; i++) corners[i] = transform.GetChild(i);
+        corners = new Transform[transform.childCount];
+        isHittingPlayer = new bool[corners.Length];
+
+        for (int i = 0; i < corners.Length; i++)
+        {
+            corners[i] = transform.GetChild(i);
+            isHittingPlayer[i] = true;
+        }
     }
 
     void Update()

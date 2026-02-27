@@ -94,10 +94,20 @@ public class AimCameraController : MonoBehaviour
         if (playerModel != null)
         {
             float yawOnly = yawTarget.eulerAngles.y;
-            Quaternion offset = Quaternion.Euler(-90f, 0f, 0f);
-
-            playerModel.rotation = Quaternion.Euler(0f, yawOnly, 0f) * offset;
+            yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         }
+    }
+
+    public void SetTargets(Transform newYaw, Transform newPitch, Transform newModel)
+    {
+        yawTarget = newYaw;
+        pitchTarget = newPitch;
+        playerModel = newModel;
+
+        // Reset yaw/pitch so it doesn't snap
+        Vector3 angles = yawTarget.rotation.eulerAngles;
+        yaw = angles.y;
+        pitch = angles.x;
     }
 
     internal void SetYawPitchFromCameraForward(Transform cameraTransform)
