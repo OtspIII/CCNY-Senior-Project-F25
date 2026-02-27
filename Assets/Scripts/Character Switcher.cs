@@ -7,6 +7,14 @@ public class CharacterSwitcher : MonoBehaviour
     [SerializeField] private PlayerMovement player2Controller;
     [SerializeField] private GameObject uiElement;
 
+    [SerializeField] private Transform player1YawTarget;
+    [SerializeField] private Transform player1PitchTarget;
+    [SerializeField] private Transform player1Model;
+
+    [SerializeField] private Transform player2YawTarget;
+    [SerializeField] private Transform player2PitchTarget;
+    [SerializeField] private Transform player2Model;
+
     [Header("State")]
     public bool player1Active = true;
     private bool isPlayerInside = false;
@@ -91,7 +99,22 @@ public class CharacterSwitcher : MonoBehaviour
             activeTarget = player2Anchor;
         }
 
-        camManager.UpdateTargets(activeTarget);
+        if (player1Active)
+        {
+            camManager.UpdateTargets(
+                player1Anchor,
+                player1YawTarget,
+                player1PitchTarget,
+                player1Model);
+        }
+        else
+        {
+            camManager.UpdateTargets(
+                player2Anchor,
+                player2YawTarget,
+                player2PitchTarget,
+                player2Model);
+        }
 
         UpdateControlsandPOV();
     }
