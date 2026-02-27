@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 //using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 public class LightReflection : MonoBehaviour
 {
     [Header("Laser Parameters: ")]
+    public bool suppressRaycasting = false;
     public List<Vector3> laserPoints;
     public RaycastHit[] hits;
     public float lazerDistance;
@@ -63,8 +64,12 @@ public class LightReflection : MonoBehaviour
     public LayerMask projectorLayer;
     public bool projectorHit;
     private Projector projector;
+    public Projector currentProjectorHit;
     public Transform parentObjectForRotation;  // Set this from Projector when updating
     public Quaternion lightRotationOffset = Quaternion.identity;
+    // Explicit-direction mode (used when player is inside a projector)
+    [HideInInspector] public bool useExplicitDirection = false;
+    [HideInInspector] public Vector3 explicitDirection = Vector3.up;
     [Space]
 
     [Header("Debug Visualization")]
@@ -119,6 +124,8 @@ public class LightReflection : MonoBehaviour
         //Setting a Distance To Avoid Infinite Looping:
         while (remainingLazerDistance > 0f)
         {
+            if (suppressRaycasting) return;
+             
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
             hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer, QueryTriggerInteraction.Ignore);
@@ -539,9 +546,6 @@ public class LightReflection : MonoBehaviour
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
 
-            //Vector3 pointDirection = (obstructionPoints[0] - PlayerMovement.player.transform.position).normalized;
-            //Vector3 targetPoint = obstructionPoints[0] - pointDirection;
-
             //If Enough Increments & Bool Becomes True:
             if (lantern.activeLantern && LanternTravel.Instance != null)
             {
@@ -574,34 +578,40 @@ public class LightReflection : MonoBehaviour
     private void HandleProjectorHit(RaycastHit hit)
     {
         projector = hit.collider.GetComponent<Projector>();
-        if (projector != null)
-        {
-            projectorHit = true;
 
-            //Check Valid Projection Angle:
-            bool validProjection = projector.UpdateYOffeset();
-            if (!validProjection) return;
-
-            //Register Hit:
-            projector.RegisterHit();
-
-            //Set Beam Light Rotation Parent & Offset:
-            if (projector.beamLight != null)
-            {
-                projector.beamLight.parentObjectForRotation = projector.ParentObject;
-                projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
-            }
-
-            //Update Beam Light Reflection:
-            UpdateProjectorLightReflection(projector);
-
-            laserPoints.Add(hit.point);
-            obstructionPoints.Add(hit.point);
-        }
-        else
+        //Null Check:
+        if (projector == null)
         {
             projectorHit = false;
+            currentProjectorHit = null;
+            return;
         }
+
+        //Try Set Driver To Raycast Mode, If It Fails, Don't Register Hit:
+        if (!projector.TrySetDriver(Projector.ProjectionMode.Raycast))
+            return;
+
+        projectorHit = true;
+        currentProjectorHit = projector;
+
+        //Update Y Offset, If It Fails, Don't Register Hit:
+        if (!projector.UpdateYOffeset())
+            return;
+
+        //Register Hit:
+        projector.RegisterHit();
+
+        //Configure Projector's Beam Light To Match This Hit:
+        if (projector.beamLight != null)
+        {
+            projector.beamLight.parentObjectForRotation = projector.ParentObject;
+            projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
+            projector.fixedBeamDistance = projector.beamLight.lazerDistance;
+        }
+        UpdateProjectorLightReflection(projector);
+
+        laserPoints.Add(hit.point);
+        obstructionPoints.Add(hit.point);
     }
 
     private void UpdateProjectorLightReflection(Projector projector)
@@ -623,6 +633,36 @@ public class LightReflection : MonoBehaviour
 
         //Update Beam Light Visual:
         projector.beamLight.UpdateLaserVisual();
+    }
+
+    public void RefreshProjectorProjection(Projector projector, Vector3 hitPoint, bool registerHit = true)
+    {
+        if (projector == null)
+            return;
+
+        //Try Set Driver To Traversal Mode, If It Fails, Don't Register Hit:
+        if (!projector.TrySetDriver(Projector.ProjectionMode.Traversal))
+            return;
+
+        //Update Y Offset, If It Fails, Don't Register Hit:
+        if (!projector.UpdateYOffeset())
+            return;
+
+        //Register Hit:
+        if (registerHit)
+            projector.RegisterHit();
+
+        //Configure Projector's Beam Light To Match This Hit:
+        if (projector.beamLight != null)
+        {
+            projector.beamLight.parentObjectForRotation = projector.ParentObject;
+            projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
+            projector.fixedBeamDistance = projector.beamLight.lazerDistance;
+        }
+        UpdateProjectorLightReflection(projector);
+
+        laserPoints.Add(hitPoint);
+        obstructionPoints.Add(hitPoint);
     }
 
     public void UpdateLaserVisual()
