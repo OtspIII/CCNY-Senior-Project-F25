@@ -197,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(jumpKey))
         {
-            TryJump();
+            //TryJump();
         }
 
         /* if (item == null) return;
