@@ -12539,7 +12539,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5405508254768756218, guid: 3724c90962597da4d896f0303646b864, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1714683564}
   m_SourcePrefab: {fileID: 100100000, guid: 3724c90962597da4d896f0303646b864, type: 3}
 --- !u!4 &1714683562 stripped
 Transform:
@@ -12551,6 +12554,28 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5405508254768756218, guid: 3724c90962597da4d896f0303646b864, type: 3}
   m_PrefabInstance: {fileID: 1714683561}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1714683564
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714683563}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 57b86fcf61e5cc04a972d28a3ffa3e2f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1719215415
 GameObject:
   m_ObjectHideFlags: 0
@@ -13262,6 +13287,18 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: anim
+      value: 
+      objectReference: {fileID: 1714683564}
+    - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: ropeLit
+      value: 
+      objectReference: {fileID: 2100000, guid: 04d86df70795a9b4a982cd31be1e7ef2, type: 2}
+    - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: ropeUnlit
+      value: 
+      objectReference: {fileID: 2100000, guid: 41e19276919e86545b8002eda300c1aa, type: 2}
     - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: playerModel
       value: 

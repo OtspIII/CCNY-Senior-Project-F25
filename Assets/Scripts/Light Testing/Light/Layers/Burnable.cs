@@ -38,7 +38,7 @@ public class Burnable : MonoBehaviour
         if (hitsThisFrame > 0)
         {
             ApplyBurn(Time.deltaTime);
-            hitsThisFrame = 0; 
+            hitsThisFrame = 0;
         }
     }
 

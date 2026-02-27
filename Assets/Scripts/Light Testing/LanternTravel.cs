@@ -57,7 +57,7 @@ public class LanternTravel : MonoBehaviour
         if (!isInsideLantern)
         {
             //if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
-            if (player.lantern != null && Input.GetKeyDown(enterLanternKey) && !isTraveling && player.state != PlayerMovement.PlayerState.grabbing)
+            if (player.lantern != null && Input.GetKeyDown(enterLanternKey) && !isTraveling)
             {
                 currentLantern = PlayerMovement.player.lantern;
                 //currentLantern = lightReflection.currentLanternHit;

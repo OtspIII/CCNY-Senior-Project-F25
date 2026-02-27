@@ -79,6 +79,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] List<KeyCode> movementKeys;
     KeyCode currentMoveKey;
     SunWheelController sunWheel;
+    [SerializeField] Animator anim;
+
+    //TEMPORARY//
+    [SerializeField] Material ropeUnlit, ropeLit;
 
     void Awake()
     {
@@ -223,10 +227,28 @@ public class PlayerMovement : MonoBehaviour
     private void HandleFPVChange(bool isFPVActive)
     {
         canMove = !isFPVActive;
+        float focusAnim = canMove ? 0f : 1f;
+        anim.SetFloat("Beam", focusAnim);
 
         if (isFPVActive)
         {
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+
+            UpdateRopes(ropeLit);
+        }
+        else
+        {
+            UpdateRopes(ropeUnlit);
+        }
+    }
+
+    void UpdateRopes(Material mat)
+    {
+        GameObject[] burnables = GameObject.FindGameObjectsWithTag("Burn");
+
+        foreach (GameObject g in burnables)
+        {
+            g.GetComponent<Renderer>().material = mat;
         }
     }
 
@@ -255,6 +277,24 @@ public class PlayerMovement : MonoBehaviour
             if (checkpoint) checkpoint = false;
         }
 
+        // Animation 
+        if (rb.linearVelocity != Vector3.zero && grounded)
+        {
+            anim.SetFloat("Walk", 1f);
+        }
+        else
+        {
+            anim.SetFloat("Walk", 0f);
+        }
+
+        if (GetComponent<LanternTravel>().isTraveling)
+        {
+            anim.SetFloat("Fly", 1f);
+        }
+        else
+        {
+            anim.SetFloat("Fly", 0f);
+        }
     }
 
     void StateHandler()
@@ -392,15 +432,18 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            bool clear = !Physics.Raycast(transform.position, new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-
+            bool clearLeft = !Physics.Raycast(new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z),
+            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
+            bool clearRight = !Physics.Raycast(new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z),
+            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             // Draw line for debug
+
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
+            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
             {
                 canJump = false;
                 rb.isKinematic = true; // player unaffected by physics
