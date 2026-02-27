@@ -20,12 +20,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
     float maxFallSpeed = 20.0f;
     [Space(5)]
-    
+
     [SerializeField] float teleportForce;
     [SerializeField] float teleportCooldown;
     [SerializeField] float airMult;
     bool canTeleport = true;
-    
+
     [SerializeField] KeyCode jumpKey = KeyCode.LeftShift;
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
@@ -85,6 +85,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] List<KeyCode> movementKeys;
     KeyCode currentMoveKey;
     SunWheelController sunWheel;
+    [SerializeField] Animator anim;
+
+    //TEMPORARY//
+    [SerializeField] Material ropeUnlit, ropeLit;
 
     void Awake()
     {
@@ -196,24 +200,24 @@ public class PlayerMovement : MonoBehaviour
             TryJump();
         }
 
-       /* if (item == null) return;
-        if (!item.activeInHierarchy) return;
+        /* if (item == null) return;
+         if (!item.activeInHierarchy) return;
 
-        if (Input.GetMouseButtonDown(1))
-        {
-            LightSwitch(true);
-        }
-        else if (Input.GetMouseButtonUp(1))
-        {
-            LightSwitch(false);
+         if (Input.GetMouseButtonDown(1))
+         {
+             LightSwitch(true);
+         }
+         else if (Input.GetMouseButtonUp(1))
+         {
+             LightSwitch(false);
 
-            // Remove fire VFX if player stops aiming whil burning
-            // TEMPORARY
-            if (GameObject.FindGameObjectWithTag("Fire") != null)
-            {
-                transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
-            }
-        } */
+             // Remove fire VFX if player stops aiming whil burning
+             // TEMPORARY
+             if (GameObject.FindGameObjectWithTag("Fire") != null)
+             {
+                 transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
+             }
+         } */
 
     }
 
@@ -235,10 +239,28 @@ public class PlayerMovement : MonoBehaviour
     private void HandleFPVChange(bool isFPVActive)
     {
         canMove = !isFPVActive;
+        float focusAnim = canMove ? 0f : 1f;
+        anim.SetFloat("Beam", focusAnim);
 
         if (isFPVActive)
         {
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+
+            UpdateRopes(ropeLit);
+        }
+        else
+        {
+            UpdateRopes(ropeUnlit);
+        }
+    }
+
+    void UpdateRopes(Material mat)
+    {
+        GameObject[] burnables = GameObject.FindGameObjectsWithTag("Burn");
+
+        foreach (GameObject g in burnables)
+        {
+            g.GetComponent<Renderer>().material = mat;
         }
     }
 
@@ -267,6 +289,24 @@ public class PlayerMovement : MonoBehaviour
             if (checkpoint) checkpoint = false;
         }
 
+        // Animation 
+        if (rb.linearVelocity != Vector3.zero && grounded)
+        {
+            anim.SetFloat("Walk", 1f);
+        }
+        else
+        {
+            anim.SetFloat("Walk", 0f);
+        }
+
+        if (GetComponent<LanternTravel>().isTraveling)
+        {
+            anim.SetFloat("Fly", 1f);
+        }
+        else
+        {
+            anim.SetFloat("Fly", 0f);
+        }
     }
 
     void StateHandler()
@@ -404,15 +444,18 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            bool clear = !Physics.Raycast(transform.position, new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-
+            bool clearLeft = !Physics.Raycast(new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z),
+            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
+            bool clearRight = !Physics.Raycast(new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z),
+            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             // Draw line for debug
+
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canTeleport)
+            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
             {
                 canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
@@ -475,7 +518,7 @@ public class PlayerMovement : MonoBehaviour
         if (!grounded) return;
         if (!canJump) return;
         if (rb.isKinematic) return;
-        
+
         canJump = false;
         Jump();
         Invoke(nameof(ResetJump), jumpCooldown);
@@ -484,7 +527,7 @@ public class PlayerMovement : MonoBehaviour
     void Jump()
     {
         exitingSlope = true;
-        
+
         Vector3 v = rb.linearVelocity;
         if (v.y < 0f) v.y = 0f;
         v.y = jumpForce;

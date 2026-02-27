@@ -48,19 +48,19 @@ public class Burnable : MonoBehaviour
         if (hitsThisFrame > 0)
         {
             ApplyBurn(Time.deltaTime);
-            
+            hitsThisFrame = 0;
         }
-        hitsThisFrame = 0; 
+        hitsThisFrame = 0;
     }
 
     public void ApplyBurn(float deltaTime)
     {
         float multiplier = isMultipleLensesEffected ? hitsThisFrame : 1f;
-        float burnIncrement = (deltaTime / Mathf.Max(0.001f,burnTime)) * multiplier;
-        
+        float burnIncrement = (deltaTime / Mathf.Max(0.001f, burnTime)) * multiplier;
+
         currentBurnTime = Mathf.Clamp01(currentBurnTime + burnIncrement);
         UpdateMaterial();
-        
+
         //if (!isMultipleLensesEffected) hitsThisFrame = 1;
         //Debug.Log(hitsThisFrame);
 
@@ -70,7 +70,7 @@ public class Burnable : MonoBehaviour
             completed = true;
             Debug.Log($"Burn complete on {gameObject.name}");
             onBurnComplete?.Invoke();
-            
+
             if (destroyOnComplete)
                 Destroy(gameObject);
         }
@@ -80,7 +80,7 @@ public class Burnable : MonoBehaviour
     {
         if (objectRenderer == null || materialInstance == null) return;
 
-    if (currentBurnTime < initalColorBreach)
+        if (currentBurnTime < initalColorBreach)
         {
             float time = currentBurnTime / initalColorBreach;
             materialInstance.color = Color.Lerp(initialColor, middleColor, time);
