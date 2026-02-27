@@ -4,7 +4,7 @@ using UnityEngine;
 public class LightAuraFollower : MonoBehaviour
 {
     [Header("Sphere Settings: ")]
-    public string sphereName;
+    public string sphereName = "AuraPoints";
     public int resolution = 30;       
     public float radius = 2f;
     [Space]
@@ -46,6 +46,7 @@ public class LightAuraFollower : MonoBehaviour
     {
         //Calculate The Spherical Positions using the parametric equation of a sphere:
         GenerateSpherePoints();
+        Debug.Log("LightAuraFollower Start on " + gameObject.name);
     }
 
     void Update()
@@ -132,6 +133,7 @@ public class LightAuraFollower : MonoBehaviour
                 points.Add(point);
             }
         }
+        Debug.Log("Generated points: " + points.Count);
     }
 
     public void SetAuraActive(bool active)
