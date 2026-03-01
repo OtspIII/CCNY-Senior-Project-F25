@@ -72,9 +72,13 @@ public class Burnable : MonoBehaviour
             onBurnComplete?.Invoke();
             
             if (destroyOnComplete)
+            {
+                Debug.Log($"Destroying {gameObject.name}");
                 Destroy(gameObject);
+            }
         }
     }
+    
 
     private void UpdateMaterial()
     {

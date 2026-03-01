@@ -6,14 +6,19 @@ public class FlourBagLauncher : MonoBehaviour
     [SerializeField] private float upwardForce;
     [SerializeField] private float forwardForce;
     [SerializeField] private Transform launchDirectionReference;
+    
+    private bool hasLaunched = false;
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (hasLaunched) return;
         if (!collision.gameObject.CompareTag("Player")) return;
         Rigidbody playerRb = collision.rigidbody;
         if (playerRb != null && playerRb.linearVelocity.y > 0.5f) return;
         
         if (rb == null) return;
+        
+        hasLaunched = true;
         
         Vector3 forwardDir = launchDirectionReference != null ? launchDirectionReference.forward : transform.forward;
         

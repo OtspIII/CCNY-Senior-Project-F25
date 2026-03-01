@@ -5,12 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38aca519-1e8f-44c6-9db7-8093a53dfb0f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Materials/Lantern.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Lantern.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Light Testing/LanternTravel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Light Testing/LanternTravel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Slider.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Slider.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CCNY-Senior-Project-F25/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CCNY-Senior-Project-F25/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/2-27-Build/Tutorial 2-27.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/2-27-Build/Tutorial 2-27.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Sarah_Kitchen.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Sarah_Kitchen.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/FlourBagLauncher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/FlourBagLauncher.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Light Testing/Light/Layers/Burnable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Light Testing/Light/Layers/Burnable.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Light Testing/LightAuraFollower.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Light Testing/LightAuraFollower.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Player/PlayerMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Player/PlayerMovement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/DynamicsManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,24 +36,16 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scenes/Sarah_Kitchen.unity" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scenes/Sarah_Kitchen.unity" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scenes/Sarah_Kitchen.unity" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AimActiveState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/FlourBagLauncher.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/LanternTravel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Users/sarahstephens/Desktop/CCNY-Senior-Project-F25/Assets/Scripts/Light Testing/Light/Layers/Lantern.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/ReleaseOnBurn.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Slider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/TriggerRelay.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -59,19 +54,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;sarah-pirateship-level1&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "sarah-pirateship-level1",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Start Unity" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="/Applications/Unity/Hub/Editor/6000.0.56f1/Unity.app/Contents/MacOS/Unity" />
@@ -130,12 +125,16 @@
       <workItem from="1771792877748" duration="4272000" />
       <workItem from="1771886607517" duration="26407000" />
       <workItem from="1772122933255" duration="24157000" />
+      <workItem from="1772228556070" duration="2338000" />
+      <workItem from="1772297525573" duration="4775000" />
+      <workItem from="1772377684731" duration="3900000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityProjectDiscoverer">
     <option name="hasUnityReference" value="true" />
