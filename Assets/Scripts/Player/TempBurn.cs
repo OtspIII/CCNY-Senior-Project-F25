@@ -8,25 +8,55 @@ public class TempBurn : MonoBehaviour
     LineRenderer line;
     [SerializeField] LayerMask burn;
     [SerializeField] float convergenceDistance = 2.0f;
+    [SerializeField] float startThickness = 0.5f;
+    [SerializeField] float endThickness = 0.1f;
     Lantern currentLantern;
     public bool refraction;
     bool burning;
     float lineDistance = 50.0f;
     [SerializeField] CinemachineCamera cam;
+    [SerializeField] Material burningMaterial;
+    [SerializeField] Material idleMaterial;
 
     void Start()
     {
         line = GetComponent<LineRenderer>();
-        line.startWidth = 0.3f;
-        line.endWidth = 0.3f;
         line.positionCount = 3;
         line.enabled = false;
+        
+        if (idleMaterial != null)
+            line.material = idleMaterial;
     }
 
     void Update()
     {
         if (!line.enabled && !refraction) line.enabled = false;
         LightRefraction();
+        UpdateLineWidth();
+    }
+
+    void UpdateLineWidth()
+    {
+        if (!line.enabled) return;
+
+        Vector3 p0 = line.GetPosition(0);
+        Vector3 p1 = line.GetPosition(1);
+        Vector3 p2 = line.GetPosition(2);
+
+        float dist01 = Vector3.Distance(p0, p1);
+        float dist12 = Vector3.Distance(p1, p2);
+        float totalDist = dist01 + dist12;
+
+        if (totalDist <= 0.001f) return;
+
+        float normP1 = dist01 / totalDist;
+
+        AnimationCurve curve = new AnimationCurve();
+        curve.AddKey(0f, startThickness);
+        curve.AddKey(normP1, endThickness);
+        curve.AddKey(1f, endThickness);
+
+        line.widthCurve = curve;
     }
 
     void LightRefraction()
@@ -64,13 +94,21 @@ public class TempBurn : MonoBehaviour
 
             if (hit.transform.gameObject.layer == 8)
             {
-                burning = true;
+                if (!burning)
+                {
+                    burning = true;
+                    if (burningMaterial != null) line.material = burningMaterial;
+                }
                 hit.transform.gameObject.GetComponent<Burnable>().RegisterHit(hit.point);
                 lineDistance = hitDistFromCam;
             }
             else
             {
-                burning = false;
+                if (burning)
+                {
+                    burning = false;
+                    if (idleMaterial != null) line.material = idleMaterial;
+                }
                 currentLantern = hit.transform.gameObject.GetComponent<Lantern>();
                 currentLantern.hitsThisFrame = 1;
                 if (currentLantern.activeLantern)
@@ -79,7 +117,11 @@ public class TempBurn : MonoBehaviour
         }
         else
         {
-            if (burning) burning = false;
+            if (burning)
+            {
+                burning = false;
+                if (idleMaterial != null) line.material = idleMaterial;
+            }
             
             line.SetPosition(1, crosshairPoint);
             line.SetPosition(2, camPos + camDir * 50.0f);

@@ -136,6 +136,8 @@ MonoBehaviour:
   ropeLit: {fileID: 2100000, guid: 04d86df70795a9b4a982cd31be1e7ef2, type: 2}
   burnStartColor: {r: 1, g: 0, b: 0, a: 1}
   burnEndColor: {r: 1, g: 0.9728031, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
 --- !u!54 &7948835696919275277
 Rigidbody:
@@ -254,6 +256,10 @@ PrefabInstance:
     - target: {fileID: 2754455522500538652, guid: 2fe27657d71299846902fdebaef93420, type: 3}
       propertyPath: moveWithTransform
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7312952844428083872, guid: 2fe27657d71299846902fdebaef93420, type: 3}
+      propertyPath: m_MaxParticleSize
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 7711903951199402406, guid: 2fe27657d71299846902fdebaef93420, type: 3}
       propertyPath: m_Name

@@ -14,6 +14,8 @@ public class Burnable : MonoBehaviour
     [SerializeField] private Material ropeUnlit, ropeLit;
     [SerializeField] private Color burnStartColor = Color.white;
     [SerializeField] private Color burnEndColor = Color.red;
+    [SerializeField] private float burnStartWidth = 2f;
+    [SerializeField] private float burnEndWidth = 5f;
 
     private int hitsThisFrame = 0;
     [SerializeField] private float currentBurnTime = 0f;
@@ -57,7 +59,7 @@ public class Burnable : MonoBehaviour
     {
         if (outline != null)
         {
-            outline.OutlineWidth = isFPVActive ? 2f : 0f;
+            outline.OutlineWidth = isFPVActive ? burnStartWidth : 0f;
         }
 
         if (objectRenderer == null) return;
@@ -127,6 +129,7 @@ public class Burnable : MonoBehaviour
         if (outline != null)
         {
             outline.OutlineColor = Color.Lerp(burnStartColor, burnEndColor, currentBurnTime);
+            outline.OutlineWidth = Mathf.Lerp(burnStartWidth, burnEndWidth, currentBurnTime);
         }
 
         //if (!isMultipleLensesEffected) hitsThisFrame = 1;
