@@ -10,56 +10,66 @@ public class Burnable : MonoBehaviour
 
     public bool destroyOnComplete = true;
     public UnityEvent onBurnComplete;
-    [HideInInspector] public int hitsThisFrame = 0;
+    [SerializeField] private ParticleSystem smokeParticles;
+    private int hitsThisFrame = 0;
     [SerializeField] private float currentBurnTime = 0f;
-
-
-    [Header("Burn Color Settings: ")]
-    public Color initialColor;
-    public float initalColorBreach;
-    [Space]
-    public Color middleColor;
-    public float middleColorBreach;
-    [Space]
-    public Color finalColor;
-
-    private Renderer objectRenderer;
-    private Material materialInstance;
     private bool completed;
+    public bool isBurning { get; private set; }
+    private bool wasBurning;
+
+    public void RegisterHit()
+    {
+        if (completed) return;
+        hitsThisFrame++;
+    }
 
 
     private void Awake()
     {
-        //Get Reference To Current Object Render:
-        objectRenderer = GetComponent<Renderer>();
-        if (objectRenderer != null)
-        {
-            materialInstance = objectRenderer.material;
-            materialInstance.color = initialColor;
-        }
     }
     private void Update()
     {
         if (completed)
         {
             hitsThisFrame = 0;
+            isBurning = false;
+            UpdateVFX();
             return;
         }
-        if (hitsThisFrame > 0)
+
+        isBurning = hitsThisFrame > 0;
+        UpdateVFX();
+
+        if (isBurning)
         {
             ApplyBurn(Time.deltaTime);
-            hitsThisFrame = 0;
         }
         hitsThisFrame = 0;
     }
 
-    public void ApplyBurn(float deltaTime)
+    private void UpdateVFX()
     {
+        if (smokeParticles == null) return;
+
+        if (isBurning && !wasBurning)
+        {
+            smokeParticles.Play();
+        }
+        else if (!isBurning && wasBurning)
+        {
+            smokeParticles.Stop();
+        }
+        wasBurning = isBurning;
+    }
+
+    private void ApplyBurn(float deltaTime)
+    {
+        if (!isBurning) return;
+
         float multiplier = isMultipleLensesEffected ? hitsThisFrame : 1f;
         float burnIncrement = (deltaTime / Mathf.Max(0.001f, burnTime)) * multiplier;
 
         currentBurnTime = Mathf.Clamp01(currentBurnTime + burnIncrement);
-        UpdateMaterial();
 
         //if (!isMultipleLensesEffected) hitsThisFrame = 1;
         //Debug.Log(hitsThisFrame);
@@ -73,26 +83,6 @@ public class Burnable : MonoBehaviour
 
             if (destroyOnComplete)
                 Destroy(gameObject);
-        }
-    }
-
-    private void UpdateMaterial()
-    {
-        if (objectRenderer == null || materialInstance == null) return;
-
-        if (currentBurnTime < initalColorBreach)
-        {
-            float time = currentBurnTime / initalColorBreach;
-            materialInstance.color = Color.Lerp(initialColor, middleColor, time);
-        }
-        else if (currentBurnTime < middleColorBreach)
-        {
-            float time = (currentBurnTime - initalColorBreach) / (middleColorBreach - initalColorBreach);
-            materialInstance.color = Color.Lerp(middleColor, finalColor, time);
-        }
-        else
-        {
-            materialInstance.color = finalColor;
         }
     }
 }

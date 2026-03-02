@@ -49,7 +49,7 @@ public class TempBurn : MonoBehaviour
             if (hit.transform.gameObject.layer == 8)
             {
                 burning = true;
-                hit.transform.gameObject.GetComponent<Burnable>().ApplyBurn(Time.deltaTime);
+                hit.transform.gameObject.GetComponent<Burnable>().RegisterHit();
                 lineDistance = Vector3.Distance(hit.point, transform.position);
             }
             else
