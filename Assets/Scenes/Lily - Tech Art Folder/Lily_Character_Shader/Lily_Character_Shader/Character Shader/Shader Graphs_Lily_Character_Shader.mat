@@ -65,7 +65,7 @@ Material:
     - _DstBlend: 1
     - _FresnelPower: 1.6
     - _Fresnel_Power: 2.08
-    - _GlitterOffset: 0.7
+    - _GlitterOffset: 0.75
     - _Glow: 0
     - _NoiseRoationSpeed: 0
     - _NoiseScale: 88
