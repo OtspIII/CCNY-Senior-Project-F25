@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Tools;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -581,6 +582,14 @@ public class PlayerMovement : MonoBehaviour
     void LightSwitch(bool active)
     {
         lightSource.SetActive(active);
+        if (active)
+        {
+            MMGameEvent.Trigger("CrosshairOn");
+        }
+        else
+        {
+            MMGameEvent.Trigger("CrosshairOff");
+        }
     }
 
     /*void SunWheelHandler()
