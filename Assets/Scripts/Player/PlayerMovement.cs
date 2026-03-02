@@ -89,7 +89,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Animator anim;
 
     //TEMPORARY//
-    [SerializeField] Material ropeUnlit, ropeLit;
 
     void Awake()
     {
@@ -246,22 +245,6 @@ public class PlayerMovement : MonoBehaviour
         if (isFPVActive)
         {
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-
-            UpdateRopes(ropeLit);
-        }
-        else
-        {
-            UpdateRopes(ropeUnlit);
-        }
-    }
-
-    void UpdateRopes(Material mat)
-    {
-        GameObject[] burnables = GameObject.FindGameObjectsWithTag("Burn");
-
-        foreach (GameObject g in burnables)
-        {
-            g.GetComponent<Renderer>().material = mat;
         }
     }
 

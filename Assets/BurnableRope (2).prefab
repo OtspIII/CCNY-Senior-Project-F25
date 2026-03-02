@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3353387870159638831}
   - component: {fileID: 7948835696919275277}
   - component: {fileID: 9205174808117267974}
+  - component: {fileID: 704318138187245468}
   m_Layer: 8
   m_Name: BurnableRope (2)
   m_TagString: Burn
@@ -131,6 +132,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   smokeParticles: {fileID: 2352466956260390200}
+  ropeUnlit: {fileID: 2100000, guid: 41e19276919e86545b8002eda300c1aa, type: 2}
+  ropeLit: {fileID: 2100000, guid: 04d86df70795a9b4a982cd31be1e7ef2, type: 2}
+  burnStartColor: {r: 1, g: 0, b: 0, a: 1}
+  burnEndColor: {r: 1, g: 0.9728031, b: 0, a: 1}
   currentBurnTime: 0
 --- !u!54 &7948835696919275277
 Rigidbody:
@@ -175,6 +180,25 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &704318138187245468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966555164852965067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 1
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
+  outlineWidth: 0
+  affectChildren: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &476377223771669540
 PrefabInstance:
   m_ObjectHideFlags: 0

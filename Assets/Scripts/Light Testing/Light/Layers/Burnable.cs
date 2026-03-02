@@ -11,8 +11,14 @@ public class Burnable : MonoBehaviour
     public bool destroyOnComplete = true;
     public UnityEvent onBurnComplete;
     [SerializeField] private ParticleSystem smokeParticles;
+    [SerializeField] private Material ropeUnlit, ropeLit;
+    [SerializeField] private Color burnStartColor = Color.white;
+    [SerializeField] private Color burnEndColor = Color.red;
+
     private int hitsThisFrame = 0;
     [SerializeField] private float currentBurnTime = 0f;
+    private Renderer objectRenderer;
+    private Outline outline;
     private bool completed;
     public bool isBurning { get; private set; }
     private bool wasBurning;
@@ -26,7 +32,46 @@ public class Burnable : MonoBehaviour
 
     private void Awake()
     {
+        objectRenderer = GetComponent<Renderer>();
+        outline = GetComponent<Outline>();
+
+        if (outline != null)
+        {
+            outline.OutlineColor = burnStartColor;
+        }
     }
+
+    private void OnEnable()
+    {
+        PromptTrigger.OnFPVToggle += HandleFPVChange;
+    }
+
+    private void OnDisable()
+    {
+        PromptTrigger.OnFPVToggle -= HandleFPVChange;
+    }
+
+    private void HandleFPVChange(bool isFPVActive)
+    {
+        if (outline != null)
+        {
+            outline.OutlineWidth = isFPVActive ? 2f : 0f;
+        }
+
+        if (objectRenderer == null) return;
+
+        if (isFPVActive)
+        {
+            if (ropeLit != null)
+                objectRenderer.material = ropeLit;
+        }
+        else
+        {
+            if (ropeUnlit != null)
+                objectRenderer.material = ropeUnlit;
+        }
+    }
+
     private void Update()
     {
         if (completed)
@@ -70,6 +115,11 @@ public class Burnable : MonoBehaviour
         float burnIncrement = (deltaTime / Mathf.Max(0.001f, burnTime)) * multiplier;
 
         currentBurnTime = Mathf.Clamp01(currentBurnTime + burnIncrement);
+
+        if (outline != null)
+        {
+            outline.OutlineColor = Color.Lerp(burnStartColor, burnEndColor, currentBurnTime);
+        }
 
         //if (!isMultipleLensesEffected) hitsThisFrame = 1;
         //Debug.Log(hitsThisFrame);
