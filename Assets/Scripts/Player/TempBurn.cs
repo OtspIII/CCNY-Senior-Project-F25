@@ -7,6 +7,7 @@ public class TempBurn : MonoBehaviour
     RaycastHit hit;
     LineRenderer line;
     [SerializeField] LayerMask burn;
+    [SerializeField] float convergenceDistance = 2.0f;
     Lantern currentLantern;
     public bool refraction;
     bool burning;
@@ -18,8 +19,8 @@ public class TempBurn : MonoBehaviour
         line = GetComponent<LineRenderer>();
         line.startWidth = 0.3f;
         line.endWidth = 0.3f;
+        line.positionCount = 3;
         line.enabled = false;
-
     }
 
     void Update()
@@ -39,18 +40,33 @@ public class TempBurn : MonoBehaviour
 
         if (!line.enabled) line.enabled = true;
 
-        Vector3 dir = Camera.main.transform.forward;
+        Vector3 camPos = Camera.main.transform.position;
+        Vector3 camDir = Camera.main.transform.forward;
+        
+        Vector3 crosshairPoint = camPos + camDir * convergenceDistance;
+        
         line.SetPosition(0, transform.position);
-        float lineDist = burning ? lineDistance : 50.0f;
-        line.SetPosition(1, transform.position + dir * lineDist);
 
-        if (Physics.Raycast(transform.position, dir, out hit, 50.0f, burn))
+        if (Physics.Raycast(camPos, camDir, out hit, 50.0f, burn))
         {
+            float hitDistFromCam = Vector3.Distance(camPos, hit.point);
+            
+            if (hitDistFromCam <= convergenceDistance)
+            {
+                line.SetPosition(1, hit.point);
+                line.SetPosition(2, hit.point);
+            }
+            else
+            {
+                line.SetPosition(1, crosshairPoint);
+                line.SetPosition(2, hit.point);
+            }
+
             if (hit.transform.gameObject.layer == 8)
             {
                 burning = true;
-                hit.transform.gameObject.GetComponent<Burnable>().RegisterHit();
-                lineDistance = Vector3.Distance(hit.point, transform.position);
+                hit.transform.gameObject.GetComponent<Burnable>().RegisterHit(hit.point);
+                lineDistance = hitDistFromCam;
             }
             else
             {
@@ -64,12 +80,15 @@ public class TempBurn : MonoBehaviour
         else
         {
             if (burning) burning = false;
+            
+            line.SetPosition(1, crosshairPoint);
+            line.SetPosition(2, camPos + camDir * 50.0f);
+            
             if (currentLantern != null && currentLantern.hitsThisFrame > 0)
             {
                 currentLantern.hitsThisFrame = 0;
                 currentLantern = null;
             }
         }
-        //Debug.DrawRay(transform.position, dir * 50.0f, Color.magenta);
     }
 }

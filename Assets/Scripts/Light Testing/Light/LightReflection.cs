@@ -459,7 +459,7 @@ public class LightReflection : MonoBehaviour
         if (burnable != null)
         {
             burnableHit = true;
-            burnable.RegisterHit();
+            burnable.RegisterHit(hit.point);
 
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);

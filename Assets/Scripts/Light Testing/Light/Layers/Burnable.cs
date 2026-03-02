@@ -23,10 +23,12 @@ public class Burnable : MonoBehaviour
     public bool isBurning { get; private set; }
     private bool wasBurning;
 
-    public void RegisterHit()
+    private Vector3 lastHitPoint;
+    public void RegisterHit(Vector3 hitPoint)
     {
         if (completed) return;
         hitsThisFrame++;
+        lastHitPoint = hitPoint;
     }
 
 
@@ -83,6 +85,12 @@ public class Burnable : MonoBehaviour
         }
 
         isBurning = hitsThisFrame > 0;
+        
+        if (isBurning && smokeParticles != null)
+        {
+            smokeParticles.transform.position = lastHitPoint;
+        }
+
         UpdateVFX();
 
         if (isBurning)
