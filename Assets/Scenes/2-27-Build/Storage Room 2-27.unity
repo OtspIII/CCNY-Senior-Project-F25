@@ -78660,6 +78660,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1243011607}
     - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: teleportCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: aimCamOrientation
       value: 
       objectReference: {fileID: 31652361}

@@ -11,6 +11,7 @@ TagManager:
   - Fire
   - Obstruction
   - Burn
+  - Ball
   layers:
   - Default
   - TransparentFX

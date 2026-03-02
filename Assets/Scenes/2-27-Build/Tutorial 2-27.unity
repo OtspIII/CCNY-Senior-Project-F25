@@ -620,6 +620,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -1522,6 +1526,10 @@ PrefabInstance:
       propertyPath: camOrientation
       value: 
       objectReference: {fileID: 1146021787}
+    - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: teleportCooldown
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: aimCamOrientation
       value: 
@@ -5877,6 +5885,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
@@ -27126,6 +27138,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 3
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
   hitsThisFrame: 0
   currentBurnTime: 0
   initialColor: {r: 1, g: 0, b: 0, a: 0}
