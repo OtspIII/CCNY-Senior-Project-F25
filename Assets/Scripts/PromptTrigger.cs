@@ -3,6 +3,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 using System;
 using Unity.VisualScripting;
+using MoreMountains.Tools;
 
 public class PromptTrigger : MonoBehaviour
 {
@@ -38,11 +39,13 @@ public class PromptTrigger : MonoBehaviour
         {
             fpvCamera.Priority = 30; // sets the priority high enough to override both freelook and aim cam
             uiElement.SetActive(false);
+            MMGameEvent.Trigger("CrosshairOn");
         }
         else
         {
             fpvCamera.Priority = 5;
             uiElement.SetActive(true);
+            MMGameEvent.Trigger("CrosshairOff");
         }
 
         OnFPVToggle?.Invoke(isUsingFPV);
@@ -65,6 +68,7 @@ public class PromptTrigger : MonoBehaviour
             isUsingFPV = false;
             fpvCamera.Priority = 5;
             uiElement.SetActive(false);
+            MMGameEvent.Trigger("CrosshairOff");
         }
     }
 

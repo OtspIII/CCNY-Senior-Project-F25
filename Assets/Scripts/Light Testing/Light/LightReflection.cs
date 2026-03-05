@@ -459,22 +459,10 @@ public class LightReflection : MonoBehaviour
         if (burnable != null)
         {
             burnableHit = true;
-            burnable.hitsThisFrame++;
+            burnable.RegisterHit(hit.point);
 
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
-
-            // Get position for fire VFX
-
-            if (obstructionPoints.Count < 1) return;
-            fireParent.position = obstructionPoints[0];
-
-            if (!playFire)
-            {
-                // Create fire
-                Instantiate(firePrefab, fireParent.position, Quaternion.identity, fireParent);
-                playFire = true;
-            }
         }
         else
         {
