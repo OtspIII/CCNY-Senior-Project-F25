@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Tools;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -88,7 +89,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Animator anim;
 
     //TEMPORARY//
-    [SerializeField] Material ropeUnlit, ropeLit;
 
     void Awake()
     {
@@ -245,22 +245,6 @@ public class PlayerMovement : MonoBehaviour
         if (isFPVActive)
         {
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-
-            UpdateRopes(ropeLit);
-        }
-        else
-        {
-            UpdateRopes(ropeUnlit);
-        }
-    }
-
-    void UpdateRopes(Material mat)
-    {
-        GameObject[] burnables = GameObject.FindGameObjectsWithTag("Burn");
-
-        foreach (GameObject g in burnables)
-        {
-            g.GetComponent<Renderer>().material = mat;
         }
     }
 
@@ -581,6 +565,14 @@ public class PlayerMovement : MonoBehaviour
     void LightSwitch(bool active)
     {
         lightSource.SetActive(active);
+        if (active)
+        {
+            MMGameEvent.Trigger("CrosshairOn");
+        }
+        else
+        {
+            MMGameEvent.Trigger("CrosshairOff");
+        }
     }
 
     /*void SunWheelHandler()
