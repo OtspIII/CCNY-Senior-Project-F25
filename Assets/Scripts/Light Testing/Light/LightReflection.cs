@@ -632,10 +632,10 @@ public class LightReflection : MonoBehaviour
         projector.beamLight.laserWidth = projector.beamWidth;
 
         //Update Beam Light Visual:
-        projector.beamLight.UpdateLaserVisual();
+        projector.beamLight.UpdateLaserVisual(projector);
     }
 
-    public void RefreshProjectorProjection(Projector projector, Vector3 hitPoint, bool registerHit = true)
+    public void RefreshProjectorProjection(Projector projector, Vector3 hitPoint, bool registerHit = true, bool insideProjector = false)
     {
         if (projector == null)
             return;
@@ -645,8 +645,11 @@ public class LightReflection : MonoBehaviour
             return;
 
         //Update Y Offset, If It Fails, Don't Register Hit:
-        if (!projector.UpdateYOffeset())
-            return;
+        if (!insideProjector)
+        {
+            if (!projector.UpdateYOffeset())
+                return;
+        }
 
         //Register Hit:
         if (registerHit)
@@ -665,7 +668,7 @@ public class LightReflection : MonoBehaviour
         obstructionPoints.Add(hitPoint);
     }
 
-    public void UpdateLaserVisual()
+    public void UpdateLaserVisual(Projector projector)
     {
         //Ensure Line Renderer is Assigned:
         if (lineRenderer == null)
@@ -683,21 +686,24 @@ public class LightReflection : MonoBehaviour
         lineRenderer.endWidth = laserWidth;
 
         laserPoints.Clear();
+        Vector3 origin = transform.position;
+        Vector3 beamDirection;
 
-        //Calculate Final Rotation:
+        // Calculate rotation depending on whether the player is inside
         Quaternion finalRotation = parentObjectForRotation.rotation * lightRotationOffset;
 
-        //Calculate Output Direction (+Y in Local Space):
-        Vector3 outputDirection = finalRotation * Vector3.up;
-
-        //Calculate Axis (-Z in Local Space):
-        Vector3 axis = finalRotation * -Vector3.forward;
-
-        //Calculate Beam Direction (Perpendicular to Axis and Output Direction):
-        Vector3 beamDirection = Vector3.Cross(axis, outputDirection).normalized;
-
-        //Calculate Origin Point:
-        Vector3 origin = transform.position;
+        if (projector.isPlayerInside)
+        {
+            // Full 3D alignment with camera
+            beamDirection = projector.ParentObject.rotation * projector.lightRotationOffset * Vector3.up;
+        }
+        else
+        {
+            // Normal behavior: outputDirection + axis cross for projector hits
+            Vector3 outputDirection = finalRotation * Vector3.up;
+            Vector3 axis = finalRotation * -Vector3.forward;
+            beamDirection = Vector3.Cross(axis, outputDirection).normalized;
+        }
 
         //Calculate Laser Points:
         laserPoints.Add(origin);

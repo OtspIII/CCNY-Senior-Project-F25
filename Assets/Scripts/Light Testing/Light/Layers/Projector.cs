@@ -6,7 +6,7 @@ public class Projector : MonoBehaviour
     public Transform ParentObject;
     public Transform PlayerObject;
     [Space]
-    private Vector3 baseRotationEuler;
+    [HideInInspector] public Vector3 baseRotationEuler;
     public Quaternion lightRotationOffset = Quaternion.identity;
     [Space]
     public Transform beamRoot;       

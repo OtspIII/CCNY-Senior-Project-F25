@@ -10,6 +10,7 @@ public class ProjectorTraversal : MonoBehaviour
     [Header("References: ")]
     public PlayerMovement player;
     public Rigidbody rb;
+    public Transform playerCamera;
     [Space]
     public LightReflection lightReflection; // Players Light Source
     public LightModeToggle lightModeToggle;
@@ -24,6 +25,7 @@ public class ProjectorTraversal : MonoBehaviour
     public KeyCode rotateZDownKey = KeyCode.S;  // decreases Z rotation (negative)
     public float zSpeedDegPerSec = 60f;
     [Space]
+
 
     [Header("Traversal Parameters: ")]
     public KeyCode enterTraversalKey = KeyCode.E;
@@ -47,16 +49,16 @@ public class ProjectorTraversal : MonoBehaviour
             // Use PlayerMovement trigger-based detection first (same approach as Lantern)
             Projector detected = PlayerMovement.player != null ? PlayerMovement.player.projector : null;
 
-            if (detected != null && detected.enterable)
+            if (detected != null)
             {
                 // Ensure beam updates immediately when a projector is detected (no ray hit yet).
                 if (lightReflection != null)
                 {
                     Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
-                    lightReflection.RefreshProjectorProjection(detected, point, registerHit: true);
+                    lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: false);
                 }
 
-                if (Input.GetKeyDown(enterTraversalKey) && !isTraveling && (player == null || player.state != PlayerMovement.PlayerState.grabbing))
+                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && (player == null || player.state != PlayerMovement.PlayerState.grabbing))
                 {
                     currentProjector = detected;
                     if (currentProjector != null)
@@ -72,16 +74,35 @@ public class ProjectorTraversal : MonoBehaviour
         // When inside: allow rotating the projector's parent and keep beam alignment logic identical to normal hits.
         if (isInsideProjector && currentProjector != null)
         {
-            //Rotation input:
+            //Rotation Input:
             HandleProjectorRotationInput();
-
-            //Ensure player stays at pivot point (prevents sliding if on a slope or if projector moves):
             transform.position = currentProjector.PivotPosition.position;
 
-            //Visual updates:
             Projector detected = PlayerMovement.player != null ? PlayerMovement.player.projector : null;
+
+            //Aim Alignment:
+            if (player.isAiming)
+            {
+                //Store Base Offset:
+                Quaternion baseOffset = Quaternion.Euler(detected.baseRotationEuler);
+
+                //Store Camera Forward in Local Space:
+                Vector3 localCameraForward = detected.transform.InverseTransformDirection(playerCamera.forward);
+
+                //Calculate Rotation to Look in that Direction:
+                Quaternion cameraRotationY = Quaternion.LookRotation(localCameraForward, Vector3.up);
+
+                //Apply Horizontal Fix to Align with Projector's Forward:
+                Quaternion horizontalFix = Quaternion.Euler(0f, 90f, 0f);
+
+                //Final Light Rotation:
+                detected.lightRotationOffset = cameraRotationY * horizontalFix * baseOffset;
+            }
+           
+
+            //Beam Visual:
             Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
-            lightReflection.RefreshProjectorProjection(detected, point, registerHit: true);
+            lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: true);
         }
 
         // Exit Projector Mode:
@@ -192,8 +213,47 @@ public class ProjectorTraversal : MonoBehaviour
 
         isInsideProjector = false;
         if (currentProjector != null) currentProjector.isPlayerInside = false;
+        currentProjector.lightRotationOffset = Quaternion.Euler(currentProjector.baseRotationEuler);
 
         currentProjector = null;
         transform.position = transform.position;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (PlayerMovement.player == null) return;
+
+        Projector detected = PlayerMovement.player.projector;
+        if (detected == null || detected.beamRoot == null) return;
+
+        //Beam Rotation:
+        Quaternion finalRotation = detected.ParentObject.rotation * detected.lightRotationOffset;
+
+
+        //Beam Root:
+        Vector3 origin = detected.beamRoot.position;
+        
+        //Point of Origin:
+        Gizmos.color = UnityEngine.Color.white;
+        Gizmos.DrawSphere(origin, 0.05f);
+
+
+        //Beam Length:
+        float axisLength = 1.5f;
+
+        //Forward Vector [Z]:
+        Vector3 forward = finalRotation * Vector3.up;  
+        Gizmos.color = UnityEngine.Color.blue;
+        Gizmos.DrawLine(origin, origin + forward * axisLength);
+
+        //Right Vector [X]:
+        Vector3 right = finalRotation * Vector3.right;
+        Gizmos.color = UnityEngine.Color.red;
+        Gizmos.DrawLine(origin, origin + right * axisLength);
+
+        //Up Vector [Y]:
+        Vector3 up = finalRotation * Vector3.forward;  
+        Gizmos.color = UnityEngine.Color.green;
+        Gizmos.DrawLine(origin, origin + up * axisLength);
     }
 }
