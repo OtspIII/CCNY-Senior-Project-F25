@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -71,7 +72,16 @@ public class ProjectorTraversal : MonoBehaviour
         // When inside: allow rotating the projector's parent and keep beam alignment logic identical to normal hits.
         if (isInsideProjector && currentProjector != null)
         {
+            //Rotation input:
             HandleProjectorRotationInput();
+
+            //Ensure player stays at pivot point (prevents sliding if on a slope or if projector moves):
+            transform.position = currentProjector.PivotPosition.position;
+
+            //Visual updates:
+            Projector detected = PlayerMovement.player != null ? PlayerMovement.player.projector : null;
+            Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
+            lightReflection.RefreshProjectorProjection(detected, point, registerHit: true);
         }
 
         // Exit Projector Mode:
@@ -89,10 +99,10 @@ public class ProjectorTraversal : MonoBehaviour
         // Choose transform to rotate: ParentObject preferred, otherwise projector.transform
         Transform rotation = currentProjector.ParentObject != null ? currentProjector.ParentObject : currentProjector.transform;
 
-        // Y-axis rotation controlled by W/S, clamped to +/- maxAngleVertical
+        // Y-axis rotation controlled by A/D, clamped to +/- maxAngleVertical
         float yDelta = 0f;
-        if (Input.GetKey(rotateYLeftKey)) yDelta -= ySpeedDegPerSec * Time.deltaTime;
-        if (Input.GetKey(rotateYRightKey)) yDelta += ySpeedDegPerSec * Time.deltaTime;
+        if (Input.GetKey(rotateYLeftKey)) yDelta += ySpeedDegPerSec * Time.deltaTime;
+        if (Input.GetKey(rotateYRightKey)) yDelta -= ySpeedDegPerSec * Time.deltaTime;
 
         if (Mathf.Abs(yDelta) > Mathf.Epsilon)
         {
