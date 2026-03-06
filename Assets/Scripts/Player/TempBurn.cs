@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
+using System.Collections.Generic;
 
 
 public class TempBurn : MonoBehaviour
@@ -15,6 +16,7 @@ public class TempBurn : MonoBehaviour
     bool burning;
     float lineDistance = 50.0f;
     [SerializeField] CinemachineCamera cam;
+    List<GameObject> mirrors = new List<GameObject>();
     [SerializeField] Material burningMaterial;
     [SerializeField] Material idleMaterial;
 
@@ -23,7 +25,7 @@ public class TempBurn : MonoBehaviour
         line = GetComponent<LineRenderer>();
         line.positionCount = 3;
         line.enabled = false;
-        
+
         if (idleMaterial != null)
             line.material = idleMaterial;
     }
@@ -31,6 +33,7 @@ public class TempBurn : MonoBehaviour
     void Update()
     {
         if (!line.enabled && !refraction) line.enabled = false;
+        if (currentLantern != null) currentLantern = null;
         LightRefraction();
         UpdateLineWidth();
     }
@@ -64,7 +67,11 @@ public class TempBurn : MonoBehaviour
 
         if (!refraction)
         {
-            if (line.enabled) line.enabled = false;
+            if (line.enabled)
+            {
+                line.enabled = false;
+            }
+
             return;
         }
 
@@ -72,15 +79,15 @@ public class TempBurn : MonoBehaviour
 
         Vector3 camPos = Camera.main.transform.position;
         Vector3 camDir = Camera.main.transform.forward;
-        
+
         Vector3 crosshairPoint = camPos + camDir * convergenceDistance;
-        
+
         line.SetPosition(0, transform.position);
 
         if (Physics.Raycast(camPos, camDir, out hit, 50.0f, burn))
         {
             float hitDistFromCam = Vector3.Distance(camPos, hit.point);
-            
+
             if (hitDistFromCam <= convergenceDistance)
             {
                 line.SetPosition(1, hit.point);
@@ -92,6 +99,7 @@ public class TempBurn : MonoBehaviour
                 line.SetPosition(2, hit.point);
             }
 
+
             if (hit.transform.gameObject.layer == 8)
             {
                 if (!burning)
@@ -102,17 +110,15 @@ public class TempBurn : MonoBehaviour
                 hit.transform.gameObject.GetComponent<Burnable>().RegisterHit(hit.point);
                 lineDistance = hitDistFromCam;
             }
-            else
+            else if (hit.transform.gameObject.layer == 12)
             {
-                if (burning)
-                {
-                    burning = false;
-                    if (idleMaterial != null) line.material = idleMaterial;
-                }
                 currentLantern = hit.transform.gameObject.GetComponent<Lantern>();
                 currentLantern.hitsThisFrame = 1;
-                if (currentLantern.activeLantern)
+
+                if (currentLantern != null && currentLantern.activeLantern)
+                {
                     GetComponentInParent<LanternTravel>().ActivatedLanterns.Add(currentLantern);
+                }
             }
         }
         else
@@ -122,10 +128,10 @@ public class TempBurn : MonoBehaviour
                 burning = false;
                 if (idleMaterial != null) line.material = idleMaterial;
             }
-            
+
             line.SetPosition(1, crosshairPoint);
             line.SetPosition(2, camPos + camDir * 50.0f);
-            
+
             if (currentLantern != null && currentLantern.hitsThisFrame > 0)
             {
                 currentLantern.hitsThisFrame = 0;
@@ -134,3 +140,4 @@ public class TempBurn : MonoBehaviour
         }
     }
 }
+
