@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ public class Lantern : MonoBehaviour
 {
     [Header("Lantern Movement Position: ")]
     public Transform lanternCore;
+
+    public Collider aimCollider;
     [Space]
 
     [Header("Adjacent Lanterns: ")]
@@ -33,21 +36,22 @@ public class Lantern : MonoBehaviour
     public Material litMaterial;
     bool flicker;
     Animator anim;
-    Light light;
+    [SerializeField] Light lanternLight;
 
 
     private void Start()
     {
         if (activeLantern && LanternTravel.Instance != null)
         {
-            if (!LanternTravel.Instance.ActivatedLanterns.Contains(this))
-            {
-                LanternTravel.Instance.ActivatedLanterns.Add(this);
-            }
+            if (activeLantern) LanternTravel.Instance?.RegisterActivatedLantern(this);
         }
 
         anim = GetComponent<Animator>();
-        light = GetComponent<Light>();
+        if (activeLantern)
+            GetComponent<Renderer>().material = litMaterial;
+        else
+            GetComponent<Renderer>().material = unlitMaterial;
+        //lanternLight = GetComponent<Light>();
     }
 
 
@@ -61,7 +65,11 @@ public class Lantern : MonoBehaviour
 
             if (currentActivation >= activationTime)
             {
-                activeLantern = true;
+                if (!activeLantern)
+                {
+                    activeLantern = true;
+                    LanternTravel.Instance?.RegisterActivatedLantern(this);
+                }
                 currentActivation = activationTime;
             }
         }
@@ -81,7 +89,8 @@ public class Lantern : MonoBehaviour
             // Start flicker animation
             if (!flicker)
             {
-                anim.SetTrigger("Flicker");
+                if (anim != null) 
+                    anim.SetTrigger("Flicker");
                 flicker = true;
             }
         }
@@ -92,16 +101,32 @@ public class Lantern : MonoBehaviour
         else if (activeLantern)
         {
             //Set To litMaterial:
-            if (!light.enabled) light.enabled = true;
+            if (!lanternLight.enabled) lanternLight.enabled = true;
             GetComponent<Renderer>().material = litMaterial;
 
         }
         else
         {
             //Set To unlitMaterial:
-            if (light.enabled) light.enabled = false;
+            if (lanternLight.enabled) lanternLight.enabled = false;
             GetComponent<Renderer>().material = unlitMaterial;
         }
+    }
+    
+    public void HandlePlayerEnter(Collider col)
+    {
+        if (!activeLantern) return;
+
+        if (col.CompareTag("Player") && PlayerMovement.player.lantern == null)
+            PlayerMovement.player.lantern = this;
+    }
+
+    public void HandlePlayerExit(Collider col)
+    {
+        if (!activeLantern) return;
+
+        if (col.CompareTag("Player") && PlayerMovement.player.lantern == this)
+            PlayerMovement.player.lantern = null;
     }
 
     void OnTriggerEnter(Collider col)
