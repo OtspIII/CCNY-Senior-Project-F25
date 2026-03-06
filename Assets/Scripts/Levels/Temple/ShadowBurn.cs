@@ -15,10 +15,13 @@ public class ShadowBurn : MonoBehaviour
     public Color finalColor;
     [Space]
     [SerializeField] Transform player;
+    [Tooltip("Assign to object that will change color when in shadow.")]
     [SerializeField] GameObject key;
     [SerializeField] Transform door;
+    [SerializeField] Transform doorTarget;
     bool keyLight;
-    [SerializeField] bool doorOpened, moveDoor;
+    public bool doorOpened;
+    [SerializeField] bool moveDoor;
     Renderer objectRenderer;
     Material materialInstance;
     [Space]
@@ -26,11 +29,12 @@ public class ShadowBurn : MonoBehaviour
     [SerializeField] ShadowCheck shadowCheck;
     [Tooltip("Check player shadow. Ensures shadow doesn't go past desired size.")]
     [SerializeField] ShadowCheck shadowBoundary;
+    [SerializeField] bool committalLevel;
 
 
     void Awake()
     {
-        objectRenderer = key.GetComponent<Renderer>();
+        objectRenderer = key.GetComponent<MeshRenderer>();
         if (objectRenderer != null)
         {
             materialInstance = objectRenderer.material;
@@ -40,7 +44,7 @@ public class ShadowBurn : MonoBehaviour
     void Update()
     {
         if (doorOpened && !moveDoor)
-            StartCoroutine(OpenDoor(door.transform.position + Vector3.up * 3f));
+            StartCoroutine(OpenDoor(doorTarget.position));
         else if (!doorOpened)
             CheckForShadow();
     }
@@ -51,9 +55,14 @@ public class ShadowBurn : MonoBehaviour
         if (shadowCheck.IsInShadow() && !shadowBoundary.IsInShadow())
         {
             if (currentBurnTime != 1f)
+            {
                 ApplyBurn(true);
+            }
             else
+            {
+                if (committalLevel) GameObject.Find("Coffin").GetComponent<FourKeyPlatform>().NextThreshold();
                 doorOpened = true;
+            }
         }
         else
         {

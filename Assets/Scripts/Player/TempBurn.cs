@@ -70,7 +70,6 @@ public class TempBurn : MonoBehaviour
             if (line.enabled)
             {
                 line.enabled = false;
-                line.positionCount = 2;
             }
 
             return;
@@ -87,41 +86,19 @@ public class TempBurn : MonoBehaviour
 
         if (Physics.Raycast(camPos, camDir, out hit, 50.0f, burn))
         {
-            if (hit.transform.gameObject.layer == 11)
-            {
-                burning = true;
-                lineDistance = Vector3.Distance(hit.point, transform.position);
-
-                //if (!mirrors.Contains(hit.transform.gameObject))
-                //    mirrors.Add(hit.transform.gameObject);
-
-                //int lineCount = line.positionCount + mirrors.Count + 2;
-                line.positionCount = 4;
-                Vector3 nextDir = Vector3.Reflect(hit.point, Vector3.right);
-                line.SetPosition(2, hit.point);
-                line.SetPosition(3, hit.point + nextDir * 50.0f);
-                RaycastHit newHit;
-                if (Physics.Raycast(hit.point, Vector3.Reflect(hit.point, Vector3.right), out newHit, 50.0f, burn))
-                {
-                    if (hit.transform.gameObject.layer == 8)
-                    {
-                        newHit.transform.gameObject.GetComponent<Burnable>().ApplyBurn(Time.deltaTime);
-                    }
-                }
-            }
-            if (hit.transform.gameObject.layer == 8)
-                float hitDistFromCam = Vector3.Distance(camPos, hit.point);
+            float hitDistFromCam = Vector3.Distance(camPos, hit.point);
 
             if (hitDistFromCam <= convergenceDistance)
             {
                 line.SetPosition(1, hit.point);
                 line.SetPosition(2, hit.point);
             }
-            else if (hit.transform.gameObject.layer == 12)
+            else
             {
                 line.SetPosition(1, crosshairPoint);
                 line.SetPosition(2, hit.point);
             }
+
 
             if (hit.transform.gameObject.layer == 8)
             {
@@ -133,20 +110,15 @@ public class TempBurn : MonoBehaviour
                 hit.transform.gameObject.GetComponent<Burnable>().RegisterHit(hit.point);
                 lineDistance = hitDistFromCam;
             }
-            else
+            else if (hit.transform.gameObject.layer == 12)
             {
-                if (burning)
-                {
-                    burning = false;
-                    if (idleMaterial != null) line.material = idleMaterial;
-                }
                 currentLantern = hit.transform.gameObject.GetComponent<Lantern>();
                 currentLantern.hitsThisFrame = 1;
-            }
-            else
-            {
+
                 if (currentLantern != null && currentLantern.activeLantern)
+                {
                     GetComponentInParent<LanternTravel>().ActivatedLanterns.Add(currentLantern);
+                }
             }
         }
         else
@@ -165,7 +137,7 @@ public class TempBurn : MonoBehaviour
                 currentLantern.hitsThisFrame = 0;
                 currentLantern = null;
             }
-            if (line.positionCount > 2) line.positionCount = 2;
         }
     }
 }
+

@@ -7,7 +7,7 @@ public class ShadowCheck : MonoBehaviour
 
     [SerializeField] Transform[] corners;
     [SerializeField] bool[] isHittingPlayer;
-    [SerializeField] Transform player;
+    [SerializeField] Transform playerLight;
     public bool isInShadow;
     LayerMask layerMask;
 
@@ -32,7 +32,7 @@ public class ShadowCheck : MonoBehaviour
         for (int i = 0; i < corners.Length; i++)
         {
             //Raycast form all corners of gameObject toward player 
-            Vector3 direction = player.position - corners[i].position;
+            Vector3 direction = playerLight.position - corners[i].position;
             direction.Normalize();
             Debug.DrawRay(corners[i].position, direction * 30f, Color.magenta);
 

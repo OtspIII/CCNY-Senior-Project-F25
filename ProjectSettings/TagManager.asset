@@ -12,6 +12,7 @@ TagManager:
   - Obstruction
   - Burn
   - Ball
+  - Gem
   layers:
   - Default
   - TransparentFX
@@ -36,7 +37,7 @@ TagManager:
   - Soul
   - Phase
   - 
-  - 
+  - Gem
   - 
   - Shadows
   - 
