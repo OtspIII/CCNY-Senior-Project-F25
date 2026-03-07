@@ -17,6 +17,7 @@ public class ShadowBurn : MonoBehaviour
     [SerializeField] Transform player;
     [Tooltip("Assign to object that will change color when in shadow.")]
     [SerializeField] GameObject key;
+    [SerializeField] bool hasDoor;
     [SerializeField] Transform door;
     [SerializeField] Transform doorTarget;
     bool keyLight;
@@ -43,8 +44,15 @@ public class ShadowBurn : MonoBehaviour
     }
     void Update()
     {
-        if (doorOpened && !moveDoor)
-            StartCoroutine(OpenDoor(doorTarget.position));
+        if (!hasDoor) Debug.Log("First Shadow: " + shadowCheck.IsInShadow() + "   |   " + "Second Shadow: " + shadowBoundary.IsInShadow());
+
+        if (doorOpened)
+        {
+            if (hasDoor && !moveDoor)
+                StartCoroutine(OpenDoor(doorTarget.position));
+            else
+                return;
+        }
         else if (!doorOpened)
             CheckForShadow();
     }

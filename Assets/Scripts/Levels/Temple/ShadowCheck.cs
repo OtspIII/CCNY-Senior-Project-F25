@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ShadowCheck : MonoBehaviour
@@ -9,11 +10,17 @@ public class ShadowCheck : MonoBehaviour
     [SerializeField] bool[] isHittingPlayer;
     [SerializeField] Transform playerLight;
     public bool isInShadow;
+    [SerializeField] bool hasBurnables;
+    bool removedPillars;
+    [SerializeField] GameObject[] pillars;
     LayerMask layerMask;
 
     void Awake()
     {
-        layerMask = LayerMask.GetMask("Player", "Shadows");
+        if (hasBurnables)
+            layerMask = LayerMask.GetMask("Player", "Shadows", "Burnable");
+        else
+            layerMask = LayerMask.GetMask("Player", "Shadows");
     }
     void Start()
     {
@@ -29,6 +36,17 @@ public class ShadowCheck : MonoBehaviour
 
     void Update()
     {
+        if (!removedPillars)
+        {
+            bool pillarsDestroyed = true;
+            for (int i = 0; i < pillars.Length; i++)
+            {
+                if (pillars[i].activeInHierarchy) pillarsDestroyed = false;
+            }
+            if (pillarsDestroyed) removedPillars = true;
+            else return;
+        }
+
         for (int i = 0; i < corners.Length; i++)
         {
             //Raycast form all corners of gameObject toward player 
