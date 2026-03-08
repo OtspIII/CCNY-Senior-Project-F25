@@ -133,7 +133,7 @@
                 "m_Node": {
                     "m_Id": "df40f761a0394404adde192c11fefdf9"
                 },
-                "m_SlotId": 0
+                "m_SlotId": 4
             },
             "m_InputSlot": {
                 "m_Node": {
@@ -1010,7 +1010,7 @@
     "isMainTexture": false,
     "useTilingAndOffset": false,
     "m_Modifiable": true,
-    "m_DefaultType": 5
+    "m_DefaultType": 2
 }
 
 {
