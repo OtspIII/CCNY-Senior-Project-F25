@@ -4,14 +4,20 @@ using UnityEngine;
 public class FlipMirror : MonoBehaviour
 {
     public bool isHitting;
-    [SerializeField] GameObject lightSource;
+    //[SerializeField] LightReflection lightSource;
     [SerializeField] GameObject mirror;
     Coroutine currentCoroutine;
     bool flip;
 
+    void Start()
+    {
+
+    }
+
     void Update()
     {
-        isHitting = lightSource.activeInHierarchy && lightSource.GetComponent<LightReflection>().gemHit;
+        LightReflection light = GameManager.Instance.Player.gameObject.GetComponentInChildren<LightReflection>();
+        isHitting = light != null && light.gameObject.activeInHierarchy && light.gemHit;
 
         if (isHitting && !flip)
         {

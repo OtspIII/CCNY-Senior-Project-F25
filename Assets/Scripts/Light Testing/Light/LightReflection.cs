@@ -47,6 +47,7 @@ public class LightReflection : MonoBehaviour
 
     [Header("Mirror Collision: ")]
     public LayerMask mirrorLayer;
+    public LayerMask mirrorBlock;
     public bool mirrorHit;
     private Mirror mirror;
     [Space]
@@ -126,7 +127,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer, QueryTriggerInteraction.Ignore);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer | mirrorBlock, QueryTriggerInteraction.Ignore);
 
             if (playFire)
             {
@@ -544,13 +545,13 @@ public class LightReflection : MonoBehaviour
             //Vector3 targetPoint = obstructionPoints[0] - pointDirection;
 
             //If Enough Increments & Bool Becomes True:
-            if (lantern.activeLantern && LanternTravel.Instance != null)
+            if (lantern.activeLantern && GameManager.Instance.LanternTravel != null)
             {
                 //If The Hit Lantern IS NOT In The List:
-                if (!LanternTravel.Instance.ActivatedLanterns.Contains(lantern))
+                if (!GameManager.Instance.LanternTravel.ActivatedLanterns.Contains(lantern))
                 {
                     DestoryFireVFX();
-                    LanternTravel.Instance.ActivatedLanterns.Add(lantern);
+                    GameManager.Instance.LanternTravel.ActivatedLanterns.Add(lantern);
                 }
             }
             else if (!lantern.activeLantern)

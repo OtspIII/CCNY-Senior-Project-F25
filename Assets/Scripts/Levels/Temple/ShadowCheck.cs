@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShadowCheck : MonoBehaviour
@@ -13,6 +14,8 @@ public class ShadowCheck : MonoBehaviour
     [SerializeField] bool hasBurnables;
     bool removedPillars;
     [SerializeField] GameObject[] pillars;
+    [SerializeField] bool requiresP2, leftCheck;
+    [SerializeField] List<Transform> playerLights;
     LayerMask layerMask;
 
     void Awake()
@@ -32,11 +35,45 @@ public class ShadowCheck : MonoBehaviour
             corners[i] = transform.GetChild(i);
             isHittingPlayer[i] = true;
         }
+
+        if (playerLight == null)
+            playerLight = GameManager.Instance.Player.GetComponentInChildren<Light>().transform;
+
+        playerLights.Add(playerLight);
+
     }
 
     void Update()
     {
-        if (!removedPillars)
+        Transform currentPlayer = GameManager.Instance.Player.GetComponentInChildren<Light>().transform;
+        if (currentPlayer != playerLight)
+        {
+            if (playerLights.Count == 1)
+                playerLights.Add(currentPlayer);
+
+            playerLight = currentPlayer;
+        }
+
+        if (requiresP2)
+        {
+            if (playerLights.Count > 1)
+
+                if (playerLights[1].gameObject.activeInHierarchy)
+                {
+                    if (playerLights[0].position.x <= playerLights[1].position.x)
+                    {
+                        playerLight = !leftCheck ? playerLights[0] : playerLights[1];
+                    }
+                    else
+                    {
+                        playerLight = !leftCheck ? playerLights[1] : playerLights[0];
+                    }
+                }
+
+            CheckForShadow();
+            return;
+        }
+        if (hasBurnables && !removedPillars)
         {
             bool pillarsDestroyed = true;
             for (int i = 0; i < pillars.Length; i++)
@@ -46,7 +83,11 @@ public class ShadowCheck : MonoBehaviour
             if (pillarsDestroyed) removedPillars = true;
             else return;
         }
+        CheckForShadow();
+    }
 
+    void CheckForShadow()
+    {
         for (int i = 0; i < corners.Length; i++)
         {
             //Raycast form all corners of gameObject toward player 

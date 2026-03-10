@@ -13,6 +13,7 @@ TagManager:
   - Burn
   - Ball
   - Gem
+  - Player Light
   layers:
   - Default
   - TransparentFX
@@ -41,7 +42,7 @@ TagManager:
   - 
   - Shadows
   - 
-  - 
+  - Blocker
   - 
   - 
   - 
