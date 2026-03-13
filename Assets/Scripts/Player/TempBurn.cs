@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
+using Unity.VisualScripting.Dependencies.Sqlite;
 
 
 public class TempBurn : MonoBehaviour
@@ -20,6 +21,13 @@ public class TempBurn : MonoBehaviour
     [SerializeField] Material burningMaterial;
     [SerializeField] Material idleMaterial;
 
+    [SerializeField] GameObject pressFPrompt;
+
+    private bool crystalHit = false;
+
+    [SerializeField] private CharacterSwitcher characterSwitcher;
+    [SerializeField] private GameObject spawnedPlayer;
+
     void Start()
     {
         line = GetComponent<LineRenderer>();
@@ -36,6 +44,14 @@ public class TempBurn : MonoBehaviour
         if (currentLantern != null) currentLantern = null;
         LightRefraction();
         UpdateLineWidth();
+
+        if (crystalHit && Input.GetKeyDown(KeyCode.F) && !spawnedPlayer.activeSelf)
+        {
+            spawnedPlayer.SetActive(true);
+            spawnedPlayer.transform.position = hit.point;
+            pressFPrompt.SetActive(false);
+            characterSwitcher.UnlockSplitMode();
+        }
     }
 
     void UpdateLineWidth()
@@ -120,6 +136,11 @@ public class TempBurn : MonoBehaviour
                     GetComponentInParent<LanternTravel>().ActivatedLanterns.Add(currentLantern);
                 }
             }
+            else if (hit.transform.gameObject.layer == 16)
+            {
+                crystalHit = true;
+                if (pressFPrompt != null) pressFPrompt.SetActive(true);
+            }
         }
         else
         {
@@ -136,6 +157,12 @@ public class TempBurn : MonoBehaviour
             {
                 currentLantern.hitsThisFrame = 0;
                 currentLantern = null;
+            }
+
+            if (crystalHit)
+            {
+                crystalHit = false;
+                if (pressFPrompt != null) pressFPrompt.SetActive(false);
             }
         }
     }
