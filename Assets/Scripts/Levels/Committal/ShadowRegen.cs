@@ -7,7 +7,7 @@ public class ShadowRegen : MonoBehaviour
     [SerializeField] GameObject piecesPrefab;
     [SerializeField] List<GameObject> allPillars;
     [SerializeField] GameObject regenObj;
-    bool test;
+    bool regenInProgress;
 
     void Update()
     {
@@ -16,11 +16,13 @@ public class ShadowRegen : MonoBehaviour
         {
             if (allPillars[i].activeInHierarchy) regen = false;
         }
-        if (regen && !test) StartCoroutine(SpawnObject());
+
+        // Regenerate object if all pillars have been removed
+        if (regen && !regenInProgress) StartCoroutine(SpawnObject());
     }
     IEnumerator SpawnObject()
     {
-        test = true;
+        regenInProgress = true;
 
         regenObj.SetActive(false);
 
@@ -29,6 +31,7 @@ public class ShadowRegen : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
+        // Reset object and pillars
         regenObj.SetActive(true);
         foreach (GameObject p in allPillars)
         {
@@ -47,6 +50,6 @@ public class ShadowRegen : MonoBehaviour
         }
 
         regenObj.transform.position = target;
-        test = false;
+        regenInProgress = false;
     }
 }

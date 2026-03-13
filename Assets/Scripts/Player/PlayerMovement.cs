@@ -86,6 +86,7 @@ public class PlayerMovement : MonoBehaviour
     KeyCode currentMoveKey;
     SunWheelController sunWheel;
     [SerializeField] Animator anim;
+    bool test;
 
     void Start()
     {
@@ -185,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
         if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
         else grab = null;
 
-        isAiming = Input.GetMouseButton(1);
+        isAiming = Input.GetMouseButton(1) || test;
         LightSwitch(isAiming);
 
         if (Input.GetKeyDown(jumpKey))
@@ -237,7 +238,12 @@ public class PlayerMovement : MonoBehaviour
 
         if (isFPVActive)
         {
+            test = true;
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            test = false;
         }
     }
 

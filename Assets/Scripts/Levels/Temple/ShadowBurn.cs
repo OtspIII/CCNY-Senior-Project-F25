@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class ShadowBurn : MonoBehaviour
 {
     //Repurposing Josh's burn code for this
+    public bool isChecking = true;
     public float burnTime;
     [SerializeField] float currentBurnTime = 0f;
     public Color initialColor;
@@ -46,6 +47,7 @@ public class ShadowBurn : MonoBehaviour
     }
     void Update()
     {
+        if (!isChecking) return;
         //if (!hasDoor) Debug.Log("First Shadow: " + shadowCheck.IsInShadow() + "   |   " + "Second Shadow: " + shadowBoundary.IsInShadow());
 
         if (doorOpened)

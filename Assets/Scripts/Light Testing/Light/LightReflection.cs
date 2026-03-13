@@ -1,8 +1,5 @@
-using NUnit.Framework;
-//using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System.Collections.Generic;
-
 
 
 [RequireComponent(typeof(LineRenderer))]
@@ -71,7 +68,7 @@ public class LightReflection : MonoBehaviour
     [Header("Gem Collision: ")]
     public LayerMask gemLayer;
     public bool gemHit;
-    private FlipMirror gem;
+    public GemInteractions gem;
 
     [Header("Debug Visualization")]
     public GameObject obstructionPointMarkerPrefab;
@@ -115,6 +112,7 @@ public class LightReflection : MonoBehaviour
         //Laser Setup:
         Vector3 ObjectPosition = transform.position;
         Vector3 ObjectDirection = transform.up;
+
         float remainingLazerDistance = lazerDistance;
 
         laserPoints.Add(ObjectPosition);
@@ -164,7 +162,7 @@ public class LightReflection : MonoBehaviour
             mirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
             lantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
             projector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();
-            gem = hit.collider.GetComponent<FlipMirror>();
+            gem = hit.collider.CompareTag("Gem 1") ? hit.collider.GetComponent<FlipMirror>() : hit.collider.GetComponent<RotateGem>();
 
             //Null Object Checks:
             if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null && gem == null)
@@ -800,7 +798,9 @@ public class LightReflection : MonoBehaviour
         var hitBurnable = obstructionHit.collider.GetComponent<Burnable>() ?? obstructionHit.collider.GetComponentInParent<Burnable>();
         var hitLantern = obstructionHit.collider.GetComponent<Lantern>() ?? obstructionHit.collider.GetComponentInParent<Lantern>();
         var hitProjector = obstructionHit.collider.GetComponent<Projector>() ?? obstructionHit.collider.GetComponentInParent<Projector>();
-        var hitGem = obstructionHit.collider.GetComponent<FlipMirror>();
+        GemInteractions hitGem = obstructionHit.collider.CompareTag("Gem 1") ? obstructionHit.collider.GetComponent<FlipMirror>() : obstructionHit.collider.GetComponent<RotateGem>();
+
+
         //Lens Collison:
         if (nextLens != null)
         {

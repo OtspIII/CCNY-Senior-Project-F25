@@ -6,15 +6,18 @@ public class ShadowCheck : MonoBehaviour
 {
     // Raycast from all corners of an object toward player to determine whether its in shadow 
     // Source: https://discussions.unity.com/t/regarding-the-shadow-how-can-i-tell-if-the-player-enters-the-shadow/923294/6
-
+    [Header("References")]
+    [SerializeField] Transform playerLight;
+    [Tooltip("Automatically fills with children of object.")]
     [SerializeField] Transform[] corners;
     [SerializeField] bool[] isHittingPlayer;
-    [SerializeField] Transform playerLight;
-    public bool isInShadow;
+    [Space]
     [SerializeField] bool hasBurnables;
     bool removedPillars;
+    [Tooltip("Leave empty if Has Burnables is turned off.")]
     [SerializeField] GameObject[] pillars;
     [SerializeField] bool requiresP2, leftCheck;
+    [Tooltip("Leave empty if Requires P2 is turned off.")]
     [SerializeField] List<Transform> playerLights;
     LayerMask layerMask;
 
@@ -45,6 +48,7 @@ public class ShadowCheck : MonoBehaviour
 
     void Update()
     {
+        // Update reference to current player when switching characters
         Transform currentPlayer = GameManager.Instance.Player.GetComponentInChildren<Light>().transform;
         if (currentPlayer != playerLight)
         {
@@ -56,10 +60,11 @@ public class ShadowCheck : MonoBehaviour
 
         if (requiresP2)
         {
-            if (playerLights.Count > 1)
+            if (playerLights.Count > 1) // Check to see if two players are active
 
                 if (playerLights[1].gameObject.activeInHierarchy)
                 {
+                    // Check to see which player is on left side of puzzle
                     if (playerLights[0].position.x <= playerLights[1].position.x)
                     {
                         playerLight = !leftCheck ? playerLights[0] : playerLights[1];
@@ -75,6 +80,7 @@ public class ShadowCheck : MonoBehaviour
         }
         if (hasBurnables && !removedPillars)
         {
+            // Only check for shadow once all burnables have been removed
             bool pillarsDestroyed = true;
             for (int i = 0; i < pillars.Length; i++)
             {
