@@ -31474,7 +31474,11 @@ MonoBehaviour:
   player2YawTarget: {fileID: 1012511082}
   player2PitchTarget: {fileID: 1012511081}
   player2Model: {fileID: 1012511080}
+  promptTriggers:
+  - {fileID: 1761138679}
+  - {fileID: 671561081}
   player1Active: 1
+  isSplitModeUnlocked: 0
   camManager: {fileID: 1435093948}
   player1Anchor: {fileID: 1179686176}
   player2Anchor: {fileID: 1012511079}
@@ -40649,6 +40653,7 @@ MonoBehaviour:
   burn: {fileID: 597627500}
   uiElement: {fileID: 1634088528}
   fpvCamera: {fileID: 31652360}
+  characterSwitcher: {fileID: 551475784}
 --- !u!65 &671561082
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -79152,6 +79157,7 @@ MonoBehaviour:
   burn: {fileID: 597627500}
   uiElement: {fileID: 136383879}
   fpvCamera: {fileID: 31652360}
+  characterSwitcher: {fileID: 551475784}
 --- !u!65 &1761138680
 BoxCollider:
   m_ObjectHideFlags: 0
