@@ -5663,7 +5663,7 @@ GameObject:
   - component: {fileID: 390022266}
   - component: {fileID: 390022265}
   - component: {fileID: 390022264}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Crystal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8974,7 +8974,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
   m_PrefabInstance: {fileID: 1778130439}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1778130440}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17f81db832932ae4f9fe0d67012e6824, type: 3}
@@ -16164,7 +16164,7 @@ GameObject:
   - component: {fileID: 1156201755}
   - component: {fileID: 1156201757}
   - component: {fileID: 1156201756}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16501,6 +16501,8 @@ MonoBehaviour:
   cam: {fileID: 1985760802}
   burningMaterial: {fileID: 0}
   idleMaterial: {fileID: 0}
+  pressFPrompt: {fileID: 0}
+  playerPrefab: {fileID: 0}
 --- !u!120 &1182846423
 LineRenderer:
   serializedVersion: 2
@@ -17429,6 +17431,8 @@ MonoBehaviour:
   cam: {fileID: 1985760802}
   burningMaterial: {fileID: 0}
   idleMaterial: {fileID: 0}
+  pressFPrompt: {fileID: 0}
+  playerPrefab: {fileID: 0}
 --- !u!120 &1269871696
 LineRenderer:
   serializedVersion: 2
@@ -23579,7 +23583,7 @@ GameObject:
   - component: {fileID: 1649658455}
   - component: {fileID: 1649658454}
   - component: {fileID: 1649658453}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Trigger Prompt Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26144,6 +26148,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 1778130440}
+    - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: pressFPrompt
+      value: 
+      objectReference: {fileID: 1649658451}
     - target: {fileID: 4769232587425805802, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -26195,6 +26207,11 @@ PrefabInstance:
       addedObject: {fileID: 1269871694}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+--- !u!1 &1778130440 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+  m_PrefabInstance: {fileID: 1778130439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1787927523 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2437394463884476734, guid: 6adf468faf7c921478132a5a347ec2e8, type: 3}

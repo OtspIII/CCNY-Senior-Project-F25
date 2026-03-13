@@ -59,7 +59,7 @@ public class CharacterSwitcher : MonoBehaviour
         }
     }
 
-    void UnlockSplitMode()
+    public void UnlockSplitMode()
     {
         isSplitModeUnlocked = true;
         uiElement.SetActive(false);
