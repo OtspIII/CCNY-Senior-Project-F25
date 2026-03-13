@@ -4,7 +4,7 @@ using System.Collections;
 public class FourKeyPlatform : MonoBehaviour
 {
     int positionIndex = 0;
-    Vector3[] nextPosition = new Vector3[3];
+    Vector3[] nextPosition = new Vector3[4];
     float moveSpeed = 0.5f;
     [SerializeField] GameObject[] lights;
     [SerializeField] Material lit;
