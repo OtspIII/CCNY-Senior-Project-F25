@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CharacterSwitcher : MonoBehaviour
 {
@@ -15,10 +16,12 @@ public class CharacterSwitcher : MonoBehaviour
     [SerializeField] private Transform player2PitchTarget;
     [SerializeField] private Transform player2Model;
 
+    [SerializeField] private List<PromptTrigger> promptTriggers;
+
     [Header("State")]
     public bool player1Active = true;
     private bool isPlayerInside = false;
-    private bool isSplitModeUnlocked = false;
+    public bool isSplitModeUnlocked = false;
 
     [Header("Cinemachine References")]
     [SerializeField] private CameraSwitcher camManager;
@@ -46,11 +49,13 @@ public class CharacterSwitcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isSplitModeUnlocked && isPlayerInside && Input.GetKeyDown(KeyCode.F))
+       
+
+        if (!isSplitModeUnlocked && isPlayerInside && Input.GetKeyDown(KeyCode.C))
         {
             UnlockSplitMode();
         }
-        else if (isSplitModeUnlocked && Input.GetKeyDown(KeyCode.F))
+        else if (isSplitModeUnlocked && Input.GetKeyDown(KeyCode.C))
         {
             SwitchPlayer();
         }
@@ -61,9 +66,23 @@ public class CharacterSwitcher : MonoBehaviour
         isSplitModeUnlocked = true;
         uiElement.SetActive(false);
         povUIPanel.SetActive(true); // shows small pov window
-
+        
+        foreach(PromptTrigger pt in promptTriggers)
+        {
+            pt.ForceExitFPV();
+        }
+        
         SwitchPlayer();
 
+    }
+
+    public bool IsAnyLensActive()
+    {
+        foreach (PromptTrigger pt in promptTriggers)
+        {
+            if (pt.IsPlayerInside()) return true;
+        }
+        return false;
     }
 
     private void OnTriggerEnter(Collider other)

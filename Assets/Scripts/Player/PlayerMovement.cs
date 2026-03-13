@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
-        player = this;
+        if (player == null) player = this;
     }
     void Start()
     {
