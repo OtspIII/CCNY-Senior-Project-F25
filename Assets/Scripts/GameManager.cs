@@ -3,11 +3,13 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
+    public static GameManager Instance;
+    public PlayerMovement Player;
+    public LanternTravel LanternTravel;
 
     void Awake()
     {
-        instance = this;
+        Instance = this;
     }
     void Start()
     {

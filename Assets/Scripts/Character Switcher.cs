@@ -44,6 +44,8 @@ public class CharacterSwitcher : MonoBehaviour
         p1POVCamera.enabled = false;
         p2POVCamera.enabled = false;
         povUIPanel.SetActive(false);
+
+        player2Controller.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -55,7 +57,7 @@ public class CharacterSwitcher : MonoBehaviour
         {
             UnlockSplitMode();
         }
-        else if (isSplitModeUnlocked && Input.GetKeyDown(KeyCode.C))
+        else if (isSplitModeUnlocked && Input.GetKeyDown(KeyCode.C) && !GameManager.Instance.LanternTravel.isInsideLantern)
         {
             SwitchPlayer();
         }
@@ -144,6 +146,10 @@ public class CharacterSwitcher : MonoBehaviour
         {
             // player 1 is controlled, player 2 is in pov box
             player1Controller.enabled = true;
+
+            // Change player references in Game Manager
+            GameManager.Instance.Player = player1Controller;
+            GameManager.Instance.LanternTravel = player1Controller.gameObject.GetComponent<LanternTravel>();
             player2Controller.enabled = false;
 
             p1POVCamera.enabled = false;
@@ -156,6 +162,22 @@ public class CharacterSwitcher : MonoBehaviour
         {
             // player 2 is controlled, player 1 is in pov box
             player1Controller.enabled = false;
+
+            // Set player 2 to active
+            if (!player2Controller.gameObject.activeInHierarchy)
+                player2Controller.gameObject.SetActive(true);
+
+            // Update Lamps when player 2 spawns
+            foreach (Lantern l in GameManager.Instance.LanternTravel.ActivatedLanterns)
+            {
+                if (player2Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Contains(l))
+                    continue;
+                player2Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Add(l);
+            }
+
+            // Change player references in Game Manager
+            GameManager.Instance.Player = player2Controller;
+            GameManager.Instance.LanternTravel = player2Controller.gameObject.GetComponent<LanternTravel>();
             player2Controller.enabled = true;
 
             p2POVCamera.enabled = false;

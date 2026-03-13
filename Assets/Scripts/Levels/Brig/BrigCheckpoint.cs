@@ -9,7 +9,8 @@ public class BrigCheckpoint : MonoBehaviour
     {
         if (col.gameObject.tag == "Player" && !checkpointSet)
         {
-            PlayerMovement.player.startPos = PlayerMovement.player.transform.position + offset;
+            GameManager.Instance.Player.startPos =
+            GameManager.Instance.Player.transform.position + offset;
             checkpointSet = true;
         }
     }

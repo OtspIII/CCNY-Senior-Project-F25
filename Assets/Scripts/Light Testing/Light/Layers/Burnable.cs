@@ -1,6 +1,8 @@
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements.Experimental;
 
 public class Burnable : MonoBehaviour
 {
@@ -87,7 +89,7 @@ public class Burnable : MonoBehaviour
         }
 
         isBurning = hitsThisFrame > 0;
-        
+
         if (isBurning && smokeParticles != null)
         {
             smokeParticles.transform.position = lastHitPoint;
@@ -143,7 +145,17 @@ public class Burnable : MonoBehaviour
             onBurnComplete?.Invoke();
 
             if (destroyOnComplete)
+            {
                 Destroy(gameObject);
+            }
+            else
+            {
+                currentBurnTime = 0f;
+                gameObject.SetActive(false);
+                outline.OutlineWidth = 0f;
+                outline.OutlineColor = Color.white;
+                completed = false;
+            }
         }
     }
 }

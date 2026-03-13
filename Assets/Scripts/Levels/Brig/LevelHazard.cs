@@ -6,8 +6,8 @@ public class LevelHazard : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
-            PlayerMovement.player.checkpoint = true;
-            Debug.Log("YERRE");
+            GameManager.Instance.Player.checkpoint = true;
+            //Debug.Log("YERRE");
         }
     }
 }
