@@ -30,7 +30,7 @@ public class MoveLantern : MonoBehaviour
 
         // snap position
         transform.position = endPos;
-        GetComponentInChildren<SphereCollider>().enabled = true;
+        //GetComponentInChildren<SphereCollider>().enabled = true;
         inPosition = true;
     }
 }

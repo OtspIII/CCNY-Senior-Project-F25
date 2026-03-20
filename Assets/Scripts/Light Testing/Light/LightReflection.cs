@@ -1,8 +1,5 @@
-using NUnit.Framework;
-//using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System.Collections.Generic;
-
 
 
 [RequireComponent(typeof(LineRenderer))]
@@ -47,6 +44,7 @@ public class LightReflection : MonoBehaviour
 
     [Header("Mirror Collision: ")]
     public LayerMask mirrorLayer;
+    public LayerMask mirrorBlock;
     public bool mirrorHit;
     private Mirror mirror;
     [Space]
@@ -66,6 +64,11 @@ public class LightReflection : MonoBehaviour
     public Transform parentObjectForRotation;  // Set this from Projector when updating
     public Quaternion lightRotationOffset = Quaternion.identity;
     [Space]
+
+    [Header("Gem Collision: ")]
+    public LayerMask gemLayer;
+    public bool gemHit;
+    public GemInteractions gem;
 
     [Header("Debug Visualization")]
     public GameObject obstructionPointMarkerPrefab;
@@ -109,6 +112,7 @@ public class LightReflection : MonoBehaviour
         //Laser Setup:
         Vector3 ObjectPosition = transform.position;
         Vector3 ObjectDirection = transform.up;
+
         float remainingLazerDistance = lazerDistance;
 
         laserPoints.Add(ObjectPosition);
@@ -121,7 +125,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer, QueryTriggerInteraction.Ignore);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer | mirrorBlock, QueryTriggerInteraction.Ignore);
 
             if (playFire)
             {
@@ -158,9 +162,10 @@ public class LightReflection : MonoBehaviour
             mirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
             lantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
             projector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();
+            gem = hit.collider.CompareTag("Gem 1") ? hit.collider.GetComponent<FlipMirror>() : hit.collider.GetComponent<RotateGem>();
 
             //Null Object Checks:
-            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null)
+            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null && gem == null)
             {
                 laserPoints.Add(ObjectPosition + ObjectDirection * remainingLazerDistance);
                 break;
@@ -211,6 +216,13 @@ public class LightReflection : MonoBehaviour
             {
                 projectorHit = true;
                 HandleProjectorHit(hit);
+                break;
+            }
+
+            //Gem Collision:
+            if (gem != null)
+            {
+                gemHit = true;
                 break;
             }
         }
@@ -531,13 +543,13 @@ public class LightReflection : MonoBehaviour
             //Vector3 targetPoint = obstructionPoints[0] - pointDirection;
 
             //If Enough Increments & Bool Becomes True:
-            if (lantern.activeLantern && LanternTravel.Instance != null)
+            if (lantern.activeLantern && GameManager.Instance.LanternTravel != null)
             {
                 //If The Hit Lantern IS NOT In The List:
-                if (!LanternTravel.Instance.ActivatedLanterns.Contains(lantern))
+                if (!GameManager.Instance.LanternTravel.ActivatedLanterns.Contains(lantern))
                 {
                     DestoryFireVFX();
-                    LanternTravel.Instance.ActivatedLanterns.Add(lantern);
+                    GameManager.Instance.LanternTravel.ActivatedLanterns.Add(lantern);
                 }
             }
             else if (!lantern.activeLantern)
@@ -672,6 +684,7 @@ public class LightReflection : MonoBehaviour
         mirrorHit = false;
         lanternHit = false;
         projectorHit = false;
+        gemHit = false;
     }
 
     private void ClearPrismSplits()
@@ -785,6 +798,8 @@ public class LightReflection : MonoBehaviour
         var hitBurnable = obstructionHit.collider.GetComponent<Burnable>() ?? obstructionHit.collider.GetComponentInParent<Burnable>();
         var hitLantern = obstructionHit.collider.GetComponent<Lantern>() ?? obstructionHit.collider.GetComponentInParent<Lantern>();
         var hitProjector = obstructionHit.collider.GetComponent<Projector>() ?? obstructionHit.collider.GetComponentInParent<Projector>();
+        GemInteractions hitGem = obstructionHit.collider.CompareTag("Gem 1") ? obstructionHit.collider.GetComponent<FlipMirror>() : obstructionHit.collider.GetComponent<RotateGem>();
+
 
         //Lens Collison:
         if (nextLens != null)
@@ -923,6 +938,21 @@ public class LightReflection : MonoBehaviour
             HandleProjectorHit(obstructionHit);
 
             //Update outputs:
+            totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
+            finalImagePoint = obstructionHit.point;
+            nextPosition = obstructionHit.point;
+            nextDirection = toImageDir;
+
+            return true;
+        }
+        else if (hitGem != null)
+        {
+            gemHit = true;
+
+            //Mark hit
+            obstructionPoints.Add(obstructionHit.point);
+            laserPoints.Add(obstructionHit.point);
+
             totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;
