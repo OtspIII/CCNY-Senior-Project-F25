@@ -60,6 +60,7 @@ public class Lantern : MonoBehaviour
     private void Update()
     {
         if (player != GameManager.Instance.Player) player = GameManager.Instance.Player;
+        if (GameManager.Instance.LanternTravel == null) return;
         // Only count down while being hit
         if (hitsThisFrame > 0)
         {
