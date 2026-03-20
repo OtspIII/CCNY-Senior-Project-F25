@@ -33,6 +33,8 @@ public class CharacterSwitcher : MonoBehaviour
     [SerializeField] private Camera p2POVCamera;
     [SerializeField] private RenderTexture povTexture;
     [SerializeField] private GameObject povUIPanel; // raw image on canvas
+    [SerializeField] private CameraAiming player1CameraAiming;
+    [SerializeField] private CameraAiming player2CameraAiming;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -57,7 +59,7 @@ public class CharacterSwitcher : MonoBehaviour
         {
             UnlockSplitMode();
         }
-        else if (isSplitModeUnlocked && Input.GetKeyDown(KeyCode.C) && !GameManager.Instance.LanternTravel.isInsideLantern)
+        else if (isSplitModeUnlocked && Input.GetKeyDown(KeyCode.C) && (GameManager.Instance.LanternTravel == null || !GameManager.Instance.LanternTravel.isInsideLantern))
         {
             SwitchPlayer();
         }
@@ -144,8 +146,18 @@ public class CharacterSwitcher : MonoBehaviour
     {
         if (player1Active)
         {
+            player1CameraAiming.enabled = true;
+            player2CameraAiming.enabled = false;
+
             // player 1 is controlled, player 2 is in pov box
             player1Controller.enabled = true;
+
+            Rigidbody p2rb = player2Controller.GetComponent<Rigidbody>();
+            if (p2rb != null)
+            {
+                p2rb.linearVelocity = Vector3.zero;
+                p2rb.angularVelocity = Vector3.zero;
+            }
 
             // Change player references in Game Manager
             GameManager.Instance.Player = player1Controller;
@@ -160,8 +172,18 @@ public class CharacterSwitcher : MonoBehaviour
         }
         else
         {
+            player1CameraAiming.enabled = false;
+            player2CameraAiming.enabled = true;
+
             // player 2 is controlled, player 1 is in pov box
             player1Controller.enabled = false;
+
+            Rigidbody p1rb = player1Controller.GetComponent<Rigidbody>();
+            if (p1rb != null)
+            {
+                p1rb.linearVelocity = Vector3.zero;
+                p1rb.angularVelocity = Vector3.zero;
+            }
 
             // Set player 2 to active
             if (!player2Controller.gameObject.activeInHierarchy)

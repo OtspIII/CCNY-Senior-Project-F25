@@ -232,6 +232,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFPVChange(bool isFPVActive)
     {
+        if (!this.enabled) return;
+
         canMove = !isFPVActive;
         float focusAnim = canMove ? 0f : 1f;
         anim.SetFloat("Beam", focusAnim);
