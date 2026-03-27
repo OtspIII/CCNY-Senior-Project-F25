@@ -38,6 +38,7 @@ public class Lantern : MonoBehaviour
     Animator anim;
     [SerializeField] Light lanternLight;
     PlayerMovement player;
+    bool playerDetected;
 
 
     private void Start()
@@ -61,6 +62,10 @@ public class Lantern : MonoBehaviour
     {
         if (player != GameManager.Instance.Player) player = GameManager.Instance.Player;
         if (GameManager.Instance.LanternTravel == null) return;
+
+        // Extra lantern check 
+        //if (!playerDetected && !GameManager.Instance.LanternTravel.isTraveling && !player.inLantern && player.lantern == this) player.lantern = null;
+
         // Only count down while being hit
         if (hitsThisFrame > 0)
         {
@@ -121,24 +126,31 @@ public class Lantern : MonoBehaviour
     {
         if (!activeLantern) return;
 
-        if (col.CompareTag("Player") && player.lantern == null)
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == null)
+        {
+            playerDetected = true;
             player.lantern = this;
+        }
     }
 
     public void HandlePlayerExit(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.CompareTag("Player") && player.lantern == this)
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == this)
+        {
+            playerDetected = false;
             player.lantern = null;
+        }
     }
 
-    void OnTriggerEnter(Collider col)
+    /*void OnTriggerEnter(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && player.lantern == null)
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == null)
         {
+            playerDetected = true;
             player.lantern = this;
         }
     }
@@ -147,10 +159,11 @@ public class Lantern : MonoBehaviour
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && player.lantern != null)
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern != null)
         {
+            playerDetected = false;
             player.lantern = null;
         }
-    }
+    }*/
 
 }
