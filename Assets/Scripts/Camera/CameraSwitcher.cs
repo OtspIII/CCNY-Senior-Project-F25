@@ -97,19 +97,23 @@ public class CameraSwitcher : MonoBehaviour
     }
 
     public void UpdateTargets(
-    Transform followTarget,
-    Transform yawTarget,
-    Transform pitchTarget,
-    Transform playerModel)
+     Transform followTarget,
+     Transform yawTarget,
+     Transform pitchTarget,
+     Transform playerModel)
     {
         freelookCam.Follow = followTarget;
         freelookCam.LookAt = followTarget;
-
-        aimCam.Follow = yawTarget;
-        aimCam.LookAt = yawTarget;
-
+        aimCam.Follow = pitchTarget;
+        aimCam.LookAt = pitchTarget;
         aimController.SetTargets(yawTarget, pitchTarget, playerModel);
 
+        StartCoroutine(DelayedSnap());
+    }
+
+    private System.Collections.IEnumerator DelayedSnap()
+    {
+        yield return null; // wait one frame for camera to update
         SnapFreeLookBehindPlayer();
     }
 }
