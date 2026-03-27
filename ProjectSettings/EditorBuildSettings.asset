@@ -35,6 +35,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/2-27-Build/Captain Quarters 2-27.unity
     guid: cb337e9613780204eb4416af54f464ce
+  - enabled: 1
+    path: Assets/Scenes/MannyPatrick-C.unity
+    guid: 2fcb38b1e7b6d634f9991a83aebbee3f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
