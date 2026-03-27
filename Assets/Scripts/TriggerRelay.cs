@@ -14,12 +14,12 @@ public class TriggerRelay : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         if (lantern == null) return;
-        lantern.HandlePlayerEnter(col);
+        // Logic for player reference setting removed in favor of proximity-based entry in LanternTravel.cs
     }
 
     private void OnTriggerExit(Collider col)
     {
         if (lantern == null) return;
-        lantern.HandlePlayerExit(col);
+        // Logic for player reference setting removed in favor of proximity-based entry in LanternTravel.cs
     }
 }

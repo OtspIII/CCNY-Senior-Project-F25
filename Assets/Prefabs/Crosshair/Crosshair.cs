@@ -38,6 +38,8 @@ public class Crosshair : MonoBehaviour, MMEventListener<MMGameEvent> {
         if (Physics.Raycast(ray, out hit, raycastDistance, raycastLayers)) {
             if (hit.collider.TryGetComponent<Burnable>(out _)) {
                 SwitchState(CrosshairState.Flame);
+            } else if (hit.collider.GetComponentInParent<Lantern>() != null) {
+                SwitchState(CrosshairState.Light);
             } else {
                 SwitchState(CrosshairState.Default);
             }

@@ -38,6 +38,7 @@ public class LanternTravel : MonoBehaviour
 
     [Header("Movement Settings: ")]
     public float moveSpeed = 5f;
+    public float entryProximity = 2f;
     public KeyCode enterLanternKey = KeyCode.Q;
     public KeyCode exitLanternKey = KeyCode.Space;
     public KeyCode moveLanternKey = KeyCode.Mouse0;
@@ -105,17 +106,27 @@ public class LanternTravel : MonoBehaviour
         //Initial Lantern Entry:
         if (!isInsideLantern)
         {
-            //if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
-            if (player.lantern != null && Input.GetKeyDown(enterLanternKey) && !isTraveling)
-            {
-                currentLantern = PlayerMovement.player.lantern;
-                //currentLantern = lightReflection.currentLanternHit;
+            // Find closest active lantern within entryProximity
+            Lantern closest = null;
+            float closestDist = entryProximity;
+            Vector3 followerPos = followerObject.transform.position;
 
-                if (currentLantern != null)
+            foreach (var l in ActivatedLanterns)
+            {
+                if (l == null || l.lanternCore == null) continue;
+                float dist = Vector3.Distance(followerPos, l.lanternCore.position);
+                if (dist <= closestDist)
                 {
-                    EnterLanternMode();
-                    StartCoroutine(MoveToLantern(currentLantern));
+                    closestDist = dist;
+                    closest = l;
                 }
+            }
+
+            if (closest != null && Input.GetKeyDown(enterLanternKey) && !isTraveling)
+            {
+                currentLantern = closest;
+                EnterLanternMode();
+                StartCoroutine(MoveToLantern(currentLantern));
             }
             return;
         }
