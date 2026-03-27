@@ -2626,7 +2626,7 @@ Transform:
   m_GameObject: {fileID: 586691826}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.6955178, w: 0.71850896}
-  m_LocalPosition: {x: 80.82, y: 16.58, z: -7.46}
+  m_LocalPosition: {x: 81.57, y: 16.55, z: -7.85}
   m_LocalScale: {x: 0.39343, y: 1, z: 0.73872465}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3058,7 +3058,7 @@ Transform:
   m_GameObject: {fileID: 606645238}
   serializedVersion: 2
   m_LocalRotation: {x: 0.4390718, y: -0, z: -0, w: 0.898452}
-  m_LocalPosition: {x: 28.95, y: 5.2, z: -14.6}
+  m_LocalPosition: {x: 28.95, y: 5.36, z: -13.92}
   m_LocalScale: {x: 7.5180397, y: 3, z: 9.18932}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3925,7 +3925,7 @@ GameObject:
   - component: {fileID: 846196336}
   - component: {fileID: 846196335}
   m_Layer: 0
-  m_Name: Cube (5)
+  m_Name: book shelf fallen over
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4014,7 +4014,7 @@ Transform:
   m_GameObject: {fileID: 846196334}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.42101017, w: 0.9070559}
-  m_LocalPosition: {x: 44.79, y: 15.5, z: 38.848003}
+  m_LocalPosition: {x: 44.79, y: 15.5, z: 38.94}
   m_LocalScale: {x: 6.638536, y: 0.32369, z: 8.592117}
   m_ConstrainProportionsScale: 0
   m_Children: []
