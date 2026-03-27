@@ -2967,12 +2967,12 @@ MonoBehaviour:
   player1Controller: {fileID: 673256693}
   player2Controller: {fileID: 1227903887}
   uiElement: {fileID: 1649658451}
-  player1YawTarget: {fileID: 0}
-  player1PitchTarget: {fileID: 0}
-  player1Model: {fileID: 0}
-  player2YawTarget: {fileID: 0}
-  player2PitchTarget: {fileID: 0}
-  player2Model: {fileID: 0}
+  player1YawTarget: {fileID: 1322287126}
+  player1PitchTarget: {fileID: 485190225}
+  player1Model: {fileID: 202324753}
+  player2YawTarget: {fileID: 1526799775}
+  player2PitchTarget: {fileID: 1058295235}
+  player2Model: {fileID: 1227903893}
   player1Active: 1
   camManager: {fileID: 1370155250}
   player1Anchor: {fileID: 1720961673}
@@ -3338,13 +3338,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 5
-  hitsThisFrame: 0
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  smokeParticles: {fileID: 0}
+  ropeUnlit: {fileID: 0}
+  ropeLit: {fileID: 0}
+  burnStartColor: {r: 1, g: 1, b: 1, a: 1}
+  burnEndColor: {r: 1, g: 0, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
-  initialColor: {r: 1, g: 0, b: 0, a: 0}
-  initalColorBreach: 0.5
-  middleColor: {r: 1, g: 0.61752665, b: 0, a: 0}
-  middleColorBreach: 0.95
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!43 &176843865
 Mesh:
   m_ObjectHideFlags: 0
@@ -5658,7 +5663,7 @@ GameObject:
   - component: {fileID: 390022266}
   - component: {fileID: 390022265}
   - component: {fileID: 390022264}
-  m_Layer: 0
+  m_Layer: 16
   m_Name: Crystal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7324,6 +7329,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 163817759}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 1.5
@@ -7333,6 +7339,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &494803674
 Animator:
   serializedVersion: 7
@@ -8967,7 +8974,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
   m_PrefabInstance: {fileID: 1778130439}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1778130440}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17f81db832932ae4f9fe0d67012e6824, type: 3}
@@ -9099,6 +9106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1683522546}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 1.5
@@ -9108,6 +9116,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &674529284
 Animator:
   serializedVersion: 7
@@ -9472,6 +9481,10 @@ MonoBehaviour:
   projectorHit: 0
   parentObjectForRotation: {fileID: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  gemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gemHit: 0
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -12390,13 +12403,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 5
-  hitsThisFrame: 0
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  smokeParticles: {fileID: 0}
+  ropeUnlit: {fileID: 0}
+  ropeLit: {fileID: 0}
+  burnStartColor: {r: 1, g: 1, b: 1, a: 1}
+  burnEndColor: {r: 1, g: 0, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
-  initialColor: {r: 1, g: 0, b: 0, a: 0}
-  initalColorBreach: 0.5
-  middleColor: {r: 1, g: 0.61752665, b: 0, a: 0}
-  middleColorBreach: 0.95
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &891202129
 GameObject:
   m_ObjectHideFlags: 0
@@ -13246,31 +13264,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.2933693
+      value: 1.0433693
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.4135292
+      value: 2.3100002
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.789633
+      value: -9.021049
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98836154
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15212335
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000014727737
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000002266815
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7184880868918079258, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -13316,6 +13334,10 @@ PrefabInstance:
       propertyPath: crosshairUI
       value: 
       objectReference: {fileID: 2119007071}
+    - target: {fileID: 7520666584795326066, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
+      propertyPath: aimController
+      value: 
+      objectReference: {fileID: 1985760803}
     - target: {fileID: 9078020017304299407, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_Name
       value: Camera Manager
@@ -13942,6 +13964,11 @@ BoxCollider:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3212256367002628845, guid: 9c794306025ac274983c35507bc6d37a, type: 3}
   m_PrefabInstance: {fileID: 424262365}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1058295235 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8639051371293782304, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+  m_PrefabInstance: {fileID: 1283309105}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1068811553
 GameObject:
@@ -16137,7 +16164,7 @@ GameObject:
   - component: {fileID: 1156201755}
   - component: {fileID: 1156201757}
   - component: {fileID: 1156201756}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16467,8 +16494,15 @@ MonoBehaviour:
   burn:
     serializedVersion: 2
     m_Bits: 256
+  convergenceDistance: 2
+  startThickness: 0.5
+  endThickness: 0.1
   refraction: 0
   cam: {fileID: 1985760802}
+  burningMaterial: {fileID: 0}
+  idleMaterial: {fileID: 0}
+  pressFPrompt: {fileID: 0}
+  playerPrefab: {fileID: 0}
 --- !u!120 &1182846423
 LineRenderer:
   serializedVersion: 2
@@ -17390,8 +17424,15 @@ MonoBehaviour:
   burn:
     serializedVersion: 2
     m_Bits: 256
+  convergenceDistance: 2
+  startThickness: 0.5
+  endThickness: 0.1
   refraction: 0
   cam: {fileID: 1985760802}
+  burningMaterial: {fileID: 0}
+  idleMaterial: {fileID: 0}
+  pressFPrompt: {fileID: 0}
+  playerPrefab: {fileID: 0}
 --- !u!120 &1269871696
 LineRenderer:
   serializedVersion: 2
@@ -17563,6 +17604,10 @@ PrefabInstance:
     - target: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_Name
       value: Player 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2293655241027342894, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_Enabled
@@ -20774,6 +20819,11 @@ MonoBehaviour:
   obstacle: {fileID: 0}
   soul: {fileID: 1121906595}
   soulText: {fileID: 621205955}
+--- !u!4 &1526799775 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2615132810487529495, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+  m_PrefabInstance: {fileID: 1283309105}
+  m_PrefabAsset: {fileID: 0}
 --- !u!20 &1530247207 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 1460283507918630474, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
@@ -21654,6 +21704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1072407069}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 1.5
@@ -21663,6 +21714,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &1557728195
 Animator:
   serializedVersion: 7
@@ -23531,7 +23583,7 @@ GameObject:
   - component: {fileID: 1649658455}
   - component: {fileID: 1649658454}
   - component: {fileID: 1649658453}
-  m_Layer: 15
+  m_Layer: 0
   m_Name: Trigger Prompt Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24280,6 +24332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1470252745}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 1.5
@@ -24289,6 +24342,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &1669590399
 Animator:
   serializedVersion: 7
@@ -26094,6 +26148,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 1778130440}
+    - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: pressFPrompt
+      value: 
+      objectReference: {fileID: 1649658451}
+    - target: {fileID: 4769232587425805802, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4808064962426261904, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -26141,6 +26207,11 @@ PrefabInstance:
       addedObject: {fileID: 1269871694}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+--- !u!1 &1778130440 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+  m_PrefabInstance: {fileID: 1778130439}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1787927523 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2437394463884476734, guid: 6adf468faf7c921478132a5a347ec2e8, type: 3}
@@ -26181,13 +26252,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 10
-  hitsThisFrame: 0
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  smokeParticles: {fileID: 0}
+  ropeUnlit: {fileID: 0}
+  ropeLit: {fileID: 0}
+  burnStartColor: {r: 1, g: 1, b: 1, a: 1}
+  burnEndColor: {r: 1, g: 0, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
-  initialColor: {r: 1, g: 0, b: 0, a: 0}
-  initalColorBreach: 0.5
-  middleColor: {r: 1, g: 0.61752665, b: 0, a: 0}
-  middleColorBreach: 0.95
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &1805718014
 GameObject:
   m_ObjectHideFlags: 0
@@ -27296,6 +27372,10 @@ MonoBehaviour:
   projectorHit: 0
   parentObjectForRotation: {fileID: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  gemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gemHit: 0
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -27783,6 +27863,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1985760803 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2860158776699781754, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
+  m_PrefabInstance: {fileID: 1002134099}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d123eba1b3edd43943d817fc5fccb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1994194381
@@ -29921,6 +30012,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1115287924}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 1.5
@@ -29930,6 +30022,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &7857559041294886974
 Animator:
   serializedVersion: 7

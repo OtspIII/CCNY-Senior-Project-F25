@@ -5,14 +5,13 @@ using MoreMountains.Tools;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //GITHUB WTF IS WRONG
     public Vector3 startPos;
     GameManager gm;
 
     // Maybe temporary -- to turn off lightsource while not aiming 
     [SerializeField] GameObject lightSource;
     // Get only instance of player script 
-    public static PlayerMovement player;
+    public PlayerMovement player;
 
     // Allow inputs to affect player
     public bool playerControl = true;
@@ -87,13 +86,8 @@ public class PlayerMovement : MonoBehaviour
     KeyCode currentMoveKey;
     SunWheelController sunWheel;
     [SerializeField] Animator anim;
+    bool test;
 
-    //TEMPORARY//
-
-    void Awake()
-    {
-        player = this;
-    }
     void Start()
     {
         if (item != null) item.SetActive(false);
@@ -101,9 +95,9 @@ public class PlayerMovement : MonoBehaviour
         Physics.gravity = new Vector3(0, -27f, 0);
         Cursor.lockState = CursorLockMode.Locked;
 
-        gm = GameManager.instance;
+        gm = GameManager.Instance;
         rb = GetComponent<Rigidbody>();
-        //sunWheel = SunWheelController.Instance;
+        sunWheel = SunWheelController.Instance;
 
         //line.material = new Material(Shader.Find("Sprites/Default"));
         line.startWidth = 0.01f;
@@ -192,7 +186,7 @@ public class PlayerMovement : MonoBehaviour
         if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
         else grab = null;
 
-        isAiming = Input.GetMouseButton(1);
+        isAiming = Input.GetMouseButton(1) || test;
         LightSwitch(isAiming);
 
         if (Input.GetKeyDown(jumpKey))
@@ -238,13 +232,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFPVChange(bool isFPVActive)
     {
+        if (!this.enabled) return;
+
         canMove = !isFPVActive;
         float focusAnim = canMove ? 0f : 1f;
         anim.SetFloat("Beam", focusAnim);
 
         if (isFPVActive)
         {
+            test = true;
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            test = false;
         }
     }
 
@@ -257,7 +258,7 @@ public class PlayerMovement : MonoBehaviour
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
-        //SunWheelHandler();
+        SunWheelHandler();
 
         if (transform.position.y < -10.0f || checkpoint)
         {
@@ -512,10 +513,10 @@ public class PlayerMovement : MonoBehaviour
     {
         exitingSlope = true;
 
-        Vector3 v = rb.linearVelocity;
-        if (v.y < 0f) v.y = 0f;
-        v.y = jumpForce;
-        rb.linearVelocity = v;
+        // Vector3 v = rb.linearVelocity;
+        // if (v.y < 0f) v.y = 0f;
+        // v.y = jumpForce;
+        // rb.linearVelocity = v;
 
         // Always start with Y Vel at 0
         //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -536,7 +537,7 @@ public class PlayerMovement : MonoBehaviour
         rb.isKinematic = false;
         line.enabled = true;
         playerModel.SetActive(true);
-        aura.SetActive(true);
+        //aura.SetActive(true);
     }
 
     bool OnSlope()
@@ -575,7 +576,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    /*void SunWheelHandler()
+    void SunWheelHandler()
     {
         if (sunWheel.unlockedAbilities[sunWheel.centerIndex] == SunSpike.SunSpikeType.Telescope)
         {
@@ -589,7 +590,7 @@ public class PlayerMovement : MonoBehaviour
                 item.SetActive(false);
             }
         }
-    }*/
+    }
 
     void OnCollisionEnter(Collision col)
     {

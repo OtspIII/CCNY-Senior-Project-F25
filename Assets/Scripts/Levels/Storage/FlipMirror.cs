@@ -1,24 +1,32 @@
 using System.Collections;
 using UnityEngine;
 
-public class FlipMirror : MonoBehaviour
+public class FlipMirror : GemInteractions
 {
     public bool isHitting;
-    [SerializeField] GameObject lightSource;
+    //[SerializeField] LightReflection lightSource;
     [SerializeField] GameObject mirror;
     Coroutine currentCoroutine;
+    [SerializeField] Material unlit, lit;
     bool flip;
+    [SerializeField] bool temp = true;
 
-    void Update()
+    public override void Start()
     {
-        isHitting = lightSource.activeInHierarchy && lightSource.GetComponent<LightReflection>().gemHit;
+        GetComponent<Renderer>().material = unlit;
+    }
+
+    public override void Update()
+    {
+        LightReflection light = GameManager.Instance.Player.gameObject.GetComponentInChildren<LightReflection>();
+        isHitting = light != null && light.gameObject.activeInHierarchy && light.gemHit;
 
         if (isHitting && !flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
             currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(-5f, 180f, 0f)));
         }
-        else if (!isHitting && flip)
+        else if (!isHitting && !temp && flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
             currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(-5f, 0f, 0f)));
@@ -29,6 +37,9 @@ public class FlipMirror : MonoBehaviour
     IEnumerator Flip(Quaternion target)
     {
         flip = !flip;
+        if (flip) if (GetComponent<Renderer>().material != lit) GetComponent<Renderer>().material = lit;
+        if (!flip) if (GetComponent<Renderer>().material != unlit) GetComponent<Renderer>().material = unlit;
+
         Quaternion startRotation = mirror.transform.rotation;
         float elapsedTime = 0f;
 

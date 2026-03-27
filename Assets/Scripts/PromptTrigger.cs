@@ -11,6 +11,8 @@ public class PromptTrigger : MonoBehaviour
     [SerializeField] private GameObject uiElement;
     [SerializeField] private CinemachineCamera fpvCamera;
 
+    [SerializeField] private CharacterSwitcher characterSwitcher;
+
     private bool isPlayerInside = false;
     private bool isUsingFPV = false;
 
@@ -22,11 +24,15 @@ public class PromptTrigger : MonoBehaviour
 
     }
 
+    public bool ConsumedFThisFrame {  get; private set; }
     // Update is called once per frame
     void Update()
     {
+        ConsumedFThisFrame = false;
+
         if (isPlayerInside && Input.GetKeyDown(KeyCode.F))
         {
+            ConsumedFThisFrame = true;
             ToggleFPV();
         }
     }
@@ -72,4 +78,19 @@ public class PromptTrigger : MonoBehaviour
         }
     }
 
+    public void ForceExitFPV()
+    {
+        if (!isUsingFPV) return;
+        ToggleFPV();
+    }
+
+    public bool IsPlayerInside()
+    {
+        return isPlayerInside;
+    }
+
+    public void ClearPlayerInside()
+    {
+        isPlayerInside = false;
+    }
 }
