@@ -67,6 +67,7 @@ public class LightReflection : MonoBehaviour
     public Projector currentProjectorHit;
     public Transform parentObjectForRotation;  // Set this from Projector when updating
     public Quaternion lightRotationOffset = Quaternion.identity;
+    public Quaternion cameraRotationOffset = Quaternion.identity;
     // Explicit-direction mode (used when player is inside a projector)
     [HideInInspector] public bool useExplicitDirection = false;
     [HideInInspector] public Vector3 explicitDirection = Vector3.up;
@@ -606,6 +607,7 @@ public class LightReflection : MonoBehaviour
         {
             projector.beamLight.parentObjectForRotation = projector.ParentObject;
             projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
+            projector.beamLight.cameraRotationOffset = projector.cameraRotationOffset;
             projector.fixedBeamDistance = projector.beamLight.lazerDistance;
         }
         UpdateProjectorLightReflection(projector);
@@ -622,7 +624,7 @@ public class LightReflection : MonoBehaviour
         projector.beamLight.transform.position = projector.beamRoot.position;
 
         //Set Beam Light Rotation -> Parent Object Rotation + Offset:
-        projector.beamLight.transform.rotation = projector.ParentObject.rotation * projector.lightRotationOffset;
+        projector.beamLight.transform.rotation = projector.ParentObject.rotation * projector.lightRotationOffset * projector.cameraRotationOffset;
 
         //Calculate New Distance Based on Hits This Frame:
         float newDistance = Mathf.Max(projector.hitsThisFrame * projector.lengthPerHit, 0.001f);
@@ -690,12 +692,12 @@ public class LightReflection : MonoBehaviour
         Vector3 beamDirection;
 
         // Calculate rotation depending on whether the player is inside
-        Quaternion finalRotation = parentObjectForRotation.rotation * lightRotationOffset;
+        Quaternion finalRotation = parentObjectForRotation.rotation * lightRotationOffset * cameraRotationOffset;
 
         if (projector.isPlayerInside)
         {
             // Full 3D alignment with camera
-            beamDirection = projector.ParentObject.rotation * projector.lightRotationOffset * Vector3.up;
+            beamDirection = finalRotation * Vector3.up;
         }
         else
         {

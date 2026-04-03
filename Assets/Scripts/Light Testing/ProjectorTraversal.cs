@@ -26,6 +26,10 @@ public class ProjectorTraversal : MonoBehaviour
     public float zSpeedDegPerSec = 60f;
     [Space]
 
+    [Header("Camera Offset Parameters:")]
+    public float xOffset;
+    public float yOffset;
+    public float zOffset;
 
     [Header("Traversal Parameters: ")]
     public KeyCode enterTraversalKey = KeyCode.E;
@@ -98,7 +102,9 @@ public class ProjectorTraversal : MonoBehaviour
                 //Final Light Rotation:
                 detected.lightRotationOffset = cameraRotationY * horizontalFix * baseOffset;
             }
-           
+            
+          
+
 
             //Beam Visual:
             Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
@@ -227,8 +233,9 @@ public class ProjectorTraversal : MonoBehaviour
         if (detected == null || detected.beamRoot == null) return;
 
         //Beam Rotation:
-        Quaternion finalRotation = detected.ParentObject.rotation * detected.lightRotationOffset;
+        Quaternion finalRotation = detected.ParentObject.rotation * detected.lightRotationOffset * detected.cameraRotationOffset;
 
+        // -------------------------------------------------------------------
 
         //Beam Root:
         Vector3 origin = detected.beamRoot.position;
@@ -237,23 +244,65 @@ public class ProjectorTraversal : MonoBehaviour
         Gizmos.color = UnityEngine.Color.white;
         Gizmos.DrawSphere(origin, 0.05f);
 
-
         //Beam Length:
         float axisLength = 1.5f;
 
-        //Forward Vector [Z]:
+        Vector3 BasisForward = -currentProjector.transform.right;
+        Vector3 BasisRight = currentProjector.transform.forward;
+        Vector3 BasisUp = currentProjector.transform.up;
+
+        // -------------------------------------------------------------------
+
+        //Forward Vector Comparison [Z]:
+        Gizmos.color = UnityEngine.Color.blue;
+
+        Gizmos.DrawLine(origin, origin + BasisForward * axisLength);
+        Gizmos.DrawSphere(origin + BasisForward * axisLength, 0.03f);
+
+        Gizmos.DrawLine(origin, origin + playerCamera.forward * axisLength);
+        Gizmos.DrawSphere(origin + playerCamera.forward * axisLength, 0.03f);
+
+        // -------------------------------------------------------------------
+
+
+        //Right Vector Comparison [X]:
+        Gizmos.color = UnityEngine.Color.red;
+
+        Gizmos.DrawLine(origin, origin + BasisRight * axisLength);
+        Gizmos.DrawSphere(origin + BasisRight * axisLength, 0.03f);
+
+        Gizmos.DrawLine(origin, origin + playerCamera.right * axisLength);
+        Gizmos.DrawSphere(origin + playerCamera.right * axisLength, 0.03f);
+
+        // -------------------------------------------------------------------
+
+
+        //Up Vector Comparison [Y]:
+        Gizmos.color = UnityEngine.Color.green;
+
+        Gizmos.DrawLine(origin, origin + BasisUp * axisLength);
+        Gizmos.DrawSphere(origin + BasisUp * axisLength, 0.03f);
+
+        Gizmos.DrawLine(origin, origin + playerCamera.up * axisLength);
+        Gizmos.DrawSphere(origin + playerCamera.up * axisLength, 0.03f);
+
+        // -------------------------------------------------------------------
+
+        //Forward Vector Output [Z]:
         Vector3 forward = finalRotation * Vector3.up;  
         Gizmos.color = UnityEngine.Color.blue;
         Gizmos.DrawLine(origin, origin + forward * axisLength);
 
-        //Right Vector [X]:
+        //Right Vector Output [X]:
         Vector3 right = finalRotation * Vector3.right;
         Gizmos.color = UnityEngine.Color.red;
         Gizmos.DrawLine(origin, origin + right * axisLength);
 
-        //Up Vector [Y]:
+        //Up Vector Output [Y]:
         Vector3 up = finalRotation * Vector3.forward;  
         Gizmos.color = UnityEngine.Color.green;
         Gizmos.DrawLine(origin, origin + up * axisLength);
+
+        // -------------------------------------------------------------------
     }
 }

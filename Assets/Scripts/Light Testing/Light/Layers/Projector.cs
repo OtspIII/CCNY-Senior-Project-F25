@@ -8,6 +8,7 @@ public class Projector : MonoBehaviour
     [Space]
     [HideInInspector] public Vector3 baseRotationEuler;
     public Quaternion lightRotationOffset = Quaternion.identity;
+    public Quaternion cameraRotationOffset = Quaternion.identity;
     [Space]
     public Transform beamRoot;       
     public Transform PivotPosition;

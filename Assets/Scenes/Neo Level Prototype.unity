@@ -758,6 +758,7 @@ MonoBehaviour:
   PlayerObject: {fileID: 447507903}
   baseRotationEuler: {x: 0, y: 0, z: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 1445949238}
   PivotPosition: {fileID: 493940628}
   beamLight: {fileID: 1445949236}
@@ -768,8 +769,8 @@ MonoBehaviour:
   enterable: 1
   isPlayerInside: 0
   fixedBeamDistance: 5
-  maxVerticalRotatation: 30
-  maxHorizontalRotatation: 45
+  maxVerticalRotatation: 90
+  maxHorizontalRotatation: 90
   hitsThisFrame: 0
   finalBeamDir: {x: 0, y: 1, z: 0}
 --- !u!64 &40861977
@@ -856,7 +857,7 @@ Transform:
   m_GameObject: {fileID: 40861974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7, y: 1, z: 2}
+  m_LocalPosition: {x: 7, y: 1, z: -10.49}
   m_LocalScale: {x: 0.44193235, y: 1.7646259, z: 1.5227177}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4661,6 +4662,9 @@ MonoBehaviour:
   rotateZUpKey: 119
   rotateZDownKey: 115
   zSpeedDegPerSec: 60
+  xOffset: 0
+  yOffset: 0
+  zOffset: 0
   enterTraversalKey: 113
   exitTraversalKey: 32
   travelSpeed: 10
@@ -6215,6 +6219,7 @@ MonoBehaviour:
   currentProjectorHit: {fileID: 0}
   parentObjectForRotation: {fileID: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
@@ -8238,6 +8243,7 @@ MonoBehaviour:
   currentProjectorHit: {fileID: 0}
   parentObjectForRotation: {fileID: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
@@ -16144,6 +16150,7 @@ MonoBehaviour:
   PlayerObject: {fileID: 0}
   baseRotationEuler: {x: 0, y: 0, z: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 688336959}
   PivotPosition: {fileID: 0}
   beamLight: {fileID: 688336957}
@@ -16491,7 +16498,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &815768444
 Transform:
   m_ObjectHideFlags: 0
@@ -22624,6 +22631,7 @@ MonoBehaviour:
   currentProjectorHit: {fileID: 0}
   parentObjectForRotation: {fileID: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
@@ -24294,6 +24302,7 @@ MonoBehaviour:
   PlayerObject: {fileID: 447507903}
   baseRotationEuler: {x: 0, y: 0, z: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0.62592345, w: 0.7798845}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 524880702}
   PivotPosition: {fileID: 0}
   beamLight: {fileID: 524880703}
@@ -24457,6 +24466,7 @@ MonoBehaviour:
   PlayerObject: {fileID: 0}
   baseRotationEuler: {x: 0, y: 0, z: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 1976246942}
   PivotPosition: {fileID: 0}
   beamLight: {fileID: 1976246940}
@@ -31463,6 +31473,7 @@ MonoBehaviour:
   currentProjectorHit: {fileID: 0}
   parentObjectForRotation: {fileID: 0}
   lightRotationOffset: {x: 0, y: 0, z: 0, w: 1}
+  cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
