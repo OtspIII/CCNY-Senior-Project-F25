@@ -24,16 +24,12 @@ public class Test_AimCamera : MonoBehaviour
     [SerializeField] private CinemachineThirdPersonFollow aimCamFollow;
 
     [SerializeField] private LayerMask collisionMask;
-    [SerializeField] private float hidePlayerDistance;
     
     public Transform YawTarget => yawTarget;
 
     private float yaw;
     private float pitch;
     private float targetCamSide;
-    
-    private Renderer[] playerRenderers;
-    private bool playerHidden = false;
 
     private void Awake()
     {
@@ -49,14 +45,9 @@ public class Test_AimCamera : MonoBehaviour
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
-    {
-        Vector3 angles = yawTarget.rotation.eulerAngles;
-        yaw = angles.y;
-        pitch = angles.x;
-        
+    { 
+        InitYawPitchFromTransform(yawTarget);
         lookInput.asset.Enable();
-
-        CachePlayerRenderers();
     }
 
     private void OnEnable()
@@ -79,6 +70,13 @@ public class Test_AimCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (float.IsNaN(yaw) || float.IsNaN(pitch))
+        {
+            Debug.LogWarning("Yaw or Pitch is NaN");
+            yaw = 0f;
+            pitch = 0f;
+        }
+        
         Vector2 look = lookInput.action.ReadValue<Vector2>();
         
         if (Mouse.current != null && Mouse.current.delta.IsActuated())
@@ -95,43 +93,30 @@ public class Test_AimCamera : MonoBehaviour
         
         aimCamFollow.CameraSide = Mathf.Lerp(aimCamFollow.CameraSide, targetCamSide, shoulderSwitchSpeed * Time.deltaTime);
         
-        UpdatePlayerModelVisibility();
     }
 
-    private void UpdatePlayerModelVisibility()
+    private void InitYawPitchFromTransform(Transform source)
     {
-        if (playerRenderers == null || playerRenderers.Length == 0 || playerModel == null) return;
-        
-        Camera cam = Camera.main;
-        if (cam == null) return;
-        
-        Vector3 toCam = cam.transform.position - playerModel.position;
-        float distance = toCam.magnitude;
-        
-        bool shouldHide = distance < hidePlayerDistance;
-
-        if (shouldHide && !playerHidden)
+        if (source == null)
         {
-            SetPlayerRenderersEnabled(false);
-            playerHidden = true;
+            yaw = 0f;
+            pitch = 0f;
+            return;
         }
-        else if (!shouldHide && playerHidden)
+        
+        Vector3 angles = source.rotation.eulerAngles;
+        yaw = float.IsNaN(angles.y) ? 0f : angles.y;
+        if (pitchTarget != null)
         {
-            SetPlayerRenderersEnabled(true);
-            playerHidden = false;
+            float localX = pitchTarget.localEulerAngles.x;
+            if (localX > 180f) localX -= 360f;
+            pitch = float.IsNaN(localX) ? 0f : localX;
         }
-    }
-
-    private void SetPlayerRenderersEnabled(bool enabled)
-    {
-        foreach(Renderer r in playerRenderers)
-            r.enabled = enabled;
-    }
-
-    private void CachePlayerRenderers()
-    {
-        if (playerModel != null)
-            playerRenderers = playerModel.GetComponentsInChildren<Renderer>();
+        else
+        {
+            pitch = 0f;
+        }
+        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
     }
 
     public void SetTargets(Transform newYaw, Transform newPitch, Transform newModel)
@@ -140,11 +125,7 @@ public class Test_AimCamera : MonoBehaviour
         pitchTarget = newPitch;
         playerModel = newModel;
         
-        Vector3 angles = yawTarget.rotation.eulerAngles;
-        yaw = angles.y;
-        pitch = angles.x;
-        
-        CachePlayerRenderers();
+        InitYawPitchFromTransform(newYaw);
     }
 
     internal void SetYawPitchFromCamForward(Transform cameraTransform)
@@ -156,6 +137,13 @@ public class Test_AimCamera : MonoBehaviour
         yaw = Quaternion.LookRotation(flatForward).eulerAngles.y;
         pitch = Mathf.Asin(Mathf.Clamp(forward.y, -1f, 1f) * Mathf.Rad2Deg);
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
+
+        if (float.IsNaN(yaw) || float.IsNaN(pitch))
+        {
+            Debug.LogWarning("Yaw or Pitch is NaN");
+            yaw = 0f;
+            pitch = 0f;
+        }
         
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
