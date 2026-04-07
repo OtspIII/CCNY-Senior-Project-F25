@@ -6,11 +6,12 @@ public class Projector : MonoBehaviour
     public Transform ParentObject;
     public Transform PlayerObject;
     [Space]
-    private Vector3 baseRotationEuler;
+    [HideInInspector] public Vector3 baseRotationEuler;
     public Quaternion lightRotationOffset = Quaternion.identity;
+    public Quaternion cameraRotationOffset = Quaternion.identity;
     [Space]
     public Transform beamRoot;       
-    public Transform beamMesh;
+    public Transform PivotPosition;
 
     [Header("Beam Settings: ")]
     public LightReflection beamLight;
@@ -22,16 +23,47 @@ public class Projector : MonoBehaviour
     [Space]
     public float lengthPerHit = 1f;
 
+    [Header("Projector Control: ")]
+    public bool enterable = true;           //Can the player enter this projector?
+    public bool isPlayerInside = false;     //Is the player currently inside this projector?
+    [Space]
+    public float fixedBeamDistance = 5f;    
+    public float maxVerticalRotatation = 30f;
+    public float maxHorizontalRotatation = 45f;
+
+
     //# of hits:
     [HideInInspector] public int hitsThisFrame = 0;
+    [HideInInspector] public Vector3 finalBeamDir = Vector3.up;
+    [Space]
+    private int projectionVersion = 0;
+    private int activeProjectionVersion = 0;
+
+    public enum ProjectionMode
+    {
+        None,
+        Raycast,
+        Traversal
+    }
+    public ProjectionMode CurrentDriver { get; private set; } = ProjectionMode.None;
+    public bool TrySetDriver(ProjectionMode driver)
+    {
+        if (CurrentDriver != ProjectionMode.None && CurrentDriver != driver)
+            return false;
+
+        CurrentDriver = driver;
+        return true;
+    }
+    public void ClearDriver()
+    {
+        CurrentDriver = ProjectionMode.None;
+    }
+
 
     private void Awake()
     {
         if (beamRoot != null)
             beamRoot.localPosition = Vector3.zero;
-
-        if (beamMesh != null)
-            beamMesh.localPosition = Vector3.zero;
 
         if (beamRoot != null)
             beamRoot.gameObject.SetActive(false);
@@ -44,17 +76,21 @@ public class Projector : MonoBehaviour
     {
         UpdateBeam();
         hitsThisFrame = 0;
+        ClearDriver();
     }
 
     public void RegisterHit()
     {
         hitsThisFrame++;
+        if (hitsThisFrame > 1)
+        {
+            hitsThisFrame = 1;
+        }
     }
-
 
     private void UpdateBeam()
     {
-        if (beamRoot == null || beamMesh == null)
+        if (beamRoot == null)
             return;
 
         //No Hits, Hide Beam:
@@ -77,8 +113,9 @@ public class Projector : MonoBehaviour
         beamRoot.rotation = transform.rotation;
         beamRoot.localScale = Vector3.one;
 
-        //Calculate Beam Length Based on Hits:
-        float rawLength = Mathf.Max(hitsThisFrame * lengthPerHit, 0.001f);
+        //Calculate Raw Beam Length:
+        float rawLength;
+        rawLength = Mathf.Max(fixedBeamDistance, 0.001f);
 
         //Adjust For Lossy Scale of Parent Transforms:
         Vector3 lossyScale = transform.lossyScale;
@@ -87,22 +124,16 @@ public class Projector : MonoBehaviour
         float correctedLength = rawLength / Mathf.Max(Mathf.Abs(lossyScale.x), 0.0001f);
         float correctedWidth = beamWidth / Mathf.Max(Mathf.Abs(lossyScale.y), 0.0001f);
         float correctedHeight = beamHeight / Mathf.Max(Mathf.Abs(lossyScale.z), 0.0001f);
-
-        //Apply Scale to Beam Mesh:
-        beamMesh.localScale = new Vector3(correctedLength, correctedWidth, correctedHeight);
-
-        //Position Beam Mesh to Extend Forward from Beam Root (-x):
-        beamMesh.localPosition = new Vector3(-correctedLength * 0.5f, 0f, 0f);
-        
     }
 
     public bool UpdateYOffeset()
     {
         //Null Checks:
-        if (PlayerObject == null || ParentObject == null) return false;
+        Transform playerTransform = PlayerObject ?? PlayerMovement.player?.transform;
+        if (playerTransform == null || ParentObject == null) return false;
 
         //Calculate Direction to Player on XZ Plane:
-        Vector3 toPlayer = PlayerObject.position - ParentObject.position;
+        Vector3 toPlayer = playerTransform.position - ParentObject.position;
         toPlayer.y = 0f;
         toPlayer.Normalize();
 
@@ -125,5 +156,37 @@ public class Projector : MonoBehaviour
         Debug.DrawRay(ParentObject.position, toPlayer * 5f, Color.green);
 
         return true;
+    }
+
+    public int RequestProjectionUpdate()
+    {
+        projectionVersion++;
+        activeProjectionVersion = projectionVersion;
+        return projectionVersion;
+    }
+
+    public bool IsProjectionValid(int version)
+    {
+        return version == activeProjectionVersion;
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (!enterable) return;
+
+        if (col.gameObject.tag == "Player" && PlayerMovement.player.projector == null)
+        {
+            PlayerMovement.player.projector = this;
+        }
+    }
+
+    void OnTriggerExit(Collider col)
+    {
+        if (!enterable) return;
+
+        if (col.gameObject.tag == "Player" && PlayerMovement.player.projector != null)
+        {
+            PlayerMovement.player.projector = null;
+        }
     }
 }
