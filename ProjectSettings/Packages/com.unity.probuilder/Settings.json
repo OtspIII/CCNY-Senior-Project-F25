@@ -189,12 +189,12 @@
             {
                 "type": "System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "WeldVertices.weldDistance",
-                "value": "{\"m_Value\":3.740000009536743}"
+                "value": "{\"m_Value\":1.159999966621399}"
             },
             {
                 "type": "System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "BevelEdges.size",
-                "value": "{\"m_Value\":0.05999999865889549}"
+                "value": "{\"m_Value\":0.20000000298023225}"
             }
         ]
     }
