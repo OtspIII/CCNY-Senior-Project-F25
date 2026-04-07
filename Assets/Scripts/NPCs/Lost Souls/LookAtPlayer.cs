@@ -4,6 +4,6 @@ public class LookAtPlayer : MonoBehaviour
 {
     void Update()
     {
-        transform.LookAt(GameManager.Instance.Player.transform);
+        transform.LookAt(PlayerMovement.player.transform);
     }
 }

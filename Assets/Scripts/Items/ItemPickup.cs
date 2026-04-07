@@ -8,8 +8,8 @@ public class ItemPickup : MonoBehaviour
     {
         if (col.gameObject.tag == "Player")
         {
-            if (!GameManager.Instance.Player.item.activeInHierarchy)
-                GameManager.Instance.Player.item.SetActive(true);
+            if (!PlayerMovement.player.item.activeInHierarchy)
+                PlayerMovement.player.item.SetActive(true);
 
             if (sunWheel != null)
                 sunWheel.UnlockAbility(SunSpike.SunSpikeType.Telescope);

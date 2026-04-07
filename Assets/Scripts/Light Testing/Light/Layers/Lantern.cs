@@ -36,30 +36,23 @@ public class Lantern : MonoBehaviour
     public Material litMaterial;
     bool flicker;
     Animator anim;
-    [SerializeField] Light lanternLight;
-    PlayerMovement player;
+    Light light;
 
 
     private void Start()
     {
-        player = GameManager.Instance.Player;
-        if (activeLantern && GameManager.Instance.LanternTravel != null)
+        if (activeLantern && LanternTravel.Instance != null)
         {
-            if (activeLantern) GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
+            if (activeLantern) LanternTravel.Instance?.RegisterActivatedLantern(this);
         }
 
         anim = GetComponent<Animator>();
-        if (activeLantern)
-            GetComponent<Renderer>().material = litMaterial;
-        else
-            GetComponent<Renderer>().material = unlitMaterial;
-        //lanternLight = GetComponent<Light>();
+        light = GetComponent<Light>();
     }
 
 
     private void Update()
     {
-        if (player != GameManager.Instance.Player) player = GameManager.Instance.Player;
         // Only count down while being hit
         if (hitsThisFrame > 0)
         {
@@ -71,7 +64,7 @@ public class Lantern : MonoBehaviour
                 if (!activeLantern)
                 {
                     activeLantern = true;
-                    GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
+                    LanternTravel.Instance?.RegisterActivatedLantern(this);
                 }
                 currentActivation = activationTime;
             }
@@ -87,12 +80,12 @@ public class Lantern : MonoBehaviour
             }
         }
 
-        if (GameManager.Instance.LanternTravel.currentLantern == this)
+        if (LanternTravel.Instance.currentLantern == this)
         {
             // Start flicker animation
             if (!flicker)
             {
-                if (anim != null)
+                if (anim != null) 
                     anim.SetTrigger("Flicker");
                 flicker = true;
             }
@@ -104,41 +97,41 @@ public class Lantern : MonoBehaviour
         else if (activeLantern)
         {
             //Set To litMaterial:
-            if (!lanternLight.enabled) lanternLight.enabled = true;
+            if (!light.enabled) light.enabled = true;
             GetComponent<Renderer>().material = litMaterial;
 
         }
         else
         {
             //Set To unlitMaterial:
-            if (lanternLight.enabled) lanternLight.enabled = false;
+            if (light.enabled) light.enabled = false;
             GetComponent<Renderer>().material = unlitMaterial;
         }
     }
-
+    
     public void HandlePlayerEnter(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.CompareTag("Player") && player.lantern == null)
-            player.lantern = this;
+        if (col.CompareTag("Player") && PlayerMovement.player.lantern == null)
+            PlayerMovement.player.lantern = this;
     }
 
     public void HandlePlayerExit(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.CompareTag("Player") && player.lantern == this)
-            player.lantern = null;
+        if (col.CompareTag("Player") && PlayerMovement.player.lantern == this)
+            PlayerMovement.player.lantern = null;
     }
 
     void OnTriggerEnter(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && player.lantern == null)
+        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern == null)
         {
-            player.lantern = this;
+            PlayerMovement.player.lantern = this;
         }
     }
 
@@ -146,9 +139,9 @@ public class Lantern : MonoBehaviour
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && player.lantern != null)
+        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern != null)
         {
-            player.lantern = null;
+            PlayerMovement.player.lantern = null;
         }
     }
 

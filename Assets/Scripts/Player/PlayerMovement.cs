@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MoreMountains.Tools;
 
 public class PlayerMovement : MonoBehaviour
 {
+    //GITHUB WTF IS WRONG
     public Vector3 startPos;
     GameManager gm;
 
     // Maybe temporary -- to turn off lightsource while not aiming 
     [SerializeField] GameObject lightSource;
     // Get only instance of player script 
-    public PlayerMovement player;
+    public static PlayerMovement player;
 
     // Allow inputs to affect player
     public bool playerControl = true;
@@ -20,12 +20,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
     float maxFallSpeed = 20.0f;
     [Space(5)]
-
+    
     [SerializeField] float teleportForce;
     [SerializeField] float teleportCooldown;
     [SerializeField] float airMult;
     bool canTeleport = true;
-
+    
     [SerializeField] KeyCode jumpKey = KeyCode.LeftShift;
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
@@ -85,9 +85,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] List<KeyCode> movementKeys;
     KeyCode currentMoveKey;
     SunWheelController sunWheel;
-    [SerializeField] Animator anim;
-    bool test;
 
+    void Awake()
+    {
+        player = this;
+    }
     void Start()
     {
         if (item != null) item.SetActive(false);
@@ -95,9 +97,9 @@ public class PlayerMovement : MonoBehaviour
         Physics.gravity = new Vector3(0, -27f, 0);
         Cursor.lockState = CursorLockMode.Locked;
 
-        gm = GameManager.Instance;
+        gm = GameManager.instance;
         rb = GetComponent<Rigidbody>();
-        sunWheel = SunWheelController.Instance;
+        //sunWheel = SunWheelController.Instance;
 
         //line.material = new Material(Shader.Find("Sprites/Default"));
         line.startWidth = 0.01f;
@@ -186,32 +188,32 @@ public class PlayerMovement : MonoBehaviour
         if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
         else grab = null;
 
-        isAiming = Input.GetMouseButton(1) || test;
+        isAiming = Input.GetMouseButton(1);
         LightSwitch(isAiming);
 
         if (Input.GetKeyDown(jumpKey))
         {
-            //TryJump();
+            TryJump();
         }
 
-        /* if (item == null) return;
-         if (!item.activeInHierarchy) return;
+       /* if (item == null) return;
+        if (!item.activeInHierarchy) return;
 
-         if (Input.GetMouseButtonDown(1))
-         {
-             LightSwitch(true);
-         }
-         else if (Input.GetMouseButtonUp(1))
-         {
-             LightSwitch(false);
+        if (Input.GetMouseButtonDown(1))
+        {
+            LightSwitch(true);
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            LightSwitch(false);
 
-             // Remove fire VFX if player stops aiming whil burning
-             // TEMPORARY
-             if (GameObject.FindGameObjectWithTag("Fire") != null)
-             {
-                 transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
-             }
-         } */
+            // Remove fire VFX if player stops aiming whil burning
+            // TEMPORARY
+            if (GameObject.FindGameObjectWithTag("Fire") != null)
+            {
+                transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
+            }
+        } */
 
     }
 
@@ -232,20 +234,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFPVChange(bool isFPVActive)
     {
-        if (!this.enabled) return;
-
         canMove = !isFPVActive;
-        float focusAnim = canMove ? 0f : 1f;
-        anim.SetFloat("Beam", focusAnim);
 
         if (isFPVActive)
         {
-            test = true;
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-        }
-        else
-        {
-            test = false;
         }
     }
 
@@ -258,7 +251,7 @@ public class PlayerMovement : MonoBehaviour
         if (playerControl) PlayerInput();
         GroundCheck();
         StateHandler();
-        SunWheelHandler();
+        //SunWheelHandler();
 
         if (transform.position.y < -10.0f || checkpoint)
         {
@@ -274,24 +267,6 @@ public class PlayerMovement : MonoBehaviour
             if (checkpoint) checkpoint = false;
         }
 
-        // Animation 
-        if (rb.linearVelocity != Vector3.zero && grounded)
-        {
-            anim.SetFloat("Walk", 1f);
-        }
-        else
-        {
-            anim.SetFloat("Walk", 0f);
-        }
-
-        if (GetComponent<LanternTravel>().isTraveling)
-        {
-            anim.SetFloat("Fly", 1f);
-        }
-        else
-        {
-            anim.SetFloat("Fly", 0f);
-        }
     }
 
     void StateHandler()
@@ -429,18 +404,15 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            bool clearLeft = !Physics.Raycast(new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z),
-            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-            bool clearRight = !Physics.Raycast(new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z),
-            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-            // Draw line for debug
+            bool clear = !Physics.Raycast(transform.position, new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
 
+            // Draw line for debug
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
+            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canTeleport)
             {
                 canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
@@ -503,7 +475,7 @@ public class PlayerMovement : MonoBehaviour
         if (!grounded) return;
         if (!canJump) return;
         if (rb.isKinematic) return;
-
+        
         canJump = false;
         Jump();
         Invoke(nameof(ResetJump), jumpCooldown);
@@ -512,11 +484,11 @@ public class PlayerMovement : MonoBehaviour
     void Jump()
     {
         exitingSlope = true;
-
-        // Vector3 v = rb.linearVelocity;
-        // if (v.y < 0f) v.y = 0f;
-        // v.y = jumpForce;
-        // rb.linearVelocity = v;
+        
+        Vector3 v = rb.linearVelocity;
+        if (v.y < 0f) v.y = 0f;
+        v.y = jumpForce;
+        rb.linearVelocity = v;
 
         // Always start with Y Vel at 0
         //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -537,7 +509,7 @@ public class PlayerMovement : MonoBehaviour
         rb.isKinematic = false;
         line.enabled = true;
         playerModel.SetActive(true);
-        //aura.SetActive(true);
+        aura.SetActive(true);
     }
 
     bool OnSlope()
@@ -566,17 +538,9 @@ public class PlayerMovement : MonoBehaviour
     void LightSwitch(bool active)
     {
         lightSource.SetActive(active);
-        if (active)
-        {
-            MMGameEvent.Trigger("CrosshairOn");
-        }
-        else
-        {
-            MMGameEvent.Trigger("CrosshairOff");
-        }
     }
 
-    void SunWheelHandler()
+    /*void SunWheelHandler()
     {
         if (sunWheel.unlockedAbilities[sunWheel.centerIndex] == SunSpike.SunSpikeType.Telescope)
         {
@@ -590,7 +554,7 @@ public class PlayerMovement : MonoBehaviour
                 item.SetActive(false);
             }
         }
-    }
+    }*/
 
     void OnCollisionEnter(Collision col)
     {

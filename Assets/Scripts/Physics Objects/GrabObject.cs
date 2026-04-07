@@ -16,7 +16,7 @@ public class GrabObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        player = GameManager.Instance.Player;
+        player = PlayerMovement.player;
     }
 
 

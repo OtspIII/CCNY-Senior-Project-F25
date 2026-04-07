@@ -741,10 +741,6 @@ MonoBehaviour:
   toFlame: {fileID: 8019876679155736999}
   toLight: {fileID: 4200455118230333837}
   toNone: {fileID: 6388292660170428811}
-  raycastDistance: 10000
-  raycastLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!1 &2793438674948024667
 GameObject:
   m_ObjectHideFlags: 0

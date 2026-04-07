@@ -104,16 +104,10 @@ public class AimCameraController : MonoBehaviour
         pitchTarget = newPitch;
         playerModel = newModel;
 
-        // Reset yaw from yaw target
-        yaw = yawTarget.rotation.eulerAngles.y;
-
-        // Reset pitch to 0 so camera starts neutral
-        pitch = 0f;
-        pitchTarget.localRotation = Quaternion.identity;
-
-        // Force immediate update
-        yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
-        pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        // Reset yaw/pitch so it doesn't snap
+        Vector3 angles = yawTarget.rotation.eulerAngles;
+        yaw = angles.y;
+        pitch = angles.x;
     }
 
     internal void SetYawPitchFromCameraForward(Transform cameraTransform)
@@ -132,7 +126,7 @@ public class AimCameraController : MonoBehaviour
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
-        pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f); // resets the pitch to 0
+        pitchTarget.localRotation = Quaternion.Euler(0f, 0f, 0f); // resets the pitch to 0
 
         aimCam.ForceCameraPosition(cameraTransform.position, cameraTransform.rotation);
     }

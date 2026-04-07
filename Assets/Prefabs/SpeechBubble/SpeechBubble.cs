@@ -3,18 +3,13 @@ using MoreMountains.Tools;
 using TMPro;
 using UnityEngine;
 
-public class SpeechBubble : MonoBehaviour, MMEventListener<MMGameEvent> {
+public class SpeechBubble : MonoBehaviour {
     [Header("Speech Bubble Settings")]
     [SerializeField, TextArea(3, 10)] private string speechText = "Hello!";
     [SerializeField] private float detectionRadius = 5f;
-    [SerializeField] private float hideDelay = 2f;
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private float bubbleSpringDampening = 0.5f;
     [SerializeField] private float bubbleSpringFrequency = 5f;
-
-    [Header("Event Settings")]
-    [SerializeField] private string eventNameToListen = "";
-    [SerializeField] private string newSpeechText = "";
 
     [Header("Feedbacks")]
     [SerializeField] private MMF_Player spawnFeedback;
@@ -36,7 +31,6 @@ public class SpeechBubble : MonoBehaviour, MMEventListener<MMGameEvent> {
     private Transform playerTransform;
     private bool playerInRange = false;
     private bool isShowing = false;
-    private float lastExitTime;
     private Vector3 anchorPosition;
 
     void Awake() {
@@ -48,7 +42,6 @@ public class SpeechBubble : MonoBehaviour, MMEventListener<MMGameEvent> {
             MMF_TMPTextReveal textReveal = spawnFeedback.GetFeedbackOfType<MMF_TMPTextReveal>();
             if (textReveal != null) {
                 textReveal.NewText = speechText;
-                textReveal.ReplaceText = true;
             }
         }
         
@@ -76,40 +69,6 @@ public class SpeechBubble : MonoBehaviour, MMEventListener<MMGameEvent> {
         // If canvas transform not assigned, use this transform
         if (canvasTransform == null) {
             canvasTransform = transform;
-        }
-    }
-
-    void OnEnable() {
-        this.MMEventStartListening<MMGameEvent>();
-    }
-
-    void OnDisable() {
-        this.MMEventStopListening<MMGameEvent>();
-    }
-
-    public void OnMMEvent(MMGameEvent gameEvent) {
-        if (!string.IsNullOrEmpty(eventNameToListen) && gameEvent.EventName == eventNameToListen) {
-            UpdateSpeechText(newSpeechText);
-        }
-    }
-
-    public void UpdateSpeechText(string newText) {
-        speechText = newText;
-
-        // Update the TMP Text Reveal feedback's text if assigned
-        if (spawnFeedback != null) {
-            MMF_TMPTextReveal textReveal = spawnFeedback.GetFeedbackOfType<MMF_TMPTextReveal>();
-            if (textReveal != null) {
-                textReveal.NewText = speechText;
-                textReveal.ReplaceText = true;
-            }
-        }
-
-        // If currently showing, update the actual TMP text immediately
-        if (isShowing && tmpText != null) {
-            if (spawnFeedback != null) {
-                spawnFeedback.PlayFeedbacks();
-            }
         }
     }
 
@@ -143,23 +102,14 @@ public class SpeechBubble : MonoBehaviour, MMEventListener<MMGameEvent> {
         float distance = Vector3.Distance(anchorPosition, playerTransform.position);
 
         // Player entered range
-        if (distance <= detectionRadius) {
-            if (!playerInRange) {
-                playerInRange = true;
-                ShowSpeechBubble();
-            }
+        if (distance <= detectionRadius && !playerInRange) {
+            playerInRange = true;
+            ShowSpeechBubble();
         }
         // Player exited range
-        else if (distance > detectionRadius) {
-            if (playerInRange) {
-                playerInRange = false;
-                lastExitTime = Time.time;
-            }
-
-            // Buffer logic: if enough time has passed since exit, hide
-            if (isShowing && (Time.time - lastExitTime >= hideDelay)) {
-                HideSpeechBubble();
-            }
+        else if (distance > detectionRadius && playerInRange) {
+            playerInRange = false;
+            HideSpeechBubble();
         }
     }
 
