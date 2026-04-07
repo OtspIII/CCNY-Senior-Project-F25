@@ -9,20 +9,32 @@ EditorBuildSettings:
     path: Assets/Scenes/testScene1.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
-    path: Assets/Scenes/Elikson Stomach Level Prototype.unity
+    path: Assets/Scenes/Elikson_Blockout_Levels/Stomach_Level_Graybox_Eli.unity
     guid: cb3230e971403d7438f8263cfd314cf4
   - enabled: 0
     path: Assets/Scenes/Level2Demo.unity
     guid: 9da4e786e3fd5994290edcb50a421250
-  - enabled: 1
-    path: Assets/Scenes/Elikson Level 1 Prototype.unity
+  - enabled: 0
+    path: Assets/Scenes/Elikson_Blockout_Levels/Brig_Level 1_Graybox_Eli.unity
     guid: 89b4d4f1b70435f40bdffb9a6b0fad2e
   - enabled: 0
     path: Assets/Scenes/Neo Level Prototype.unity
     guid: 0f1b8a1b62f7b5046bd9133c64ca0dfd
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Manny Level 2 Prototype.unity
     guid: aed270eaefdbf4342a08bb02fb62f92d
+  - enabled: 1
+    path: Assets/Scenes/2-27-Build/Tutorial 2-27.unity
+    guid: 9c6b0c28642bd754981d8ed651764c51
+  - enabled: 1
+    path: Assets/Scenes/2-27-Build/Storage Room 2-27.unity
+    guid: 4b60ecede7af7b146894aa4ddaaf1cda
+  - enabled: 1
+    path: Assets/Scenes/Sarah_Kitchen.unity
+    guid: 259e6b5f8816840779f5cbf238e75845
+  - enabled: 1
+    path: Assets/Scenes/2-27-Build/Captain Quarters 2-27.unity
+    guid: cb337e9613780204eb4416af54f464ce
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

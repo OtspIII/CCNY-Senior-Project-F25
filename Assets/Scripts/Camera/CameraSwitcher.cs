@@ -15,6 +15,8 @@ public class CameraSwitcher : MonoBehaviour
     [SerializeField] private GameObject crosshairUI;
     [SerializeField] private PlayerControls input;
 
+    [SerializeField] private AimCameraController aimController;
+
     private InputAction aimAction;
     private bool isAiming = false;
     private Transform yawTarget;
@@ -94,18 +96,24 @@ public class CameraSwitcher : MonoBehaviour
         inputAxisController.enabled = false; // freelook cam cannot rotate
     }
 
-    public void UpdateTargets(Transform newTarget)
+    public void UpdateTargets(
+     Transform followTarget,
+     Transform yawTarget,
+     Transform pitchTarget,
+     Transform playerModel)
     {
-        // updates freelook cam
-        freelookCam.Follow = newTarget;
-        freelookCam.LookAt = newTarget;
+        freelookCam.Follow = followTarget;
+        freelookCam.LookAt = followTarget;
+        aimCam.Follow = pitchTarget;
+        aimCam.LookAt = pitchTarget;
+        aimController.SetTargets(yawTarget, pitchTarget, playerModel);
 
-        aimCam.Follow = newTarget;
-        aimCam.LookAt = newTarget;
+        StartCoroutine(DelayedSnap());
+    }
 
-        freelookCam.OnTargetObjectWarped(newTarget, newTarget.position - freelookCam.transform.position);
-        aimCam.OnTargetObjectWarped(newTarget, newTarget.position - aimCam.transform.position);
-
+    private System.Collections.IEnumerator DelayedSnap()
+    {
+        yield return null; // wait one frame for camera to update
         SnapFreeLookBehindPlayer();
     }
 }

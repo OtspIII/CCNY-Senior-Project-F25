@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -5,6 +6,8 @@ public class Lantern : MonoBehaviour
 {
     [Header("Lantern Movement Position: ")]
     public Transform lanternCore;
+
+    public Collider aimCollider;
     [Space]
 
     [Header("Adjacent Lanterns: ")]
@@ -33,26 +36,30 @@ public class Lantern : MonoBehaviour
     public Material litMaterial;
     bool flicker;
     Animator anim;
-    Light light;
+    [SerializeField] Light lanternLight;
+    PlayerMovement player;
 
 
     private void Start()
     {
-        if (activeLantern && LanternTravel.Instance != null)
+        player = GameManager.Instance.Player;
+        if (activeLantern && GameManager.Instance.LanternTravel != null)
         {
-            if (!LanternTravel.Instance.ActivatedLanterns.Contains(this))
-            {
-                LanternTravel.Instance.ActivatedLanterns.Add(this);
-            }
+            if (activeLantern) GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
         }
 
         anim = GetComponent<Animator>();
-        light = GetComponent<Light>();
+        if (activeLantern)
+            GetComponent<Renderer>().material = litMaterial;
+        else
+            GetComponent<Renderer>().material = unlitMaterial;
+        //lanternLight = GetComponent<Light>();
     }
 
 
     private void Update()
     {
+        if (player != GameManager.Instance.Player) player = GameManager.Instance.Player;
         // Only count down while being hit
         if (hitsThisFrame > 0)
         {
@@ -61,7 +68,11 @@ public class Lantern : MonoBehaviour
 
             if (currentActivation >= activationTime)
             {
-                activeLantern = true;
+                if (!activeLantern)
+                {
+                    activeLantern = true;
+                    GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
+                }
                 currentActivation = activationTime;
             }
         }
@@ -76,12 +87,13 @@ public class Lantern : MonoBehaviour
             }
         }
 
-        if (LanternTravel.Instance.currentLantern == this)
+        if (GameManager.Instance.LanternTravel.currentLantern == this)
         {
             // Start flicker animation
             if (!flicker)
             {
-                anim.SetTrigger("Flicker");
+                if (anim != null)
+                    anim.SetTrigger("Flicker");
                 flicker = true;
             }
         }
@@ -92,25 +104,41 @@ public class Lantern : MonoBehaviour
         else if (activeLantern)
         {
             //Set To litMaterial:
-            if (!light.enabled) light.enabled = true;
+            if (!lanternLight.enabled) lanternLight.enabled = true;
             GetComponent<Renderer>().material = litMaterial;
 
         }
         else
         {
             //Set To unlitMaterial:
-            if (light.enabled) light.enabled = false;
+            if (lanternLight.enabled) lanternLight.enabled = false;
             GetComponent<Renderer>().material = unlitMaterial;
         }
+    }
+
+    public void HandlePlayerEnter(Collider col)
+    {
+        if (!activeLantern) return;
+
+        if (col.CompareTag("Player") && player.lantern == null)
+            player.lantern = this;
+    }
+
+    public void HandlePlayerExit(Collider col)
+    {
+        if (!activeLantern) return;
+
+        if (col.CompareTag("Player") && player.lantern == this)
+            player.lantern = null;
     }
 
     void OnTriggerEnter(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern == null)
+        if (col.gameObject.tag == "Player" && player.lantern == null)
         {
-            PlayerMovement.player.lantern = this;
+            player.lantern = this;
         }
     }
 
@@ -118,9 +146,9 @@ public class Lantern : MonoBehaviour
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern != null)
+        if (col.gameObject.tag == "Player" && player.lantern != null)
         {
-            PlayerMovement.player.lantern = null;
+            player.lantern = null;
         }
     }
 

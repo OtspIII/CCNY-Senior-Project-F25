@@ -11,6 +11,11 @@ TagManager:
   - Fire
   - Obstruction
   - Burn
+  - Ball
+  - Gem
+  - Player Light
+  - Gem 1
+  - Gem 2
   layers:
   - Default
   - TransparentFX
@@ -26,20 +31,20 @@ TagManager:
   - Mirror
   - Lantern
   - Projector
-  - 
+  - Trigger
   - Moveable
-  - 
+  - Crystal
   - Aura
   - 
   - 
   - Soul
   - Phase
   - 
-  - 
+  - Gem
   - 
   - Shadows
   - 
-  - 
+  - Blocker
   - 
   - 
   - 

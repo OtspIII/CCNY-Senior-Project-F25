@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MoreMountains.Tools;
 
 public class PlayerMovement : MonoBehaviour
 {
-    //GITHUB WTF IS WRONG
     public Vector3 startPos;
     GameManager gm;
 
     // Maybe temporary -- to turn off lightsource while not aiming 
     [SerializeField] GameObject lightSource;
     // Get only instance of player script 
-    public static PlayerMovement player;
+    public PlayerMovement player;
 
     // Allow inputs to affect player
     public bool playerControl = true;
@@ -20,9 +20,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed;
     float maxFallSpeed = 20.0f;
     [Space(5)]
+
+    [SerializeField] float teleportForce;
+    [SerializeField] float teleportCooldown;
+    [SerializeField] float airMult;
+    bool canTeleport = true;
+
+    [SerializeField] KeyCode jumpKey = KeyCode.LeftShift;
     [SerializeField] float jumpForce;
     [SerializeField] float jumpCooldown;
-    [SerializeField] float airMult;
     bool canJump = true;
 
     [Header("Ground Check")]
@@ -83,19 +89,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] List<KeyCode> movementKeys;
     KeyCode currentMoveKey;
     SunWheelController sunWheel;
+    [SerializeField] Animator anim;
+    bool test;
 
-    void Awake()
-    {
-        player = this;
-    }
     void Start()
     {
-        item.SetActive(false);
+        if (item != null) item.SetActive(false);
         startPos = transform.position;
         Physics.gravity = new Vector3(0, -27f, 0);
         Cursor.lockState = CursorLockMode.Locked;
 
-        gm = GameManager.instance;
+        gm = GameManager.Instance;
         rb = GetComponent<Rigidbody>();
         sunWheel = SunWheelController.Instance;
 
@@ -186,26 +190,32 @@ public class PlayerMovement : MonoBehaviour
         if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
         else grab = null;
 
-        isAiming = Input.GetMouseButton(1);
+        isAiming = Input.GetMouseButton(1) || test;
+        LightSwitch(isAiming);
 
-        if (item == null) return;
-        if (!item.activeInHierarchy) return;
-
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetKeyDown(jumpKey))
         {
-            LightSwitch(true);
+            //TryJump();
         }
-        else if (Input.GetMouseButtonUp(1))
-        {
-            LightSwitch(false);
 
-            // Remove fire VFX if player stops aiming whil burning
-            // TEMPORARY
-            if (GameObject.FindGameObjectWithTag("Fire") != null)
-            {
-                transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
-            }
-        }
+        /* if (item == null) return;
+         if (!item.activeInHierarchy) return;
+
+         if (Input.GetMouseButtonDown(1))
+         {
+             LightSwitch(true);
+         }
+         else if (Input.GetMouseButtonUp(1))
+         {
+             LightSwitch(false);
+
+             // Remove fire VFX if player stops aiming whil burning
+             // TEMPORARY
+             if (GameObject.FindGameObjectWithTag("Fire") != null)
+             {
+                 transform.GetChild(1).GetChild(0).GetComponent<LightReflection>().DestoryFireVFX();
+             }
+         } */
 
     }
 
@@ -226,11 +236,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFPVChange(bool isFPVActive)
     {
+        if (!this.enabled) return;
+
         canMove = !isFPVActive;
+        float focusAnim = canMove ? 0f : 1f;
+        anim.SetFloat("Beam", focusAnim);
 
         if (isFPVActive)
         {
+            test = true;
             GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        }
+        else
+        {
+            test = false;
         }
     }
 
@@ -248,17 +267,35 @@ public class PlayerMovement : MonoBehaviour
         if (transform.position.y < -10.0f || checkpoint)
         {
             rb.isKinematic = true;
-            canJump = false;
+            canTeleport = false;
             rb.isKinematic = true; // player unaffected by physics
             playerModel.SetActive(false); // Make player invisible
             exitingSlope = true;
             aura.SetActive(false); // Turn off lightball thing
             line.enabled = false;
             transform.position = startPos;
-            Invoke(nameof(ResetJump), jumpCooldown);
+            Invoke(nameof(ResetTeleport), teleportCooldown);
             if (checkpoint) checkpoint = false;
         }
 
+        // Animation 
+        if (rb.linearVelocity != Vector3.zero && grounded)
+        {
+            anim.SetFloat("Walk", 1f);
+        }
+        else
+        {
+            anim.SetFloat("Walk", 0f);
+        }
+
+        if (GetComponent<LanternTravel>().isTraveling)
+        {
+            anim.SetFloat("Fly", 1f);
+        }
+        else
+        {
+            anim.SetFloat("Fly", 0f);
+        }
     }
 
     void StateHandler()
@@ -359,13 +396,20 @@ public class PlayerMovement : MonoBehaviour
 
 
         // Handle rotation
-        if (moveDirection != Vector3.zero && state != PlayerState.grabbing && !isAiming)
+        if (moveDirection != Vector3.zero && state is not PlayerState.grabbing && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.15f, rb.angularVelocity.z);
             //Debug.Log(rb.angularVelocity.y);
             //Vector3 v = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
             //rb.AddTorque(v - rb.angularVelocity * 1.5f, ForceMode.Force);
+        }
+        else if (isAiming)
+        {
+            Vector3 dir = new Vector3(aimCamOrientation.transform.forward.x, 0f, aimCamOrientation.transform.forward.z);
+            float angleDiff = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.17f, rb.angularVelocity.z);
+            //Debug.Log(rb.angularVelocity.y);
         }
         else
         {
@@ -389,17 +433,20 @@ public class PlayerMovement : MonoBehaviour
         {
             // Make sure target position isn't inside of something
             // Ignores collider
-            bool clear = !Physics.Raycast(transform.position, new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-
+            bool clearLeft = !Physics.Raycast(new Vector3(transform.position.x - 0.5f, transform.position.y, transform.position.z),
+            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
+            bool clearRight = !Physics.Raycast(new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z),
+            new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             // Draw line for debug
+
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
+            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
             {
-                canJump = false;
+                canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
                 playerModel.SetActive(false); // Make player invisible
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, camOrientation.localEulerAngles.y, transform.localEulerAngles.z);
@@ -408,7 +455,7 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(FlashTeleport(line.GetPosition(1))); // Lerp player to position
                 //transform.position = new Vector3(line.GetPosition(1).x, transform.position.y, line.GetPosition(1).z);
                 line.enabled = false;
-                Invoke(nameof(ResetJump), jumpCooldown);
+                Invoke(nameof(ResetTeleport), teleportCooldown);
             }
         }
         else
@@ -455,9 +502,25 @@ public class PlayerMovement : MonoBehaviour
         transform.position = endPos;
     }
 
+    void TryJump()
+    {
+        if (!grounded) return;
+        if (!canJump) return;
+        if (rb.isKinematic) return;
+
+        canJump = false;
+        Jump();
+        Invoke(nameof(ResetJump), jumpCooldown);
+    }
+
     void Jump()
     {
         exitingSlope = true;
+
+        // Vector3 v = rb.linearVelocity;
+        // if (v.y < 0f) v.y = 0f;
+        // v.y = jumpForce;
+        // rb.linearVelocity = v;
 
         // Always start with Y Vel at 0
         //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -467,13 +530,18 @@ public class PlayerMovement : MonoBehaviour
 
     void ResetJump()
     {
-        // Reset jump variables
         canJump = true;
+    }
+
+    void ResetTeleport()
+    {
+        // Reset jump variables
+        canTeleport = true;
         exitingSlope = false;
         rb.isKinematic = false;
         line.enabled = true;
         playerModel.SetActive(true);
-        aura.SetActive(true);
+        //aura.SetActive(true);
     }
 
     bool OnSlope()
@@ -502,6 +570,14 @@ public class PlayerMovement : MonoBehaviour
     void LightSwitch(bool active)
     {
         lightSource.SetActive(active);
+        if (active)
+        {
+            MMGameEvent.Trigger("CrosshairOn");
+        }
+        else
+        {
+            MMGameEvent.Trigger("CrosshairOff");
+        }
     }
 
     void SunWheelHandler()
