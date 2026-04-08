@@ -10,7 +10,7 @@ public class Projector : MonoBehaviour
     public Quaternion lightRotationOffset = Quaternion.identity;
     public Quaternion cameraRotationOffset = Quaternion.identity;
     [Space]
-    public Transform beamRoot;       
+    public Transform beamRoot;
     public Transform PivotPosition;
 
     [Header("Beam Settings: ")]
@@ -27,7 +27,7 @@ public class Projector : MonoBehaviour
     public bool enterable = true;           //Can the player enter this projector?
     public bool isPlayerInside = false;     //Is the player currently inside this projector?
     [Space]
-    public float fixedBeamDistance = 5f;    
+    public float fixedBeamDistance = 5f;
     public float maxVerticalRotatation = 30f;
     public float maxHorizontalRotatation = 45f;
 
@@ -129,7 +129,7 @@ public class Projector : MonoBehaviour
     public bool UpdateYOffeset()
     {
         //Null Checks:
-        Transform playerTransform = PlayerObject ?? PlayerMovement.player?.transform;
+        Transform playerTransform = PlayerObject ?? GameManager.Instance.Player?.transform;
         if (playerTransform == null || ParentObject == null) return false;
 
         //Calculate Direction to Player on XZ Plane:
@@ -174,9 +174,9 @@ public class Projector : MonoBehaviour
     {
         if (!enterable) return;
 
-        if (col.gameObject.tag == "Player" && PlayerMovement.player.projector == null)
+        if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector == null)
         {
-            PlayerMovement.player.projector = this;
+            GameManager.Instance.Player.projector = this;
         }
     }
 
@@ -184,9 +184,9 @@ public class Projector : MonoBehaviour
     {
         if (!enterable) return;
 
-        if (col.gameObject.tag == "Player" && PlayerMovement.player.projector != null)
+        if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector != null)
         {
-            PlayerMovement.player.projector = null;
+            GameManager.Instance.Player.projector = null;
         }
     }
 }

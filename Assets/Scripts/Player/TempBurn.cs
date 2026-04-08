@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.Sqlite;
 
 
 public class TempBurn : MonoBehaviour

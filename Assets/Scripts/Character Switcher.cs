@@ -53,7 +53,7 @@ public class CharacterSwitcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+
 
         if (!isSplitModeUnlocked && isPlayerInside && Input.GetKeyDown(KeyCode.C))
         {
@@ -70,12 +70,12 @@ public class CharacterSwitcher : MonoBehaviour
         isSplitModeUnlocked = true;
         uiElement.SetActive(false);
         povUIPanel.SetActive(true); // shows small pov window
-        
-        foreach(PromptTrigger pt in promptTriggers)
+
+        foreach (PromptTrigger pt in promptTriggers)
         {
             pt.ForceExitFPV();
         }
-        
+
         SwitchPlayer();
 
     }
@@ -152,6 +152,10 @@ public class CharacterSwitcher : MonoBehaviour
             // player 1 is controlled, player 2 is in pov box
             player1Controller.enabled = true;
 
+            // Empty player references in Game Manager
+            GameManager.Instance.Player = null;
+            GameManager.Instance.LanternTravel = null;
+
             Rigidbody p2rb = player2Controller.GetComponent<Rigidbody>();
             if (p2rb != null)
             {
@@ -159,11 +163,28 @@ public class CharacterSwitcher : MonoBehaviour
                 p2rb.angularVelocity = Vector3.zero;
             }
 
-            // Change player references in Game Manager
+            // Add active player to Game Manager
             GameManager.Instance.Player = player1Controller;
+
+            // Switch active lantern travel script
+            player1Controller.GetComponent<LanternTravel>().enabled = true;
+            player2Controller.GetComponent<LanternTravel>().enabled = false;
+
+            // Add active lantern travel to Game Manager
             GameManager.Instance.LanternTravel = player1Controller.gameObject.GetComponent<LanternTravel>();
+
+            foreach (Lantern l in player2Controller.GetComponent<LanternTravel>().ActivatedLanterns)
+            {
+                if (player1Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Contains(l))
+                    continue; // Skip lamps already active in p2 script
+                else
+                    player1Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Add(l);
+            }
+
+            // Turn off player movement script on p2
             player2Controller.enabled = false;
 
+            // Switch camera
             p1POVCamera.enabled = false;
             p1POVCamera.targetTexture = null;
 
@@ -176,7 +197,7 @@ public class CharacterSwitcher : MonoBehaviour
             player2CameraAiming.enabled = true;
 
             // player 2 is controlled, player 1 is in pov box
-            player1Controller.enabled = false;
+            player2Controller.enabled = true;
 
             Rigidbody p1rb = player1Controller.GetComponent<Rigidbody>();
             if (p1rb != null)
@@ -186,22 +207,35 @@ public class CharacterSwitcher : MonoBehaviour
             }
 
             // Set player 2 to active
-            if (!player2Controller.gameObject.activeInHierarchy)
-                player2Controller.gameObject.SetActive(true);
+            //if (!player2Controller.gameObject.activeInHierarchy)
+            //    player2Controller.gameObject.SetActive(true);
 
-            // Update Lamps when player 2 spawns
-            foreach (Lantern l in GameManager.Instance.LanternTravel.ActivatedLanterns)
+            // Empty player references in Game Manager
+            GameManager.Instance.Player = null;
+            GameManager.Instance.LanternTravel = null;
+
+            GameManager.Instance.Player = player2Controller;
+            player2Controller.GetComponent<LanternTravel>().enabled = true;
+
+            // Add active lantern travel to Game Manager
+            GameManager.Instance.LanternTravel = player2Controller.gameObject.GetComponent<LanternTravel>();
+
+            // Update lamps when player 2 spawns
+            foreach (Lantern l in player1Controller.GetComponent<LanternTravel>().ActivatedLanterns)
             {
                 if (player2Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Contains(l))
-                    continue;
-                player2Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Add(l);
+                    continue; // Skip lamps already active in p2 script
+                else
+                    player2Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Add(l);
             }
 
-            // Change player references in Game Manager
-            GameManager.Instance.Player = player2Controller;
-            GameManager.Instance.LanternTravel = player2Controller.gameObject.GetComponent<LanternTravel>();
-            player2Controller.enabled = true;
+            // Turn off p1 lantern travel after checking for active lanterns
+            player1Controller.GetComponent<LanternTravel>().enabled = false;
 
+            // Turn off player movement script on p1
+            player1Controller.enabled = false;
+
+            // Switch camera
             p2POVCamera.enabled = false;
             p2POVCamera.targetTexture = null;
 

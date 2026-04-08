@@ -124,6 +124,15 @@ public class LightReflection : MonoBehaviour
             DestoryFireVFX();
         }
 
+        if (!gemHit)
+        {
+            if (gem != null)
+            {
+                gem.lightReflection = null;
+                gem = null;
+            }
+        }
+
         //Laser Setup:
         Vector3 ObjectPosition = transform.position;
         Vector3 ObjectDirection = transform.up;
@@ -240,6 +249,7 @@ public class LightReflection : MonoBehaviour
             if (gem != null)
             {
                 gemHit = true;
+                HandleGemHit(hit);
                 break;
             }
 
@@ -1035,6 +1045,9 @@ public class LightReflection : MonoBehaviour
             obstructionPoints.Add(obstructionHit.point);
             laserPoints.Add(obstructionHit.point);
 
+            gem.lightReflection = this;
+            Debug.Log(gem.lightReflection);
+
             totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;
@@ -1106,5 +1119,12 @@ public class LightReflection : MonoBehaviour
             spawnedPlayer.transform.position = hit.point;
             characterSwitcher.UnlockSplitMode();
         }
+    }
+
+    public void HandleGemHit(RaycastHit hit)
+    {
+        laserPoints.Add(hit.point);
+
+        if (gem.lightReflection == null) gem.lightReflection = this;
     }
 }

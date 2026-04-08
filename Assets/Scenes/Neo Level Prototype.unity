@@ -2708,13 +2708,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 5
-  hitsThisFrame: 0
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  smokeParticles: {fileID: 0}
+  ropeUnlit: {fileID: 0}
+  ropeLit: {fileID: 0}
+  burnStartColor: {r: 1, g: 1, b: 1, a: 1}
+  burnEndColor: {r: 1, g: 0, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
-  initialColor: {r: 1, g: 0, b: 0, a: 0}
-  initalColorBreach: 0.5
-  middleColor: {r: 1, g: 0.61752665, b: 0, a: 0}
-  middleColorBreach: 0.95
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &186988448
 GameObject:
   m_ObjectHideFlags: 0
@@ -3755,6 +3760,7 @@ MonoBehaviour:
   inputAxisController: {fileID: 1022782298}
   mainCamera: {fileID: 703674390}
   crosshairUI: {fileID: 2119007071}
+  aimController: {fileID: 0}
 --- !u!4 &385498231
 Transform:
   m_ObjectHideFlags: 0
@@ -4414,11 +4420,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPos: {x: 0, y: 0, z: 0}
   lightSource: {fileID: 1711514352}
+  player: {fileID: 0}
   playerControl: 1
   moveSpeed: 6
+  teleportForce: 0
+  teleportCooldown: 0
+  airMult: 0.6
+  jumpKey: 304
   jumpForce: 10
   jumpCooldown: 0.3
-  airMult: 0.6
   isGround:
     serializedVersion: 2
     m_Bits: 1024
@@ -4449,6 +4459,7 @@ MonoBehaviour:
     m_Bits: 1097715
   checkpoint: 0
   movementKeys: 
+  anim: {fileID: 0}
 --- !u!136 &447507914
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4623,11 +4634,14 @@ MonoBehaviour:
   currentLantern: {fileID: 0}
   target: {fileID: 0}
   isInsideLantern: 0
-  player: {fileID: 447507913}
+  lanternTravel: {fileID: 0}
   rb: {fileID: 447507915}
   followerObject: {fileID: 447507901}
   lightReflection: {fileID: 1355064701}
   lightModeToggle: {fileID: 447507911}
+  lanternMask:
+    serializedVersion: 2
+    m_Bits: 0
   cameraTransform: {fileID: 703674394}
   LanternTravelRangeColor: {r: 0.91320753, g: 0.6391423, b: 0.048244953, a: 0}
   travelRange: 50
@@ -5647,6 +5661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 163817759}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -5656,6 +5671,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &494803674
 Animator:
   serializedVersion: 7
@@ -6206,6 +6222,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -6222,9 +6241,20 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
+  gemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
+  crystalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  pressFPrompt: {fileID: 0}
+  characterSwitcher: {fileID: 0}
+  spawnedPlayer: {fileID: 0}
   laserWidth: 0.05
 --- !u!120 &524880704
 LineRenderer:
@@ -7492,6 +7522,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdc0bf78760c30469f34ba13c0941a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player: {fileID: 447507913}
+  LanternTravel: {fileID: 447507917}
 --- !u!4 &643387349
 Transform:
   m_ObjectHideFlags: 0
@@ -7798,6 +7830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1683522546}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -7807,6 +7840,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &674529284
 Animator:
   serializedVersion: 7
@@ -8230,6 +8264,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -8246,9 +8283,20 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
+  gemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
+  crystalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  pressFPrompt: {fileID: 0}
+  characterSwitcher: {fileID: 0}
+  spawnedPlayer: {fileID: 0}
   laserWidth: 0.05
 --- !u!120 &688336958
 LineRenderer:
@@ -17286,13 +17334,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 5
-  hitsThisFrame: 0
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  smokeParticles: {fileID: 0}
+  ropeUnlit: {fileID: 0}
+  ropeLit: {fileID: 0}
+  burnStartColor: {r: 1, g: 1, b: 1, a: 1}
+  burnEndColor: {r: 1, g: 0, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
-  initialColor: {r: 1, g: 0, b: 0, a: 0}
-  initalColorBreach: 0.5
-  middleColor: {r: 1, g: 0.61752665, b: 0, a: 0}
-  middleColorBreach: 0.95
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &891202129
 GameObject:
   m_ObjectHideFlags: 0
@@ -18976,13 +19029,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isMultipleLensesEffected: 0
   burnTime: 10
-  hitsThisFrame: 0
+  destroyOnComplete: 1
+  onBurnComplete:
+    m_PersistentCalls:
+      m_Calls: []
+  smokeParticles: {fileID: 0}
+  ropeUnlit: {fileID: 0}
+  ropeLit: {fileID: 0}
+  burnStartColor: {r: 1, g: 1, b: 1, a: 1}
+  burnEndColor: {r: 1, g: 0, b: 0, a: 1}
+  burnStartWidth: 2
+  burnEndWidth: 5
   currentBurnTime: 0
-  initialColor: {r: 1, g: 0, b: 0, a: 0}
-  initalColorBreach: 0.5
-  middleColor: {r: 1, g: 0.61752665, b: 0, a: 0}
-  middleColorBreach: 0.95
-  finalColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!65 &1056264129
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22618,6 +22676,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -22634,9 +22695,20 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
+  gemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
+  crystalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  pressFPrompt: {fileID: 0}
+  characterSwitcher: {fileID: 0}
+  spawnedPlayer: {fileID: 0}
   laserWidth: 0.05
 --- !u!120 &1445949237
 LineRenderer:
@@ -25157,6 +25229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1072407069}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -25166,6 +25239,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &1557728195
 Animator:
   serializedVersion: 7
@@ -27554,6 +27628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1470252745}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -27563,6 +27638,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &1669590399
 Animator:
   serializedVersion: 7
@@ -31460,6 +31536,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -31476,9 +31555,20 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   useExplicitDirection: 0
   explicitDirection: {x: 0, y: 1, z: 0}
+  gemLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
+  crystalLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  pressFPrompt: {fileID: 0}
+  characterSwitcher: {fileID: 0}
+  spawnedPlayer: {fileID: 0}
   laserWidth: 0.05
 --- !u!120 &1976246941
 LineRenderer:
@@ -33279,6 +33369,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lanternCore: {fileID: 1115287924}
+  aimCollider: {fileID: 0}
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
@@ -33288,6 +33379,7 @@ MonoBehaviour:
   hitsThisFrame: 0
   unlitMaterial: {fileID: 2100000, guid: c0cddafac76388747821f321cfa9ea3f, type: 2}
   litMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
+  lanternLight: {fileID: 0}
 --- !u!95 &7857559041294886974
 Animator:
   serializedVersion: 7

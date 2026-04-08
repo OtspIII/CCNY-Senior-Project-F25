@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -20,10 +19,12 @@ public class ProjectorTraversal : MonoBehaviour
     public KeyCode rotateYLeftKey = KeyCode.A;
     public KeyCode rotateYRightKey = KeyCode.D;
     public float ySpeedDegPerSec = 120f;
+    private float yAimSpeedDegPerSec = 30f;
     [Space]
     public KeyCode rotateZUpKey = KeyCode.W;    // increases Z rotation (positive)
     public KeyCode rotateZDownKey = KeyCode.S;  // decreases Z rotation (negative)
     public float zSpeedDegPerSec = 60f;
+    private float zAimSpeedDegPerSec = 15f;
     [Space]
 
     [Header("Camera Offset Parameters:")]
@@ -51,7 +52,7 @@ public class ProjectorTraversal : MonoBehaviour
         if (!isInsideProjector)
         {
             // Use PlayerMovement trigger-based detection first (same approach as Lantern)
-            Projector detected = PlayerMovement.player != null ? PlayerMovement.player.projector : null;
+            Projector detected = GameManager.Instance.Player != null ? GameManager.Instance.Player.projector : null;
 
             if (detected != null)
             {
@@ -82,28 +83,28 @@ public class ProjectorTraversal : MonoBehaviour
             HandleProjectorRotationInput();
             transform.position = currentProjector.PivotPosition.position;
 
-            Projector detected = PlayerMovement.player != null ? PlayerMovement.player.projector : null;
+            Projector detected = GameManager.Instance.Player != null ? GameManager.Instance.Player.projector : null;
 
             //Aim Alignment:
             if (player.isAiming)
             {
                 //Store Base Offset:
-                Quaternion baseOffset = Quaternion.Euler(detected.baseRotationEuler);
+                //Quaternion baseOffset = Quaternion.Euler(detected.baseRotationEuler);
 
                 //Store Camera Forward in Local Space:
-                Vector3 localCameraForward = detected.transform.InverseTransformDirection(playerCamera.forward);
+                //Vector3 localCameraForward = detected.transform.InverseTransformDirection(playerCamera.forward);
 
                 //Calculate Rotation to Look in that Direction:
-                Quaternion cameraRotationY = Quaternion.LookRotation(localCameraForward, Vector3.up);
+                //Quaternion cameraRotationY = Quaternion.LookRotation(localCameraForward, Vector3.up);
 
                 //Apply Horizontal Fix to Align with Projector's Forward:
-                Quaternion horizontalFix = Quaternion.Euler(0f, 90f, 0f);
+                //Quaternion horizontalFix = Quaternion.Euler(0f, 90f, 0f);
 
                 //Final Light Rotation:
-                detected.lightRotationOffset = cameraRotationY * horizontalFix * baseOffset;
+                //detected.lightRotationOffset = cameraRotationY * horizontalFix * baseOffset;
             }
-            
-          
+
+
 
 
             //Beam Visual:
@@ -128,8 +129,9 @@ public class ProjectorTraversal : MonoBehaviour
 
         // Y-axis rotation controlled by A/D, clamped to +/- maxAngleVertical
         float yDelta = 0f;
-        if (Input.GetKey(rotateYLeftKey)) yDelta += ySpeedDegPerSec * Time.deltaTime;
-        if (Input.GetKey(rotateYRightKey)) yDelta -= ySpeedDegPerSec * Time.deltaTime;
+        float ySpeed = Input.GetMouseButton(1) ? yAimSpeedDegPerSec : ySpeedDegPerSec;
+        if (Input.GetKey(rotateYLeftKey)) yDelta -= ySpeed * Time.deltaTime;
+        if (Input.GetKey(rotateYRightKey)) yDelta += ySpeed * Time.deltaTime;
 
         if (Mathf.Abs(yDelta) > Mathf.Epsilon)
         {
@@ -146,8 +148,9 @@ public class ProjectorTraversal : MonoBehaviour
 
         // Z-axis rotation controlled by W/S, clamped to +/- maxAngleVertical
         float zDelta = 0f;
-        if (Input.GetKey(rotateZUpKey)) zDelta += zSpeedDegPerSec * Time.deltaTime;
-        if (Input.GetKey(rotateZDownKey)) zDelta -= zSpeedDegPerSec * Time.deltaTime;
+        float zSpeed = Input.GetMouseButton(1) ? zAimSpeedDegPerSec : zSpeedDegPerSec;
+        if (Input.GetKey(rotateZUpKey)) zDelta -= zSpeed * Time.deltaTime;
+        if (Input.GetKey(rotateZDownKey)) zDelta += zSpeed * Time.deltaTime;
 
         if (Mathf.Abs(zDelta) > Mathf.Epsilon)
         {
@@ -214,7 +217,7 @@ public class ProjectorTraversal : MonoBehaviour
 
         if (rb != null) rb.isKinematic = false;
 
-        if (lightReflection != null) lightReflection.suppressRaycasting = false; 
+        if (lightReflection != null) lightReflection.suppressRaycasting = false;
         if (lightModeToggle.inProjector) lightModeToggle.inProjector = false;
 
         isInsideProjector = false;
@@ -227,9 +230,9 @@ public class ProjectorTraversal : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (PlayerMovement.player == null) return;
+        /*if (GameManager.Instance.Player == null) return;
 
-        Projector detected = PlayerMovement.player.projector;
+        Projector detected = GameManager.Instance.Player.projector;
         if (detected == null || detected.beamRoot == null) return;
 
         //Beam Rotation:
@@ -239,7 +242,7 @@ public class ProjectorTraversal : MonoBehaviour
 
         //Beam Root:
         Vector3 origin = detected.beamRoot.position;
-        
+
         //Point of Origin:
         Gizmos.color = UnityEngine.Color.white;
         Gizmos.DrawSphere(origin, 0.05f);
@@ -289,7 +292,7 @@ public class ProjectorTraversal : MonoBehaviour
         // -------------------------------------------------------------------
 
         //Forward Vector Output [Z]:
-        Vector3 forward = finalRotation * Vector3.up;  
+        Vector3 forward = finalRotation * Vector3.up;
         Gizmos.color = UnityEngine.Color.blue;
         Gizmos.DrawLine(origin, origin + forward * axisLength);
 
@@ -299,10 +302,11 @@ public class ProjectorTraversal : MonoBehaviour
         Gizmos.DrawLine(origin, origin + right * axisLength);
 
         //Up Vector Output [Y]:
-        Vector3 up = finalRotation * Vector3.forward;  
+        Vector3 up = finalRotation * Vector3.forward;
         Gizmos.color = UnityEngine.Color.green;
         Gizmos.DrawLine(origin, origin + up * axisLength);
 
         // -------------------------------------------------------------------
+        */
     }
 }
