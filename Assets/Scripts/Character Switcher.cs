@@ -173,6 +173,14 @@ public class CharacterSwitcher : MonoBehaviour
             // Add active lantern travel to Game Manager
             GameManager.Instance.LanternTravel = player1Controller.gameObject.GetComponent<LanternTravel>();
 
+            foreach (Lantern l in player2Controller.GetComponent<LanternTravel>().ActivatedLanterns)
+            {
+                if (player1Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Contains(l))
+                    continue; // Skip lamps already active in p2 script
+                else
+                    player1Controller.gameObject.GetComponent<LanternTravel>().ActivatedLanterns.Add(l);
+            }
+
             // Turn off player movement script on p2
             player2Controller.enabled = false;
 
