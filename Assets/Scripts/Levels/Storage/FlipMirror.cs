@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
 public class FlipMirror : GemInteractions
@@ -8,8 +9,10 @@ public class FlipMirror : GemInteractions
     [SerializeField] GameObject mirror;
     Coroutine currentCoroutine;
     [SerializeField] Material unlit, lit;
+    //public LightReflection lightReflection;
+
     bool flip;
-    [SerializeField] bool temp = true;
+    //[SerializeField] bool temp = true;
 
     public override void Start()
     {
@@ -18,15 +21,17 @@ public class FlipMirror : GemInteractions
 
     public override void Update()
     {
-        LightReflection light = GameManager.Instance.Player.gameObject.GetComponentInChildren<LightReflection>();
-        isHitting = light != null && light.gameObject.activeInHierarchy && light.gemHit;
+        base.Update();
+
+        //LightReflection light = GameManager.Instance.Player.gameObject.GetComponentInChildren<LightReflection>();
+        isHitting = LightTool() != null;
 
         if (isHitting && !flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
             currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(-5f, 180f, 0f)));
         }
-        else if (!isHitting && !temp && flip)
+        else if (!isHitting && flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
             currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(-5f, 0f, 0f)));

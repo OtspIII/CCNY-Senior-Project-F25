@@ -11,7 +11,7 @@ public class RotateGem : GemInteractions
     Coroutine currentCoroutine;
     bool flip = true;
     [SerializeField] Material unlit, lit;
-    [SerializeField] bool temp = true;
+    //[SerializeField] bool temp = true;
 
     public override void Start()
     {
@@ -20,15 +20,16 @@ public class RotateGem : GemInteractions
 
     public override void Update()
     {
-        LightReflection light = GameManager.Instance.Player.gameObject.GetComponentInChildren<LightReflection>();
-        isHitting = light != null && light.gameObject.activeInHierarchy && light.gemHit && light.gem.gameObject.CompareTag("Gem 2");
+        base.Update();
+
+        isHitting = LightTool() != null;
 
         if (isHitting && !flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
             currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(0f, 269f, -45f)));
         }
-        else if (!isHitting && !temp && flip)
+        else if (!isHitting && flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
             currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(0f, 269f, 0f)));
@@ -39,6 +40,9 @@ public class RotateGem : GemInteractions
     IEnumerator Flip(Quaternion target)
     {
         flip = !flip;
+        if (flip) if (GetComponent<Renderer>().material != lit) GetComponent<Renderer>().material = lit;
+        if (!flip) if (GetComponent<Renderer>().material != unlit) GetComponent<Renderer>().material = unlit;
+
         Quaternion startRotation = gem.transform.rotation;
         float elapsedTime = 0f;
 

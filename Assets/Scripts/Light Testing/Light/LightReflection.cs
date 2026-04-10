@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class LightReflection : MonoBehaviour
 {
     [Header("Laser Parameters: ")]
+    public bool suppressRaycasting = false;
     public List<Vector3> laserPoints;
     public RaycastHit[] hits;
     public float lazerDistance;
@@ -61,8 +62,13 @@ public class LightReflection : MonoBehaviour
     public LayerMask projectorLayer;
     public bool projectorHit;
     private Projector projector;
+    public Projector currentProjectorHit;
     public Transform parentObjectForRotation;  // Set this from Projector when updating
     public Quaternion lightRotationOffset = Quaternion.identity;
+    public Quaternion cameraRotationOffset = Quaternion.identity;
+    // Explicit-direction mode (used when player is inside a projector)
+    [HideInInspector] public bool useExplicitDirection = false;
+    [HideInInspector] public Vector3 explicitDirection = Vector3.up;
     [Space]
 
     [Header("Gem Collision: ")]
@@ -76,6 +82,15 @@ public class LightReflection : MonoBehaviour
     public GameObject endPointMarkerPrefab;
     private List<Vector3> obstructionPoints = new List<Vector3>();
     [Space]
+
+    [Header("Crystal Activation")]
+    public LayerMask crystalLayer;
+    private float crystalHitTimer = 0f;
+    private float crystalActivationTime = 3f;
+    private bool crystalActivated = false;
+    [SerializeField] private GameObject pressFPrompt;
+    [SerializeField] private CharacterSwitcher characterSwitcher;
+    [SerializeField] private GameObject spawnedPlayer;
 
 
 
@@ -109,6 +124,15 @@ public class LightReflection : MonoBehaviour
             DestoryFireVFX();
         }
 
+        if (!gemHit)
+        {
+            if (gem != null)
+            {
+                gem.lightReflection = null;
+                gem = null;
+            }
+        }
+
         //Laser Setup:
         Vector3 ObjectPosition = transform.position;
         Vector3 ObjectDirection = transform.up;
@@ -123,9 +147,11 @@ public class LightReflection : MonoBehaviour
         //Setting a Distance To Avoid Infinite Looping:
         while (remainingLazerDistance > 0f)
         {
+            if (suppressRaycasting) return;
+
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer | mirrorBlock, QueryTriggerInteraction.Ignore);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer | mirrorBlock | crystalLayer, QueryTriggerInteraction.Ignore);
 
             if (playFire)
             {
@@ -165,7 +191,7 @@ public class LightReflection : MonoBehaviour
             gem = hit.collider.CompareTag("Gem 1") ? hit.collider.GetComponent<FlipMirror>() : hit.collider.GetComponent<RotateGem>();
 
             //Null Object Checks:
-            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null && gem == null)
+            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null && gem == null && hit.collider.gameObject.layer != 16)
             {
                 laserPoints.Add(ObjectPosition + ObjectDirection * remainingLazerDistance);
                 break;
@@ -223,6 +249,14 @@ public class LightReflection : MonoBehaviour
             if (gem != null)
             {
                 gemHit = true;
+                HandleGemHit(hit);
+                break;
+            }
+
+            // Crystal collision check
+            if (hit.collider.gameObject.layer == 16)
+            {
+                HandleCrystalHit(hit);
                 break;
             }
         }
@@ -539,9 +573,6 @@ public class LightReflection : MonoBehaviour
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
 
-            //Vector3 pointDirection = (obstructionPoints[0] - PlayerMovement.player.transform.position).normalized;
-            //Vector3 targetPoint = obstructionPoints[0] - pointDirection;
-
             //If Enough Increments & Bool Becomes True:
             if (lantern.activeLantern && GameManager.Instance.LanternTravel != null)
             {
@@ -574,34 +605,41 @@ public class LightReflection : MonoBehaviour
     private void HandleProjectorHit(RaycastHit hit)
     {
         projector = hit.collider.GetComponent<Projector>();
-        if (projector != null)
-        {
-            projectorHit = true;
 
-            //Check Valid Projection Angle:
-            bool validProjection = projector.UpdateYOffeset();
-            if (!validProjection) return;
-
-            //Register Hit:
-            projector.RegisterHit();
-
-            //Set Beam Light Rotation Parent & Offset:
-            if (projector.beamLight != null)
-            {
-                projector.beamLight.parentObjectForRotation = projector.ParentObject;
-                projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
-            }
-
-            //Update Beam Light Reflection:
-            UpdateProjectorLightReflection(projector);
-
-            laserPoints.Add(hit.point);
-            obstructionPoints.Add(hit.point);
-        }
-        else
+        //Null Check:
+        if (projector == null)
         {
             projectorHit = false;
+            currentProjectorHit = null;
+            return;
         }
+
+        //Try Set Driver To Raycast Mode, If It Fails, Don't Register Hit:
+        if (!projector.TrySetDriver(Projector.ProjectionMode.Raycast))
+            return;
+
+        projectorHit = true;
+        currentProjectorHit = projector;
+
+        //Update Y Offset, If It Fails, Don't Register Hit:
+        if (!projector.UpdateYOffeset())
+            return;
+
+        //Register Hit:
+        projector.RegisterHit();
+
+        //Configure Projector's Beam Light To Match This Hit:
+        if (projector.beamLight != null)
+        {
+            projector.beamLight.parentObjectForRotation = projector.ParentObject;
+            projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
+            projector.beamLight.cameraRotationOffset = projector.cameraRotationOffset;
+            projector.fixedBeamDistance = projector.beamLight.lazerDistance;
+        }
+        UpdateProjectorLightReflection(projector);
+
+        laserPoints.Add(hit.point);
+        obstructionPoints.Add(hit.point);
     }
 
     private void UpdateProjectorLightReflection(Projector projector)
@@ -612,7 +650,7 @@ public class LightReflection : MonoBehaviour
         projector.beamLight.transform.position = projector.beamRoot.position;
 
         //Set Beam Light Rotation -> Parent Object Rotation + Offset:
-        projector.beamLight.transform.rotation = projector.ParentObject.rotation * projector.lightRotationOffset;
+        projector.beamLight.transform.rotation = projector.ParentObject.rotation * projector.lightRotationOffset * projector.cameraRotationOffset;
 
         //Calculate New Distance Based on Hits This Frame:
         float newDistance = Mathf.Max(projector.hitsThisFrame * projector.lengthPerHit, 0.001f);
@@ -622,10 +660,43 @@ public class LightReflection : MonoBehaviour
         projector.beamLight.laserWidth = projector.beamWidth;
 
         //Update Beam Light Visual:
-        projector.beamLight.UpdateLaserVisual();
+        projector.beamLight.UpdateLaserVisual(projector);
     }
 
-    public void UpdateLaserVisual()
+    public void RefreshProjectorProjection(Projector projector, Vector3 hitPoint, bool registerHit = true, bool insideProjector = false)
+    {
+        if (projector == null)
+            return;
+
+        //Try Set Driver To Traversal Mode, If It Fails, Don't Register Hit:
+        if (!projector.TrySetDriver(Projector.ProjectionMode.Traversal))
+            return;
+
+        //Update Y Offset, If It Fails, Don't Register Hit:
+        if (!insideProjector)
+        {
+            if (!projector.UpdateYOffeset())
+                return;
+        }
+
+        //Register Hit:
+        if (registerHit)
+            projector.RegisterHit();
+
+        //Configure Projector's Beam Light To Match This Hit:
+        if (projector.beamLight != null)
+        {
+            projector.beamLight.parentObjectForRotation = projector.ParentObject;
+            projector.beamLight.lightRotationOffset = projector.lightRotationOffset;
+            projector.fixedBeamDistance = projector.beamLight.lazerDistance;
+        }
+        UpdateProjectorLightReflection(projector);
+
+        laserPoints.Add(hitPoint);
+        obstructionPoints.Add(hitPoint);
+    }
+
+    public void UpdateLaserVisual(Projector projector)
     {
         //Ensure Line Renderer is Assigned:
         if (lineRenderer == null)
@@ -643,21 +714,24 @@ public class LightReflection : MonoBehaviour
         lineRenderer.endWidth = laserWidth;
 
         laserPoints.Clear();
-
-        //Calculate Final Rotation:
-        Quaternion finalRotation = parentObjectForRotation.rotation * lightRotationOffset;
-
-        //Calculate Output Direction (+Y in Local Space):
-        Vector3 outputDirection = finalRotation * Vector3.up;
-
-        //Calculate Axis (-Z in Local Space):
-        Vector3 axis = finalRotation * -Vector3.forward;
-
-        //Calculate Beam Direction (Perpendicular to Axis and Output Direction):
-        Vector3 beamDirection = Vector3.Cross(axis, outputDirection).normalized;
-
-        //Calculate Origin Point:
         Vector3 origin = transform.position;
+        Vector3 beamDirection;
+
+        // Calculate rotation depending on whether the player is inside
+        Quaternion finalRotation = parentObjectForRotation.rotation * lightRotationOffset * cameraRotationOffset;
+
+        if (projector.isPlayerInside)
+        {
+            // Full 3D alignment with camera
+            beamDirection = finalRotation * Vector3.up;
+        }
+        else
+        {
+            // Normal behavior: outputDirection + axis cross for projector hits
+            Vector3 outputDirection = finalRotation * Vector3.up;
+            Vector3 axis = finalRotation * -Vector3.forward;
+            beamDirection = Vector3.Cross(axis, outputDirection).normalized;
+        }
 
         //Calculate Laser Points:
         laserPoints.Add(origin);
@@ -685,6 +759,24 @@ public class LightReflection : MonoBehaviour
         lanternHit = false;
         projectorHit = false;
         gemHit = false;
+
+        if (!IsCrystalBeingHit())
+        {
+            crystalHitTimer = 0f;
+            if (pressFPrompt != null && !crystalActivated)
+                pressFPrompt.SetActive(false);
+        }
+    }
+
+    private bool IsCrystalBeingHit()
+    {
+        if (hits == null) return false;
+
+        foreach (var hit in hits)
+        {
+            if (hit.collider.gameObject.layer == 16) return true;
+        }
+        return false;
     }
 
     private void ClearPrismSplits()
@@ -953,6 +1045,9 @@ public class LightReflection : MonoBehaviour
             obstructionPoints.Add(obstructionHit.point);
             laserPoints.Add(obstructionHit.point);
 
+            gem.lightReflection = this;
+            Debug.Log(gem.lightReflection);
+
             totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
             finalImagePoint = obstructionHit.point;
             nextPosition = obstructionHit.point;
@@ -1005,5 +1100,31 @@ public class LightReflection : MonoBehaviour
             Destroy(f);
         }
         playFire = false;
+    }
+
+    public void HandleCrystalHit(RaycastHit hit)
+    {
+        laserPoints.Add(hit.point);
+
+        crystalHitTimer += Time.deltaTime;
+
+        if (pressFPrompt != null)
+            pressFPrompt.SetActive(true);
+
+        if (crystalHitTimer >= crystalActivationTime && !crystalActivated)
+        {
+            crystalActivated = true;
+            pressFPrompt?.SetActive(false);
+            spawnedPlayer.SetActive(true);
+            spawnedPlayer.transform.position = hit.point;
+            characterSwitcher.UnlockSplitMode();
+        }
+    }
+
+    public void HandleGemHit(RaycastHit hit)
+    {
+        laserPoints.Add(hit.point);
+
+        if (gem.lightReflection == null) gem.lightReflection = this;
     }
 }

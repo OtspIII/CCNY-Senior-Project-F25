@@ -246,6 +246,7 @@ public class LanternTravel : MonoBehaviour
         transform.position = endPos;
 
         currentLantern = targetLantern;
+        player.lantern = currentLantern;
 
         if (currentLantern != null && currentLantern.aimCollider != null)
             currentLantern.aimCollider.enabled = false;

@@ -11225,6 +11225,10 @@ PrefabInstance:
       propertyPath: pitchTarget
       value: 
       objectReference: {fileID: 2039126762}
+    - target: {fileID: 2860158776699781754, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
+      propertyPath: playerModel
+      value: 
+      objectReference: {fileID: 1664177398}
     - target: {fileID: 3720013729589078618, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: Target.TrackingTarget
       value: 
@@ -31666,6 +31670,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -31682,6 +31689,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -39413,6 +39421,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bdc0bf78760c30469f34ba13c0941a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Player: {fileID: 0}
+  LanternTravel: {fileID: 0}
 --- !u!4 &643387349
 Transform:
   m_ObjectHideFlags: 0
@@ -41579,6 +41589,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -41595,6 +41608,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -44702,6 +44716,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -44718,6 +44735,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -50482,6 +50500,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -50498,6 +50519,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -51287,6 +51309,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1748696828009216799, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Name
+      value: PitchTarget2
+      objectReference: {fileID: 0}
     - target: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_Name
       value: Player2
@@ -51294,6 +51320,10 @@ PrefabInstance:
     - target: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3131787222639509743, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Name
+      value: YawTarget2
       objectReference: {fileID: 0}
     - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: cam
@@ -51312,9 +51342,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 902010724}
     - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: spawnedPlayer
+      value: 
+      objectReference: {fileID: 172019304}
+    - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: characterSwitcher
       value: 
       objectReference: {fileID: 551475784}
+    - target: {fileID: 5041905479972849320, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: camOrientation
       value: 
@@ -71010,6 +71048,9 @@ MonoBehaviour:
   mirrorLayer:
     serializedVersion: 2
     m_Bits: 2048
+  mirrorBlock:
+    serializedVersion: 2
+    m_Bits: 0
   mirrorHit: 0
   lanternLayer:
     serializedVersion: 2
@@ -71026,6 +71067,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   gemHit: 0
+  gem: {fileID: 0}
   obstructionPointMarkerPrefab: {fileID: 5648934325104969992, guid: 3bb24c76aa4fce7448f2a08348b726f8, type: 3}
   imagePointMarkerPrefab: {fileID: 1630546774146983372, guid: 973d565dd2c708643b070d970d328a5d, type: 3}
   endPointMarkerPrefab: {fileID: 1036962242990389164, guid: bd8977801d6de954289b253f6005eca6, type: 3}
@@ -78602,9 +78644,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1748696828009216799, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Name
+      value: PitchTarget1
+      objectReference: {fileID: 0}
     - target: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 2293655241027342894, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3131787222639509743, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Name
+      value: YawTarget1
       objectReference: {fileID: 0}
     - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: cam
@@ -78630,6 +78684,10 @@ PrefabInstance:
       propertyPath: characterSwitcher
       value: 
       objectReference: {fileID: 551475784}
+    - target: {fileID: 5041905479972849320, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: camOrientation
       value: 

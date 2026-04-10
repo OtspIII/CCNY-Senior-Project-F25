@@ -76,10 +76,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
+    [Space]
     public Lantern lantern;
+    public bool inLantern;
+    [Space]
+    public Projector projector;
+    [Space]
     [SerializeField] LayerMask allLayersExceptPhase;
     public bool checkpoint;
-    public bool inLantern;
     bool moveH, moveV;
     bool canMove = true;
     [SerializeField] List<KeyCode> movementKeys;
@@ -232,6 +236,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleFPVChange(bool isFPVActive)
     {
+        if (!this.enabled) return;
+
         canMove = !isFPVActive;
         float focusAnim = canMove ? 0f : 1f;
         anim.SetFloat("Beam", focusAnim);

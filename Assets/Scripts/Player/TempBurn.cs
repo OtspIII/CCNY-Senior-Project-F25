@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.Sqlite;
 
 
 public class TempBurn : MonoBehaviour
@@ -45,7 +44,7 @@ public class TempBurn : MonoBehaviour
         LightRefraction();
         UpdateLineWidth();
 
-        if (crystalHit && Input.GetKeyDown(KeyCode.F) && !spawnedPlayer.activeSelf)
+        if (crystalHit && Input.GetKeyDown(KeyCode.C) && !spawnedPlayer.activeSelf)
         {
             spawnedPlayer.SetActive(true);
             spawnedPlayer.transform.position = hit.point;
