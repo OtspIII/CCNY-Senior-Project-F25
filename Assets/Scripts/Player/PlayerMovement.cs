@@ -43,15 +43,19 @@ public class PlayerMovement : MonoBehaviour
     [Header("Held Items")]
     // Will make static if we only ever need one 
     public GameObject item;
+    [Space(15)]
+    [Header("Ladder Movement")]
+    public LadderMovement ladder;
 
     [Space(15)]
     public PlayerState state;
     public enum PlayerState
     {
         walking,
+        ladder,
         light,
     }
-    Rigidbody rb;
+    public Rigidbody rb;
     public Vector3 moveDirection;
     RaycastHit floorHit;
     public bool isAiming;
@@ -75,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
     SunWheelController sunWheel;
     [SerializeField] Animator anim;
     bool test;
+    bool teleportFromLadder;
 
     void Start()
     {
@@ -192,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Animation 
-        if (rb.linearVelocity != Vector3.zero && grounded)
+        if ((rb.linearVelocity != Vector3.zero && grounded) || ladder != null)
         {
             anim.SetFloat("Walk", 1f);
         }
@@ -291,10 +296,11 @@ public class PlayerMovement : MonoBehaviour
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded)
+            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && ladder == null)
             {
                 canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
+                //if (ladder != null) teleportFromLadder = true;
                 playerModel.SetActive(false); // Make player invisible
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, camOrientation.localEulerAngles.y, transform.localEulerAngles.z);
                 exitingSlope = true;
@@ -397,6 +403,11 @@ public class PlayerMovement : MonoBehaviour
         {
             //gm.ResetScene(); // Restart demo
         }
+    }
+
+    public void KinematicMode()
+    {
+        rb.isKinematic = !rb.isKinematic;
     }
 
 }
