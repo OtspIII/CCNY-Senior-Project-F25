@@ -2316,6 +2316,7 @@ MonoBehaviour:
   hasDoor: 1
   door: {fileID: 1845119865}
   doorTarget: {fileID: 1543450128}
+  doorSpeed: 5
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 0
@@ -5850,6 +5851,7 @@ MonoBehaviour:
   hasDoor: 0
   door: {fileID: 0}
   doorTarget: {fileID: 0}
+  doorSpeed: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 1
@@ -8566,6 +8568,7 @@ MonoBehaviour:
   hasDoor: 0
   door: {fileID: 0}
   doorTarget: {fileID: 0}
+  doorSpeed: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 0
@@ -16512,31 +16515,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.366631
+      value: -15.116631
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.473529
+      value: 3.3700001
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.179636
+      value: 4.588949
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98836154
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.15212336
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.0000000046923985
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6592084117046535992, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -7.222291e-10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7184880868918079258, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -22018,6 +22021,7 @@ MonoBehaviour:
   hasDoor: 0
   door: {fileID: 0}
   doorTarget: {fileID: 0}
+  doorSpeed: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 0

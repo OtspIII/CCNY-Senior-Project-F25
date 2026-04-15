@@ -63,7 +63,7 @@ public class ProjectorTraversal : MonoBehaviour
                     lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: false);
                 }
 
-                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && (player == null || player.state != PlayerMovement.PlayerState.grabbing))
+                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && player != null)
                 {
                     currentProjector = detected;
                     if (currentProjector != null)
