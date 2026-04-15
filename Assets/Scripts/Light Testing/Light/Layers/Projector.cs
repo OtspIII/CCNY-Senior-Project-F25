@@ -12,6 +12,7 @@ public class Projector : MonoBehaviour
     [Space]
     public Transform beamRoot;
     public Transform PivotPosition;
+    [SerializeField] GameObject promptText;
 
     [Header("Beam Settings: ")]
     public LightReflection beamLight;
@@ -177,6 +178,7 @@ public class Projector : MonoBehaviour
         if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector == null)
         {
             GameManager.Instance.Player.projector = this;
+            promptText.SetActive(true);
         }
     }
 
@@ -187,6 +189,7 @@ public class Projector : MonoBehaviour
         if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector != null)
         {
             GameManager.Instance.Player.projector = null;
+            promptText.SetActive(false);
         }
     }
 }

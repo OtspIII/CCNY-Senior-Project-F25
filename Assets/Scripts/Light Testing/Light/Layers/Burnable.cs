@@ -101,6 +101,11 @@ public class Burnable : MonoBehaviour
         {
             ApplyBurn(Time.deltaTime);
         }
+        else if (outline.OutlineWidth != 0f)
+        {
+            outline.OutlineWidth = 0f;
+        }
+
         hitsThisFrame = 0;
     }
 

@@ -43,12 +43,7 @@ public class LadderMovement : MonoBehaviour
         {
             // Rotate player if facing opposite direction
             if (dot <= -0.5f && !turnAround)
-            {
-                turnAround = true;
-                Vector3 rot = transform.localEulerAngles;
-                if (direction == 1) rot.y += 180f;
-                StartCoroutine(RotatePlayer(rot, true));
-            }
+                ChangeDirection();
 
             // Find and move to next step
             Transform nextStep = jumpPoints[jumpPoints.IndexOf(currentJumpPoint) + direction];
@@ -58,12 +53,8 @@ public class LadderMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.S) && !isMoving)
         {
             if (dot > -0.5f && !turnAround)
-            {
-                turnAround = true;
-                Vector3 rot = transform.localEulerAngles;
-                if (direction == 1) rot.y += 180f;
-                StartCoroutine(RotatePlayer(rot, true));
-            }
+                ChangeDirection();
+
             // Find and move to next step
             Transform nextStep = jumpPoints[jumpPoints.IndexOf(currentJumpPoint) + direction];
             StartCoroutine(MoveToStep(nextStep));
@@ -154,6 +145,14 @@ public class LadderMovement : MonoBehaviour
             //Debug.Log(atEnd);
             StartCoroutine(RotatePlayer(rot, atEnd));
         }
+    }
+
+    void ChangeDirection()
+    {
+        turnAround = true;
+        Vector3 rot = transform.localEulerAngles;
+        if (direction == 1) rot.y += 180f;
+        StartCoroutine(RotatePlayer(rot, true));
     }
 
     public void ResetPlayerValues()
