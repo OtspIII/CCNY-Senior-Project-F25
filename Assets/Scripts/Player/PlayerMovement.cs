@@ -76,14 +76,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
-    [Space]
     public Lantern lantern;
-    public bool inLantern;
-    [Space]
-    public Projector projector;
-    [Space]
     [SerializeField] LayerMask allLayersExceptPhase;
     public bool checkpoint;
+    public bool inLantern;
     bool moveH, moveV;
     bool canMove = true;
     [SerializeField] List<KeyCode> movementKeys;
