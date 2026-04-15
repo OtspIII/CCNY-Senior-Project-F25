@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LanternTravel : MonoBehaviour
@@ -13,12 +14,10 @@ public class LanternTravel : MonoBehaviour
     [Space]
     [SerializeField] public bool isInsideLantern = false;
     [Space]
-    public static LanternTravel Instance;
-
-
+    public LanternTravel lanternTravel;
 
     [Header("References: ")]
-    public PlayerMovement player; //*Adjust For Exisiting Player Schemtic We Use*
+    PlayerMovement player; //*Adjust For Exisiting Player Schemtic We Use*
     public Rigidbody rb;
     [Space]
     public GameObject followerObject;
@@ -46,15 +45,20 @@ public class LanternTravel : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        //if (Instance == null) Instance = this;
     }
-    
+
+    private void Start()
+    {
+        player = GameManager.Instance.Player;
+    }
+
 
     private void Update()
     {
         //Clear Visible Lantern List:
         UpdateVisibleLanterns();
-        
+
         if (isInsideLantern && Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log("---- LANTERN DEBUG ----");
@@ -87,28 +91,28 @@ public class LanternTravel : MonoBehaviour
 
             Lantern targetCheck = GetLanternInView();
             Debug.Log($"Lantern In View (GetLanternInView): {(targetCheck ? targetCheck.name : "NONE")}");
-            
+
             var hitsAll = Physics.OverlapCapsule(start, end, capsuleRadius, ~0, QueryTriggerInteraction.Collide);
             Debug.Log($"Capsule hits ALL ({hitsAll.Length})");
 
             var hitsLantern = Physics.OverlapCapsule(start, end, capsuleRadius, lanternMask, QueryTriggerInteraction.Collide);
             Debug.Log($"Capsule hits LANTERN MASK ({hitsLantern.Length})");
-            
+
             foreach (var l in ActivatedLanterns)
             {
                 float d = Vector3.Distance(followerObject.transform.position, l.lanternCore.position);
                 Debug.Log($"Dist from follower to {l.name}: {d:F2} (range {travelRange})");
             }
-            
+
         }
 
         //Initial Lantern Entry:
         if (!isInsideLantern)
         {
             //if (lightReflection.lanternHit && Input.GetKeyDown(enterLanternKey))
-            if (player.lantern != null && Input.GetKeyDown(enterLanternKey) && !isTraveling && player.state != PlayerMovement.PlayerState.grabbing)
+            if (player.lantern != null && Input.GetKeyDown(enterLanternKey) && !isTraveling)
             {
-                currentLantern = PlayerMovement.player.lantern;
+                currentLantern = GameManager.Instance.Player.lantern;
                 //currentLantern = lightReflection.currentLanternHit;
 
                 if (currentLantern != null)
@@ -165,57 +169,57 @@ public class LanternTravel : MonoBehaviour
     }
 
 
-   /* private Lantern GetLanternInView()
+    /* private Lantern GetLanternInView()
+     {
+         //Variables For Capsule Range:
+         Vector3 start = cameraTransform.position;
+         Vector3 end = start + cameraTransform.forward * capsuleLength;
+
+         //Capsule Creation:
+         Collider[] hits = Physics.OverlapCapsule
+         (
+             start,
+             end,
+             capsuleRadius
+         );
+
+
+         //Capsule Hit Detection:
+         foreach (var hit in hits)
+         {
+             Lantern lit = hit.GetComponentInParent<Lantern>();
+
+             //Accept Only if => [IN RANGE LIST] & [NOT CURRENT LANTERN]:
+             if (lit != null && visibleLanterns.Contains(lit) && lit != currentLantern) return lit;
+         }
+         return null;
+     }*/
+
+    private Lantern GetLanternInView()
     {
-        //Variables For Capsule Range:
-        Vector3 start = cameraTransform.position;
-        Vector3 end = start + cameraTransform.forward * capsuleLength;
+        if (cameraTransform == null) return null;
 
-        //Capsule Creation:
-        Collider[] hits = Physics.OverlapCapsule
-        (
-            start,
-            end,
-            capsuleRadius
-        );
-        
+        Vector3 origin = cameraTransform.position;
+        Lantern best = null;
+        float bestScore = float.NegativeInfinity;
 
-        //Capsule Hit Detection:
-        foreach (var hit in hits)
+        foreach (Lantern lit in visibleLanterns)
         {
-            Lantern lit = hit.GetComponentInParent<Lantern>();
+            if (lit == null) continue;
+            if (lit == currentLantern) continue;
 
-            //Accept Only if => [IN RANGE LIST] & [NOT CURRENT LANTERN]:
-            if (lit != null && visibleLanterns.Contains(lit) && lit != currentLantern) return lit;
+            Vector3 to = (lit.lanternCore.position - origin).normalized;
+            float score = Vector3.Dot(cameraTransform.forward, to);
+
+            if (score > 0.5f && score > bestScore)
+            {
+                bestScore = score;
+                best = lit;
+            }
         }
-        return null;
-    }*/
-   
-   private Lantern GetLanternInView()
-   {
-       if (cameraTransform == null) return null;
 
-       Vector3 origin = cameraTransform.position;
-       Lantern best = null;
-       float bestScore = float.NegativeInfinity;
-
-       foreach (Lantern lit in visibleLanterns)
-       {
-           if (lit == null) continue;
-           if (lit == currentLantern) continue;
-
-           Vector3 to = (lit.lanternCore.position - origin).normalized;
-           float score = Vector3.Dot(cameraTransform.forward, to);
-           
-           if (score > 0.5f && score > bestScore)
-           {
-               bestScore = score;
-               best = lit;
-           }
-       }
-
-       return best;
-   }
+        return best;
+    }
     private IEnumerator MoveToLantern(Lantern targetLantern)
     {
         if (targetLantern == null || targetLantern.lanternCore == null) yield break;
@@ -242,13 +246,14 @@ public class LanternTravel : MonoBehaviour
         transform.position = endPos;
 
         currentLantern = targetLantern;
-        
+        player.lantern = currentLantern;
+
         if (currentLantern != null && currentLantern.aimCollider != null)
             currentLantern.aimCollider.enabled = false;
 
         isTraveling = false;
     }
-    
+
     public void RegisterActivatedLantern(Lantern lantern)
     {
         if (lantern == null) return;
@@ -277,12 +282,12 @@ public class LanternTravel : MonoBehaviour
 
         isInsideLantern = true;
     }
-    
+
 
     private void ExitLanternMode()
     {
         isInsideLantern = false;
-        
+
         if (currentLantern != null && currentLantern.aimCollider != null)
             currentLantern.aimCollider.enabled = true;
 

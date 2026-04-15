@@ -36,23 +36,36 @@ public class Lantern : MonoBehaviour
     public Material litMaterial;
     bool flicker;
     Animator anim;
-    Light light;
+    [SerializeField] Light lanternLight;
+    PlayerMovement player;
+    bool playerDetected;
 
 
     private void Start()
     {
-        if (activeLantern && LanternTravel.Instance != null)
+        player = GameManager.Instance.Player;
+        if (activeLantern && GameManager.Instance.LanternTravel != null)
         {
-            if (activeLantern) LanternTravel.Instance?.RegisterActivatedLantern(this);
+            if (activeLantern) GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
         }
 
         anim = GetComponent<Animator>();
-        light = GetComponent<Light>();
+        if (activeLantern)
+            GetComponent<Renderer>().material = litMaterial;
+        else
+            GetComponent<Renderer>().material = unlitMaterial;
+        //lanternLight = GetComponent<Light>();
     }
 
 
     private void Update()
     {
+        if (player != GameManager.Instance.Player) player = GameManager.Instance.Player;
+        if (GameManager.Instance.LanternTravel == null) return;
+
+        // Extra lantern check 
+        //if (!playerDetected && !GameManager.Instance.LanternTravel.isTraveling && !player.inLantern && player.lantern == this) player.lantern = null;
+
         // Only count down while being hit
         if (hitsThisFrame > 0)
         {
@@ -64,7 +77,7 @@ public class Lantern : MonoBehaviour
                 if (!activeLantern)
                 {
                     activeLantern = true;
-                    LanternTravel.Instance?.RegisterActivatedLantern(this);
+                    GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
                 }
                 currentActivation = activationTime;
             }
@@ -80,12 +93,12 @@ public class Lantern : MonoBehaviour
             }
         }
 
-        if (LanternTravel.Instance.currentLantern == this)
+        if (GameManager.Instance.LanternTravel.currentLantern == this)
         {
             // Start flicker animation
             if (!flicker)
             {
-                if (anim != null) 
+                if (anim != null)
                     anim.SetTrigger("Flicker");
                 flicker = true;
             }
@@ -97,41 +110,48 @@ public class Lantern : MonoBehaviour
         else if (activeLantern)
         {
             //Set To litMaterial:
-            if (!light.enabled) light.enabled = true;
+            if (!lanternLight.enabled) lanternLight.enabled = true;
             GetComponent<Renderer>().material = litMaterial;
 
         }
         else
         {
             //Set To unlitMaterial:
-            if (light.enabled) light.enabled = false;
+            if (lanternLight.enabled) lanternLight.enabled = false;
             GetComponent<Renderer>().material = unlitMaterial;
         }
     }
-    
+
     public void HandlePlayerEnter(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.CompareTag("Player") && PlayerMovement.player.lantern == null)
-            PlayerMovement.player.lantern = this;
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == null)
+        {
+            playerDetected = true;
+            player.lantern = this;
+        }
     }
 
     public void HandlePlayerExit(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.CompareTag("Player") && PlayerMovement.player.lantern == this)
-            PlayerMovement.player.lantern = null;
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == this)
+        {
+            playerDetected = false;
+            player.lantern = null;
+        }
     }
 
-    void OnTriggerEnter(Collider col)
+    /*void OnTriggerEnter(Collider col)
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern == null)
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == null)
         {
-            PlayerMovement.player.lantern = this;
+            playerDetected = true;
+            player.lantern = this;
         }
     }
 
@@ -139,10 +159,11 @@ public class Lantern : MonoBehaviour
     {
         if (!activeLantern) return;
 
-        if (col.gameObject.tag == "Player" && PlayerMovement.player.lantern != null)
+        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern != null)
         {
-            PlayerMovement.player.lantern = null;
+            playerDetected = false;
+            player.lantern = null;
         }
-    }
+    }*/
 
 }
