@@ -13,6 +13,7 @@ public class MovingFloor : MonoBehaviour
     
     [Header("Speed Settings")]
     public float Speed = 0.1f;
+    [SerializeField] bool Stationary = false;   
 
     [Header("Interval Settings")]
     [SerializeField] bool HasWaitTime = true;
@@ -35,11 +36,15 @@ public class MovingFloor : MonoBehaviour
     {
         Forward,
         Reverse,
+        Stationary
     }
     void Start()
     {
         waitTime = WaitTime;
-        platMode = platformMode.Forward;
+        if (Stationary)
+            platMode = platformMode.Stationary;
+        else
+            platMode = platformMode.Forward;
     }
     public platformMode platMode;
 
