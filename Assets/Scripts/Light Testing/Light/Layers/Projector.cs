@@ -12,6 +12,7 @@ public class Projector : MonoBehaviour
     [Space]
     public Transform beamRoot;
     public Transform PivotPosition;
+    [SerializeField] GameObject promptText;
 
     [Header("Beam Settings: ")]
     public LightReflection beamLight;

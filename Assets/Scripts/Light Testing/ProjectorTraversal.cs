@@ -63,7 +63,7 @@ public class ProjectorTraversal : MonoBehaviour
                     lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: false);
                 }
 
-                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && (player == null || player.state != PlayerMovement.PlayerState.grabbing))
+                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && player != null)
                 {
                     currentProjector = detected;
                     if (currentProjector != null)
@@ -129,9 +129,9 @@ public class ProjectorTraversal : MonoBehaviour
 
         // Y-axis rotation controlled by A/D, clamped to +/- maxAngleVertical
         float yDelta = 0f;
-        float ySpeed = Input.GetMouseButton(1) ? yAimSpeedDegPerSec : ySpeedDegPerSec;
-        if (Input.GetKey(rotateYLeftKey)) yDelta -= ySpeed * Time.deltaTime;
-        if (Input.GetKey(rotateYRightKey)) yDelta += ySpeed * Time.deltaTime;
+        //float ySpeed = Input.GetMouseButton(1) ? yAimSpeedDegPerSec : ySpeedDegPerSec;
+        if (Input.GetKey(rotateYLeftKey)) yDelta -= yAimSpeedDegPerSec * Time.deltaTime;
+        if (Input.GetKey(rotateYRightKey)) yDelta += yAimSpeedDegPerSec * Time.deltaTime;
 
         if (Mathf.Abs(yDelta) > Mathf.Epsilon)
         {
@@ -148,9 +148,9 @@ public class ProjectorTraversal : MonoBehaviour
 
         // Z-axis rotation controlled by W/S, clamped to +/- maxAngleVertical
         float zDelta = 0f;
-        float zSpeed = Input.GetMouseButton(1) ? zAimSpeedDegPerSec : zSpeedDegPerSec;
-        if (Input.GetKey(rotateZUpKey)) zDelta -= zSpeed * Time.deltaTime;
-        if (Input.GetKey(rotateZDownKey)) zDelta += zSpeed * Time.deltaTime;
+        //float zSpeed = Input.GetMouseButton(1) ? zAimSpeedDegPerSec : zSpeedDegPerSec;
+        if (Input.GetKey(rotateZUpKey)) zDelta -= zAimSpeedDegPerSec * Time.deltaTime;
+        if (Input.GetKey(rotateZDownKey)) zDelta += zAimSpeedDegPerSec * Time.deltaTime;
 
         if (Mathf.Abs(zDelta) > Mathf.Epsilon)
         {
