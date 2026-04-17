@@ -10,7 +10,7 @@ public class LadderMovement : MonoBehaviour
     [SerializeField] List<Transform> jumpPoints = new List<Transform>();
     public bool playerInside, isMoving, isRotating;
     int direction = 1;
-    bool turnAround;
+    bool turnAround, canMove = true;
     [SerializeField] bool removeStart, removeEnd;
 
     void Start()
@@ -25,12 +25,14 @@ public class LadderMovement : MonoBehaviour
 
         // Remove first point
         jumpPoints.Remove(jumpPoints[0]);
+        if (removeStart) jumpPoints.Remove(jumpPoints[0]);
+        if (removeEnd) jumpPoints.Remove(jumpPoints[jumpPoints.Count - 1]);
     }
 
     void Update()
     {
         // Exit ladder if at start of end
-        if (currentJumpPoint == jumpPoints[jumpPoints.Count - 1] || currentJumpPoint == jumpPoints[0])
+        if (currentJumpPoint == jumpPoints[jumpPoints.Count - 1] || (currentJumpPoint == jumpPoints[0] && !removeStart))
             ResetPlayerValues();
 
         if (!playerInside) return;
@@ -44,6 +46,9 @@ public class LadderMovement : MonoBehaviour
             // Rotate player if facing opposite direction
             if (dot <= -0.5f && !turnAround)
                 ChangeDirection();
+
+            // Checks to see if player can move forward
+            if (removeStart && currentJumpPoint == jumpPoints[0] && !turnAround) return;
 
             // Find and move to next step
             Transform nextStep = jumpPoints[jumpPoints.IndexOf(currentJumpPoint) + direction];
@@ -98,6 +103,7 @@ public class LadderMovement : MonoBehaviour
 
         player.transform.position = target;
         currentJumpPoint = step;
+        if (removeStart && currentJumpPoint == jumpPoints[0]) canMove = false;
         isMoving = false;
     }
 
