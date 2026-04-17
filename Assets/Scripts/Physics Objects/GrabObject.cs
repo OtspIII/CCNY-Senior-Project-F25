@@ -16,7 +16,7 @@ public class GrabObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
 
-        player = PlayerMovement.player;
+        player = GameManager.Instance.Player;
     }
 
 
@@ -26,7 +26,7 @@ public class GrabObject : MonoBehaviour
         if (transform.parent == null && isGrabbed)
         {
             isGrabbed = false;
-            player.grab = null;
+            //player.grab = null;
         }
 
         // Add friction when player is moving object
@@ -46,12 +46,12 @@ public class GrabObject : MonoBehaviour
     void OnCollisionEnter(Collision col)
     {
         // Asign script to player on collision
-        if (col.gameObject.tag == "Player" && player.grab == null) player.grab = this;
+        //if (col.gameObject.tag == "Player" && player.grab == null) player.grab = this;
     }
 
     void OnCollisionExit(Collision col)
     {
         // Remove script when player exits
-        if (col.gameObject.tag == "Player" && transform.parent == null && player.grab == this) player.grab = null;
+        //if (col.gameObject.tag == "Player" && transform.parent == null && player.grab == this) player.grab = null;
     }
 }
