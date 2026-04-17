@@ -3,7 +3,7 @@ using UnityEngine;
 [DefaultExecutionOrder(200)]
 public class Test_CamDistance : MonoBehaviour
 {
-    [SerializeField] Transform playerTarget;
+    public Transform playerTarget;
     [SerializeField] float minDisFromPlayer = 1.5f;
     [SerializeField] float pushBackSpeed = 10f;
     private Camera cam;
@@ -21,9 +21,9 @@ public class Test_CamDistance : MonoBehaviour
         float dist = toCam.magnitude;
 
         if (dist >= minDisFromPlayer) return;
-        
+
         Vector3 direction = dist > 0.001f ? toCam / dist : -cam.transform.forward;
-        
+
         Vector3 targetPosition = playerTarget.position + direction * minDisFromPlayer;
         cam.transform.position = Vector3.MoveTowards(cam.transform.position, targetPosition, pushBackSpeed * Time.deltaTime);
     }
