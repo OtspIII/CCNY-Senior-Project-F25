@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Break Build/BreakBuild_Committal.unity
     guid: 8add83f2fc95afd4ca5668f70bd196cc
+  - enabled: 1
+    path: Assets/Scenes/Break Build/CaptainQ.unity
+    guid: 25192abc678ea0346869aced64d0a36d
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
