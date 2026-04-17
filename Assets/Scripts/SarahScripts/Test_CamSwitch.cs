@@ -11,19 +11,19 @@ public class Test_CamSwitch : MonoBehaviour
 
     [SerializeField] private GameObject crosshairUI;
 
-     private PlayerControls input;
+    private PlayerControls input;
     [SerializeField] private Test_AimCamera aimController;
     private InputAction aimAction;
     private bool isAiming = false;
 
     private Test_AimCamera aimCamController;
-    
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         aimCamController = aimCam.GetComponent<Test_AimCamera>();
         inputAxisController = freelookCam.GetComponent<CinemachineInputAxisController>();
-        
+
         input = new PlayerControls();
         input.Enable();
         aimAction = input.Gameplay.Aim;
@@ -34,7 +34,9 @@ public class Test_CamSwitch : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        bool aimPressed = Input.GetMouseButton(1);
+        bool aimPressed = Input.GetMouseButton(1) ||
+        (GameManager.Instance.Player.projector != null && GameManager.Instance.Player.projector.isPlayerInside) ||
+        GameManager.Instance.LanternTravel.isInsideLantern; ;
 
         if (aimPressed && !isAiming)
             EnterAimMode();
@@ -49,9 +51,9 @@ public class Test_CamSwitch : MonoBehaviour
 
         aimCam.Priority = 10;
         freelookCam.Priority = 20;
-        
+
         inputAxisController.enabled = true;
-        
+
         if (crosshairUI != null) crosshairUI.SetActive(false);
     }
 
@@ -59,10 +61,10 @@ public class Test_CamSwitch : MonoBehaviour
     {
         CinemachineOrbitalFollow orbitalFollow = freelookCam.GetComponent<CinemachineOrbitalFollow>();
         if (orbitalFollow == null) return;
-        
+
         Vector3 forward = (aimCamController != null && aimCamController.YawTarget != null)
             ? aimCamController.YawTarget.forward : aimCam.transform.forward;
-        
+
         float angle = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
         orbitalFollow.HorizontalAxis.Value = angle;
     }
@@ -71,12 +73,12 @@ public class Test_CamSwitch : MonoBehaviour
     {
         isAiming = true;
         SnapAimCameraToFreelookForward();
-        
+
         aimCam.Priority = 20;
         freelookCam.Priority = 10;
-        
+
         inputAxisController.enabled = false;
-        
+
         if (crosshairUI != null) crosshairUI.SetActive(true);
     }
 
@@ -89,10 +91,10 @@ public class Test_CamSwitch : MonoBehaviour
     {
         freelookCam.Follow = followTarget;
         freelookCam.LookAt = followTarget;
-        
+
         aimCam.Follow = yawTarget;
         aimCam.LookAt = yawTarget;
-        
+
         aimController.SetTargets(yawTarget, pitchTarget, playerModel);
         SnapFreeLookToAimForward();
     }

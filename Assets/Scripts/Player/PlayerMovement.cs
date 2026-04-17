@@ -59,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
     public Vector3 moveDirection;
     RaycastHit floorHit;
     public bool isAiming;
-    [SerializeField] Transform yawTarget;
+    public Transform yawTarget;
     [SerializeField] GameObject lightTool;
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
@@ -200,6 +200,7 @@ public class PlayerMovement : MonoBehaviour
         if ((rb.linearVelocity != Vector3.zero && grounded) || ladder != null)
         {
             anim.SetFloat("Walk", 1f);
+            AudioLibrary.Instance.PlaySound(Sfx.Walk);
         }
         else
         {
