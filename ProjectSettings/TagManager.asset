@@ -16,6 +16,8 @@ TagManager:
   - Player Light
   - Gem 1
   - Gem 2
+  - Ladder End Point
+  - Ladder Start Point
   layers:
   - Default
   - TransparentFX

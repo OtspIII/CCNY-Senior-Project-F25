@@ -13,7 +13,7 @@ public class AimCameraController : MonoBehaviour
     [SerializeField] private InputActionReference switchShouldInput; //button that switches left to right shoulders
 
     [SerializeField] private float mouseSensitivity = 0.05f;
-    [SerializeField] private float gamepadSensitvity = 0.5f;
+    [SerializeField] private float gamepadSensitivity = 0.5f;
     [SerializeField] private float sensitivity = 1.5f;
 
     [SerializeField] private float pitchMin = -40f;
@@ -24,6 +24,8 @@ public class AimCameraController : MonoBehaviour
     [SerializeField] private float shoulderSwitchSpeed = 5f;
 
     [SerializeField] private Transform playerModel;
+    [SerializeField] private LayerMask collisionMask;
+    public Transform YawTarget => yawTarget;
 
     private float yaw;
     private float pitch;
@@ -31,18 +33,22 @@ public class AimCameraController : MonoBehaviour
 
     private void Awake()
     {
-        aimCam = GetComponent<CinemachineThirdPersonFollow>();
-        targetCameraSide = aimCam.CameraSide; // initializes target camera side
+        if (aimCam == null)
+            aimCam = GetComponent<CinemachineThirdPersonFollow>();
+        if (aimCam != null)
+        {
+            targetCameraSide = aimCam.CameraSide;
+            aimCam.AvoidObstacles.Enabled = true;
+            aimCam.AvoidObstacles.CollisionFilter = collisionMask;
+            aimCam.AvoidObstacles.CameraRadius = 0.3f;
+        }
     }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Vector3 angles = yawTarget.rotation.eulerAngles; // default yaw rotation
-        yaw = angles.y;
-        pitch = angles.x;
-
+        InitYawPitchFromTransform(yawTarget);
         lookInput.asset.Enable();
     }
 
@@ -67,35 +73,53 @@ public class AimCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 look = lookInput.action.ReadValue<Vector2>(); // will take the look input and set it equal to the look variable 
+        if (float.IsNaN(yaw) || float.IsNaN(pitch))
+        {
+            Debug.LogWarning("Yaw or Pitch is NaN");
+            yaw = 0f;
+            pitch = 0f;
+        }
+
+        Vector2 look = lookInput.action.ReadValue<Vector2>();
 
         if (Mouse.current != null && Mouse.current.delta.IsActuated())
-        {
-            look *= mouseSensitivity; // mulitplies look input byu sensitivity
-        }
+            look *= mouseSensitivity;
         else if (Gamepad.current != null && Gamepad.current.rightStick.IsActuated())
-        {
-            look *= gamepadSensitvity;
-        }
+            look *= gamepadSensitivity;
 
         yaw += look.x * sensitivity;
         pitch -= look.y * sensitivity;
-
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
 
-        aimCam.CameraSide = Mathf.Lerp(aimCam.CameraSide, targetCameraSide, Time.deltaTime * shoulderSwitchSpeed);
+        aimCam.CameraSide = Mathf.Lerp(aimCam.CameraSide, targetCameraSide, shoulderSwitchSpeed * Time.deltaTime);
+
     }
 
-    private void LateUpdate()
+    private void InitYawPitchFromTransform(Transform source)
     {
-        if (playerModel != null)
+        if (source == null)
         {
-            float yawOnly = yawTarget.eulerAngles.y;
-            yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
+            yaw = 0f;
+            pitch = 0f;
+            return;
         }
+
+        Vector3 angles = source.rotation.eulerAngles;
+        yaw = float.IsNaN(angles.y) ? 0f : angles.y;
+        if (pitchTarget != null)
+        {
+            float localX = pitchTarget.localEulerAngles.x;
+            if (localX > 180f) localX -= 360f;
+            pitch = float.IsNaN(localX) ? 0f : localX;
+        }
+        else
+        {
+            pitch = 0f;
+        }
+        pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
     }
 
     public void SetTargets(Transform newYaw, Transform newPitch, Transform newModel)
@@ -104,29 +128,28 @@ public class AimCameraController : MonoBehaviour
         pitchTarget = newPitch;
         playerModel = newModel;
 
-        // Reset yaw/pitch so it doesn't snap
-        Vector3 angles = yawTarget.rotation.eulerAngles;
-        yaw = angles.y;
-        pitch = angles.x;
+        InitYawPitchFromTransform(newYaw);
     }
 
-    internal void SetYawPitchFromCameraForward(Transform cameraTransform)
+    internal void SetYawPitchFromCamForward(Transform cameraTransform)
     {
         Vector3 forward = cameraTransform.forward;
-
-        // gets yaw from flattened forward
         Vector3 flatForward = new Vector3(forward.x, 0f, forward.z);
-        if (flatForward.sqrMagnitude < 0.001f)
-            return;
+        if (flatForward.sqrMagnitude < 0.001f) return;
 
         yaw = Quaternion.LookRotation(flatForward).eulerAngles.y;
-
-        // calculates pitch from camera forward
-        pitch = -Mathf.Asin(forward.y) * Mathf.Rad2Deg;
+        pitch = Mathf.Asin(Mathf.Clamp(forward.y, -1f, 1f) * Mathf.Rad2Deg);
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
 
+        if (float.IsNaN(yaw) || float.IsNaN(pitch))
+        {
+            Debug.LogWarning("Yaw or Pitch is NaN");
+            yaw = 0f;
+            pitch = 0f;
+        }
+
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
-        pitchTarget.localRotation = Quaternion.Euler(0f, 0f, 0f); // resets the pitch to 0
+        pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
 
         aimCam.ForceCameraPosition(cameraTransform.position, cameraTransform.rotation);
     }

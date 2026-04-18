@@ -28,7 +28,7 @@ public class DropLadder : MonoBehaviour
             }
         }
 
-        if (ropes[0] == null && ropes[1] == null && rb.isKinematic) rb.isKinematic = false;
+        if (!ropes[0].activeInHierarchy && !ropes[1].activeInHierarchy && rb.isKinematic) rb.isKinematic = false;
 
     }
 }
