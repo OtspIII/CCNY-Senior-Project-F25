@@ -5,42 +5,41 @@ using UnityEngine.InputSystem;
 [DefaultExecutionOrder(-1)]
 public class Test_AimCamera : MonoBehaviour
 {
-    [SerializeField] private Transform yawTarget;
-    [SerializeField] private Transform pitchTarget;
+    [SerializeField] private Transform yawTarget; // target that was created under the player
+    [SerializeField] private Transform pitchTarget; //child of yawTarget
 
-    [SerializeField] private InputActionReference lookInput;
-    [SerializeField] private InputActionReference switchShoulderInput;
-    [SerializeField] private float mouseSensitivity;
-    [SerializeField] private float gamepadSensitivity;
-    [SerializeField] private float sensitivity;
+    [SerializeField] private InputActionReference lookInput; // reference to input action that deals with looking
+    [SerializeField] private InputActionReference switchShouldInput; //button that switches left to right shoulders
 
-    [SerializeField] private float pitchMin;
-    [SerializeField] private float pitchMax;
+    [SerializeField] private float mouseSensitivity = 0.05f;
+    [SerializeField] private float gamepadSensitivity = 0.5f;
+    [SerializeField] private float sensitivity = 1.5f;
 
-    [SerializeField] private float shoulderSwitchSpeed;
+    [SerializeField] private float pitchMin = -40f;
+    [SerializeField] private float pitchMax = 80f;
+
+    [SerializeField] private CinemachineThirdPersonFollow aimCam;
+
+    [SerializeField] private float shoulderSwitchSpeed = 5f;
 
     [SerializeField] private Transform playerModel;
-
-    [SerializeField] private CinemachineThirdPersonFollow aimCamFollow;
-
     [SerializeField] private LayerMask collisionMask;
-    
     public Transform YawTarget => yawTarget;
 
     private float yaw;
     private float pitch;
-    private float targetCamSide;
+    private float targetCameraSide;
 
     private void Awake()
     {
-        if (aimCamFollow == null)
-            aimCamFollow = GetComponent<CinemachineThirdPersonFollow>();
-        if (aimCamFollow != null)
+        if (aimCam == null)
+            aimCam = GetComponent<CinemachineThirdPersonFollow>();
+        if (aimCam != null)
         {
-            targetCamSide = aimCamFollow.CameraSide;
-            aimCamFollow.AvoidObstacles.Enabled = true;
-            aimCamFollow.AvoidObstacles.CollisionFilter = collisionMask;
-            aimCamFollow.AvoidObstacles.CameraRadius = 0.3f;
+            targetCameraSide = aimCam.CameraSide;
+            aimCam.AvoidObstacles.Enabled = true;
+            aimCam.AvoidObstacles.CollisionFilter = collisionMask;
+            aimCam.AvoidObstacles.CameraRadius = 0.3f;
         }
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,23 +51,24 @@ public class Test_AimCamera : MonoBehaviour
 
     private void OnEnable()
     {
-        switchShoulderInput.action.Enable();
-        switchShoulderInput.action.performed += OnSwitchShoulder;
+        switchShouldInput.action.Enable();
+        switchShouldInput.action.performed += OnSwitchShoulder;
     }
+
 
     private void OnDisable()
     {
-        switchShoulderInput.action.Disable();
-        switchShoulderInput.action.performed -= OnSwitchShoulder;
+        switchShouldInput.action.Disable();
+        switchShouldInput.action.performed -= OnSwitchShoulder;
     }
 
-    private void OnSwitchShoulder(InputAction.CallbackContext ctx)
+    private void OnSwitchShoulder(InputAction.CallbackContext context)
     {
-        targetCamSide = aimCamFollow.CameraSide < 0.5f ? 1f : 0f;
+        targetCameraSide = aimCam.CameraSide < 0.5f ? 1f : 0f;
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (float.IsNaN(yaw) || float.IsNaN(pitch))
         {
@@ -76,23 +76,23 @@ public class Test_AimCamera : MonoBehaviour
             yaw = 0f;
             pitch = 0f;
         }
-        
+
         Vector2 look = lookInput.action.ReadValue<Vector2>();
-        
+
         if (Mouse.current != null && Mouse.current.delta.IsActuated())
             look *= mouseSensitivity;
         else if (Gamepad.current != null && Gamepad.current.rightStick.IsActuated())
             look *= gamepadSensitivity;
-        
+
         yaw += look.x * sensitivity;
         pitch -= look.y * sensitivity;
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
-        
+
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
-        
-        aimCamFollow.CameraSide = Mathf.Lerp(aimCamFollow.CameraSide, targetCamSide, shoulderSwitchSpeed * Time.deltaTime);
-        
+
+        aimCam.CameraSide = Mathf.Lerp(aimCam.CameraSide, targetCameraSide, shoulderSwitchSpeed * Time.deltaTime);
+
     }
 
     private void InitYawPitchFromTransform(Transform source)
@@ -133,7 +133,7 @@ public class Test_AimCamera : MonoBehaviour
         Vector3 forward = cameraTransform.forward;
         Vector3 flatForward = new Vector3(forward.x, 0f, forward.z);
         if (flatForward.sqrMagnitude < 0.001f) return;
-        
+
         yaw = Quaternion.LookRotation(flatForward).eulerAngles.y;
         pitch = Mathf.Asin(Mathf.Clamp(forward.y, -1f, 1f) * Mathf.Rad2Deg);
         pitch = Mathf.Clamp(pitch, pitchMin, pitchMax);
@@ -144,10 +144,10 @@ public class Test_AimCamera : MonoBehaviour
             yaw = 0f;
             pitch = 0f;
         }
-        
+
         yawTarget.rotation = Quaternion.Euler(0f, yaw, 0f);
         pitchTarget.localRotation = Quaternion.Euler(pitch, 0f, 0f);
-        
-        aimCamFollow.ForceCameraPosition(cameraTransform.position, cameraTransform.rotation);
+
+        aimCam.ForceCameraPosition(cameraTransform.position, cameraTransform.rotation);
     }
 }
