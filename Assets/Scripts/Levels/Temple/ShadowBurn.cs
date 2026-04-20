@@ -18,9 +18,12 @@ public class ShadowBurn : MonoBehaviour
     [SerializeField] Transform player;
     [Tooltip("Assign to object that will change color when in shadow.")]
     [SerializeField] GameObject key;
+    [Space(15)]
+    [Header("Door")]
     [SerializeField] bool hasDoor;
     [SerializeField] Transform door;
     [SerializeField] Transform doorTarget;
+    [SerializeField] float doorSpeed;
     bool keyLight;
     public bool doorOpened;
     [SerializeField] bool moveDoor;
@@ -165,7 +168,7 @@ public class ShadowBurn : MonoBehaviour
         Vector3 endPos = target;
 
         float elapsed = 0f;
-        float duration = Vector3.Distance(start, endPos) / 2f;
+        float duration = doorSpeed;
 
         // lerp to target
         while (elapsed < duration)

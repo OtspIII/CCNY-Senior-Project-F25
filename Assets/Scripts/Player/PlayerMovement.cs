@@ -25,12 +25,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float teleportCooldown;
     [SerializeField] float airMult;
     bool canTeleport = true;
-
-    [SerializeField] KeyCode jumpKey = KeyCode.LeftShift;
-    [SerializeField] float jumpForce;
-    [SerializeField] float jumpCooldown;
-    bool canJump = true;
-
     [Header("Ground Check")]
     [SerializeField] LayerMask isGround;
     [SerializeField] bool grounded = true;
@@ -46,40 +40,38 @@ public class PlayerMovement : MonoBehaviour
     public Transform aimCamOrientation; // ^Same for when aiming
 
     [Space(15)]
-    [Header("Grab Objects")]
-    // Moveable object script
-    public GrabObject grab = null;
-    [SerializeField] LayerMask moveable;
-    RaycastHit moveHit;
-    public bool nearHandle;
-    bool moveObj;
-
-    [Space(15)]
     [Header("Held Items")]
     // Will make static if we only ever need one 
     public GameObject item;
+    [Space(15)]
+    [Header("Ladder Movement")]
+    public LadderMovement ladder;
 
     [Space(15)]
     public PlayerState state;
     public enum PlayerState
     {
         walking,
-        grabbing,
+        ladder,
         light,
     }
-    Rigidbody rb;
+    public Rigidbody rb;
     public Vector3 moveDirection;
     RaycastHit floorHit;
     public bool isAiming;
-    [SerializeField] Transform yawTarget;
+    public Transform yawTarget;
     [SerializeField] GameObject lightTool;
     [SerializeField] LineRenderer line;
     [SerializeField] GameObject playerModel;
     [SerializeField] GameObject aura;
+    [Space]
     public Lantern lantern;
+    public bool inLantern;
+    [Space]
+    public Projector projector;
+    [Space]
     [SerializeField] LayerMask allLayersExceptPhase;
     public bool checkpoint;
-    public bool inLantern;
     bool moveH, moveV;
     bool canMove = true;
     [SerializeField] List<KeyCode> movementKeys;
@@ -87,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
     SunWheelController sunWheel;
     [SerializeField] Animator anim;
     bool test;
+    bool teleportFromLadder;
 
     void Start()
     {
@@ -114,85 +107,14 @@ public class PlayerMovement : MonoBehaviour
         float verticalInput = Input.GetAxisRaw("Vertical");
         float horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if (state == PlayerState.grabbing)
-        {
+        // Move in direction of camera's flat orientation
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-            // Check for most recent key pressed
-            foreach (KeyCode key in movementKeys)
-            {
-                if (Input.GetKey(key) && canMove)
-                {
-                    canMove = false;
-                    currentMoveKey = key;
-                }
-            }
-
-            // Limit movement to current key held down
-            if (!canMove && Input.GetKeyUp(currentMoveKey))
-            {
-                canMove = true;
-            }
-
-            // Prevent horizontal movement while moving object forward/back
-            if (currentMoveKey == KeyCode.W || currentMoveKey == KeyCode.S)
-            {
-                horizontalInput = 0f;
-                moveV = true;
-            }
-            else
-            {
-                moveV = false;
-            }
-
-            // Prevent vertical movement while moving object left/right
-            if (currentMoveKey == KeyCode.A || currentMoveKey == KeyCode.D)
-            {
-                verticalInput = 0f;
-                moveH = true;
-            }
-            else
-            {
-                moveH = false;
-            }
-
-            // prevents diagonal movement/sliding when pushing obj
-            Vector3 intent;
-
-            // checks if player is facing more North/South or East/West
-            if (Mathf.Abs(yawTarget.forward.z) > Mathf.Abs(yawTarget.forward.x))
-            {
-                // if the player is facing Z axis. Lock movement to Z.
-                intent = Vector3.forward * Mathf.Sign(yawTarget.forward.z);
-            }
-            else
-            {
-                // if the player is facing X axis. Lock movement to X.
-                intent = Vector3.right * Mathf.Sign(yawTarget.forward.x);
-            }
-
-            // only allow movement relative to the chosen axis
-            moveDirection = intent * verticalInput + yawTarget.right * horizontalInput;
-        }
-        else
-        {
-            // Move in direction of camera's flat orientation
-            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-
-            // Ensure diagonal movement isn't faster
-            if (moveDirection.magnitude > 1) moveDirection.Normalize();
-        }
-
-        moveObj = nearHandle && Physics.Raycast(new Vector3(transform.position.x, transform.position.y - 0.2f, transform.position.z), yawTarget.forward, out moveHit, 0.7f, moveable);
-        if (moveObj) grab = moveHit.transform.gameObject.GetComponent<GrabObject>();
-        else grab = null;
+        // Ensure diagonal movement isn't faster
+        if (moveDirection.magnitude > 1) moveDirection.Normalize();
 
         isAiming = Input.GetMouseButton(1) || test;
         LightSwitch(isAiming);
-
-        if (Input.GetKeyDown(jumpKey))
-        {
-            //TryJump();
-        }
 
         /* if (item == null) return;
          if (!item.activeInHierarchy) return;
@@ -275,9 +197,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Animation 
-        if (rb.linearVelocity != Vector3.zero && grounded)
+        if ((rb.linearVelocity != Vector3.zero && grounded) || ladder != null)
         {
             anim.SetFloat("Walk", 1f);
+            AudioLibrary.Instance.PlaySound(Sfx.Walk);
         }
         else
         {
@@ -296,73 +219,13 @@ public class PlayerMovement : MonoBehaviour
 
     void StateHandler()
     {
-        // Check if player is holding left click while facing moveable object
-        if (Input.GetMouseButton(0) && moveObj && !isAiming)
-        {
-            state = PlayerState.grabbing;
-
-            moveSpeed = 2.0f; // Limit player speed while grabbing
-
-            // Free player rotation
-            rb.constraints = RigidbodyConstraints.FreezeRotation;
-
-            // THIS ALL SHOULDNT BE IN PLAYER SCRIPT BUT I'LL LEAVE FOR NOW 
-            if (grab != null)
-            {
-                // Make kinematic when moving backward, left, or right
-                grab.rb.isKinematic = (moveV && Input.GetAxisRaw("Vertical") < 0f) || moveH ? true : false;
-
-                // Unfreezes position constraints and prevents rotation
-                grab.rb.constraints = RigidbodyConstraints.FreezeRotation;
-
-                // Set player as object parent
-                grab.transform.SetParent(this.transform);
-
-                // Make lighter so player can push object forward
-                grab.rb.mass = 0.5f;
-
-                // Signals to object script to remove itself from grab variable
-                grab.isGrabbed = true;
-            }
-        }
-        else
-        {
-            if (grab != null)
-            {
-                // Unparent player and make object static again
-                grab.rb.isKinematic = true;
-                grab.rb.mass = 50.0f;
-
-                // Freeze everything but Y position on object
-                grab.rb.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-
-                // Freeze everything but Y rotation on player 
-                rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
-                grab.transform.SetParent(null);
-            }
-
-            state = PlayerState.walking;
-
-            moveSpeed = isAiming ? 0.7f : 5.5f;
-        }
+        moveSpeed = isAiming ? 0.7f : 5.5f;
     }
 
     void Movement()
     {
         // Create move Vector from player inputs on X and Z axis
         Vector3 move = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
-        if (!isAiming)
-        {
-            // Vector3 forward = aimCamOrientation.forward;
-            // Vector3 right = aimCamOrientation.right;
-
-            // forward.y = rb.linearVelocity.y;
-            // right.y = 0;
-
-            // forward.Normalize();
-            // right.Normalize();
-        }
 
         if (OnSlope() && !exitingSlope)
         {
@@ -384,21 +247,15 @@ public class PlayerMovement : MonoBehaviour
             if (rb.linearVelocity.magnitude > maxFallSpeed) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxFallSpeed);
         }
 
-        // Clamp magnitude while on ground
-        //if (grounded && canJump) rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
-
         // Turn off gravity on slope
         rb.useGravity = !OnSlope();
 
 
         // Handle rotation
-        if (moveDirection != Vector3.zero && state is not PlayerState.grabbing && !isAiming)
+        if (moveDirection != Vector3.zero && !isAiming)
         {
             float angleDiff = Vector3.SignedAngle(transform.forward, moveDirection, Vector3.up);
             rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.15f, rb.angularVelocity.z);
-            //Debug.Log(rb.angularVelocity.y);
-            //Vector3 v = new Vector3(rb.angularVelocity.x, angleDiff * 0.2f, rb.angularVelocity.z);
-            //rb.AddTorque(v - rb.angularVelocity * 1.5f, ForceMode.Force);
         }
         else if (isAiming)
         {
@@ -440,10 +297,11 @@ public class PlayerMovement : MonoBehaviour
             line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
 
             // Check for jump
-            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
+            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && ladder == null)
             {
                 canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
+                //if (ladder != null) teleportFromLadder = true;
                 playerModel.SetActive(false); // Make player invisible
                 transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, camOrientation.localEulerAngles.y, transform.localEulerAngles.z);
                 exitingSlope = true;
@@ -453,27 +311,6 @@ public class PlayerMovement : MonoBehaviour
                 line.enabled = false;
                 Invoke(nameof(ResetTeleport), teleportCooldown);
             }
-        }
-        else
-        {
-            // Comments above
-            /*bool clear = !Physics.Raycast(transform.position, aimCamOrientation.forward, 4.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-            line.SetPosition(0, transform.position);
-            line.SetPosition(1, transform.position + aimCamOrientation.forward * 4.0f);
-
-            if (clear && Input.GetKeyDown(KeyCode.Space) && grounded && canJump)
-            {
-                canJump = false;
-                rb.isKinematic = true;
-                playerModel.SetActive(false);
-                exitingSlope = true;
-                aura.SetActive(false);
-                float y = line.GetPosition(1).y <= transform.position.y ? transform.position.y : line.GetPosition(1).y;
-                StartCoroutine(FlashTeleport(new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z)));
-                //transform.position = new Vector3(line.GetPosition(1).x, y, line.GetPosition(1).z);
-                line.enabled = false;
-                Invoke(nameof(ResetJump), jumpCooldown);
-            }*/
         }
     }
 
@@ -496,37 +333,6 @@ public class PlayerMovement : MonoBehaviour
 
         // snap position
         transform.position = endPos;
-    }
-
-    void TryJump()
-    {
-        if (!grounded) return;
-        if (!canJump) return;
-        if (rb.isKinematic) return;
-
-        canJump = false;
-        Jump();
-        Invoke(nameof(ResetJump), jumpCooldown);
-    }
-
-    void Jump()
-    {
-        exitingSlope = true;
-
-        // Vector3 v = rb.linearVelocity;
-        // if (v.y < 0f) v.y = 0f;
-        // v.y = jumpForce;
-        // rb.linearVelocity = v;
-
-        // Always start with Y Vel at 0
-        //rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-        //rb.linearVelocity += Vector3.forward * jumpForce;
-    }
-
-    void ResetJump()
-    {
-        canJump = true;
     }
 
     void ResetTeleport()
@@ -598,6 +404,11 @@ public class PlayerMovement : MonoBehaviour
         {
             //gm.ResetScene(); // Restart demo
         }
+    }
+
+    public void KinematicMode()
+    {
+        rb.isKinematic = !rb.isKinematic;
     }
 
 }
