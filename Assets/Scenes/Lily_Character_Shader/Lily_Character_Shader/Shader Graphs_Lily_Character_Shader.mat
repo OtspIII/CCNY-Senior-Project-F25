@@ -63,6 +63,7 @@ Material:
     - _DistortionScale: 10
     - _DistortionStrength: 0.01
     - _DstBlend: 1
+    - _DstBlendAlpha: 1
     - _FresnelPower: 1.6
     - _Fresnel_Power: 2.08
     - _GlitterOffset: 0.7
@@ -72,6 +73,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _SrcBlend: 5
+    - _SrcBlendAlpha: 1
     - _Surface: 1
     - _Thickness: 0.25
     - _Threshold: 0
