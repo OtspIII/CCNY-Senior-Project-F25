@@ -75,15 +75,15 @@ public class CameraSwitcher : MonoBehaviour
         orbitalFollow.HorizontalAxis.Value = angle;
     }
 
-    private void SnapAimCameraToFreelookForward()
+    /*private void SnapAimCameraToFreelookForward()
     {
         aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
-    }
+    }*/
 
     private void EnterAimMode()
     {
         isAiming = true;
-        SnapAimCameraToFreelookForward();
+        //SnapAimCameraToFreelookForward();
 
         aimCam.Priority = 20;
         freelookCam.Priority = 10;
