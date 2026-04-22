@@ -80,12 +80,12 @@ public class CameraSwitcher : MonoBehaviour
 
     private void SnapAimCameraToFreelookForward()
     {
-        // if (GameManager.Instance.Player.projector == null &&
-        // !GameManager.Instance.LanternTravel.isInsideLantern)
-        //     aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
-        // else
-        //     aimCamController.SetYawPitchFromCamForward(GameManager.Instance.Player.transform);
-        aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
+        if (GameManager.Instance.Player.projector == null &&
+        !GameManager.Instance.LanternTravel.isInsideLantern)
+            aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
+        else
+            aimCamController.SetYawPitchFromCamForward(GameManager.Instance.Player.transform);
+        //aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
 
     }
 

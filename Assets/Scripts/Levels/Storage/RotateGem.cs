@@ -20,7 +20,7 @@ public class RotateGem : GemInteractions
     {
         GetComponent<Renderer>().material = unlit;
         startPos = wall.transform.position;
-        target = startPos + Vector3.up * 2f;
+        target = startPos + Vector3.up * 3.5f;
         maxDist = Vector3.Distance(startPos, target);
     }
 

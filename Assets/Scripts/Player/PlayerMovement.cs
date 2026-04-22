@@ -261,7 +261,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 dir = new Vector3(aimCamOrientation.transform.forward.x, 0f, aimCamOrientation.transform.forward.z);
             float angleDiff = Vector3.SignedAngle(transform.forward, dir, Vector3.up);
-            //rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.17f, rb.angularVelocity.z);
+            rb.angularVelocity = new Vector3(rb.angularVelocity.x, angleDiff * 0.17f, rb.angularVelocity.z);
             //Debug.Log(rb.angularVelocity.y);
         }
         else
