@@ -22,10 +22,29 @@ public class CameraAiming : MonoBehaviour
             return;
         }
 
-        Vector3 targetDir = mainCamera.transform.forward;
-        if (targetDir.sqrMagnitude < 0.001f) return;
+        //Vector3 targetDir = mainCamera.transform.forward;
+        //if (targetDir.sqrMagnitude < 0.001f) return;
 
-        Quaternion targetRot = Quaternion.LookRotation(targetDir) * cachedOffset;
+        //THANK YOU, JOSH// 
+
+        Vector3 targetDir1 = mainCamera.transform.forward;
+        targetDir1.y = 0f;
+        Vector3 targetDir2 = mainCamera.transform.forward;
+        targetDir2.x = 0f;
+
+        if (targetDir1.sqrMagnitude < 0.001f || targetDir2.sqrMagnitude < 0.001) return;
+
+        Quaternion targetRot1 = Quaternion.LookRotation(targetDir1);
+        Quaternion targetRot2 = Quaternion.LookRotation(targetDir2);
+
+        Quaternion targetRot = targetRot1 * targetRot2 * cachedOffset;
+
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot2, rotationSpeed * Time.deltaTime);
+
+        // Quaternion targetRot = Quaternion.LookRotation(targetDir) * cachedOffset;
+        //transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
     }
+
+
 }

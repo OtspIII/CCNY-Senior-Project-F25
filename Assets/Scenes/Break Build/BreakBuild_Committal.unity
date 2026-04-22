@@ -978,6 +978,10 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8004364911097166140, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: rotationSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8358260772009126331, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: lanternTravel
       value: 
@@ -4384,7 +4388,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2860158776699781754, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
   m_PrefabInstance: {fileID: 1666789214}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1462145939}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 60d123eba1b3edd43943d817fc5fccb0, type: 3}
@@ -15637,6 +15641,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 355378730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1462145939 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6747330202179520230, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
+  m_PrefabInstance: {fileID: 1666789214}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1462831131
 GameObject:
   m_ObjectHideFlags: 0
@@ -18286,6 +18295,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7566157878215062213, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1666789220}
+    - targetCorrespondingSourceObject: {fileID: 6747330202179520230, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1853837474}
   m_SourcePrefab: {fileID: 100100000, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
 --- !u!4 &1666789215 stripped
 Transform:
@@ -20730,12 +20742,42 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2660206828628741513, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
   m_PrefabInstance: {fileID: 1666789214}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1462145939}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1853837474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1462145939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7de3aefa901374ba29464584a3109a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraRadius: 0.4
+  Decollision:
+    Enabled: 0
+    ObstacleLayers:
+      serializedVersion: 2
+      m_Bits: 1
+    UseFollowTarget:
+      Enabled: 0
+      YOffset: 0
+    Damping: 0.5
+    SmoothingTime: 0
+  TerrainResolution:
+    Enabled: 1
+    TerrainLayers:
+      serializedVersion: 2
+      m_Bits: 2109440
+    MaximumRaycast: 10
+    Damping: 0.5
 --- !u!1 &1880440604
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class AimCameraController : MonoBehaviour
 {
-    [SerializeField] private Transform yawTarget; // target that was created under the player
+    public Transform yawTarget; // target that was created under the player
     [SerializeField] private Transform pitchTarget; //child of yawTarget
 
     [SerializeField] private InputActionReference lookInput; // reference to input action that deals with looking

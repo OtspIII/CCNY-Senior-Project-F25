@@ -44,6 +44,8 @@ public class Burnable : MonoBehaviour
         if (outline != null)
         {
             outline.OutlineColor = burnStartColor;
+            outline.OutlineWidth = burnStartWidth;
+            outline.enabled = false;
         }
     }
 
@@ -97,13 +99,18 @@ public class Burnable : MonoBehaviour
 
         UpdateVFX();
 
+        if (GameManager.Instance.Player.projector != null && !outline.enabled)
+        {
+            outline.enabled = true;
+        }
+
         if (isBurning)
         {
             ApplyBurn(Time.deltaTime);
         }
-        else if (outline.OutlineWidth != 0f)
+        else if (outline.enabled && GameManager.Instance.Player.projector == null && !GameManager.Instance.Player.isAiming)
         {
-            outline.OutlineWidth = 0f;
+            outline.enabled = false;
         }
 
         hitsThisFrame = 0;
