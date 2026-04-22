@@ -200,7 +200,7 @@ public class PlayerMovement : MonoBehaviour
         if ((rb.linearVelocity != Vector3.zero && grounded) || ladder != null)
         {
             anim.SetFloat("Walk", 1f);
-            AudioLibrary.Instance.PlaySound(Sfx.Walk);
+            //AudioLibrary.Instance.PlaySound(Sfx.Walk);
         }
         else
         {

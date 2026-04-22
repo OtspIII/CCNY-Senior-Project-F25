@@ -500,6 +500,7 @@ public class LightReflection : MonoBehaviour
             if (hitLantern != null)
             {
                 points.Add(hit.point);
+
                 if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
                 HandleLanternHit(hit);
 
@@ -510,6 +511,7 @@ public class LightReflection : MonoBehaviour
             if (hitProjector != null)
             {
                 points.Add(hit.point);
+
                 if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
                 HandleProjectorHit(hit);
 
@@ -602,6 +604,8 @@ public class LightReflection : MonoBehaviour
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
 
+            
+            /*
             //If Enough Increments & Bool Becomes True:
             if (lantern.activeLantern && GameManager.Instance.LanternTravel != null)
             {
@@ -624,6 +628,8 @@ public class LightReflection : MonoBehaviour
                     playFire = true;
                 }
             }
+
+            */
         }
         else
         {
