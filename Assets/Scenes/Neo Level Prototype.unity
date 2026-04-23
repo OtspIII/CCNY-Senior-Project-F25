@@ -761,6 +761,7 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 1445949238}
   PivotPosition: {fileID: 493940628}
+  promptText: {fileID: 0}
   beamLight: {fileID: 1445949236}
   maxAngle: 90
   beamWidth: 0.05
@@ -4426,9 +4427,6 @@ MonoBehaviour:
   teleportForce: 0
   teleportCooldown: 0
   airMult: 0.6
-  jumpKey: 304
-  jumpForce: 10
-  jumpCooldown: 0.3
   isGround:
     serializedVersion: 2
     m_Bits: 1024
@@ -4437,13 +4435,10 @@ MonoBehaviour:
   maxSlopeAngle: 40
   camOrientation: {fileID: 703674394}
   aimCamOrientation: {fileID: 774314306}
-  grab: {fileID: 1530476082}
-  moveable:
-    serializedVersion: 2
-    m_Bits: 32768
-  nearHandle: 0
   item: {fileID: 1966683910}
+  ladder: {fileID: 0}
   state: 0
+  rb: {fileID: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   isAiming: 0
   yawTarget: {fileID: 617082048}
@@ -4670,6 +4665,8 @@ MonoBehaviour:
   playerCamera: {fileID: 774314306}
   lightReflection: {fileID: 1355064701}
   lightModeToggle: {fileID: 447507911}
+  activeWhenNear: 1
+  straightAlignWhenEntering: 0
   rotateYLeftKey: 97
   rotateYRightKey: 100
   ySpeedDegPerSec: 120
@@ -8935,8 +8932,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703674389}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.1521233, y: 0.000000096757255, z: -0.0000000148923585, w: 0.98836154}
-  m_LocalPosition: {x: 11.07, y: 2.4135292, z: -15.548584}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.82, y: 2.3100002, z: -12.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16201,6 +16198,7 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 688336959}
   PivotPosition: {fileID: 0}
+  promptText: {fileID: 0}
   beamLight: {fileID: 688336957}
   maxAngle: 90
   beamWidth: 0.2
@@ -16314,13 +16312,16 @@ MonoBehaviour:
   lookInput: {fileID: 1580858006788917544, guid: b83ce5eb3932ba84f823848e776d6d0c, type: 3}
   switchShouldInput: {fileID: 1880396783286703911, guid: b83ce5eb3932ba84f823848e776d6d0c, type: 3}
   mouseSensitivity: 0.05
-  gamepadSensitvity: 0.5
+  gamepadSensitivity: 0.5
   sensitivity: 1.5
   pitchMin: -40
   pitchMax: 80
   aimCam: {fileID: 774314305}
   shoulderSwitchSpeed: 5
   playerModel: {fileID: 1693196681}
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &774314305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18871,7 +18872,6 @@ MonoBehaviour:
   minZoom: 0.25
   maxZoom: 2.5
   zoomSpeed: 5
-  smoothness: 10
 --- !u!1001 &1029075987
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24377,6 +24377,7 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 524880702}
   PivotPosition: {fileID: 0}
+  promptText: {fileID: 0}
   beamLight: {fileID: 524880703}
   maxAngle: 90
   beamWidth: 0.05
@@ -24541,6 +24542,7 @@ MonoBehaviour:
   cameraRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   beamRoot: {fileID: 1976246942}
   PivotPosition: {fileID: 0}
+  promptText: {fileID: 0}
   beamLight: {fileID: 1976246940}
   maxAngle: 90
   beamWidth: 0.2
