@@ -24,6 +24,7 @@ public class LanternTravel : MonoBehaviour
     public LightReflection lightReflection;
     public LightModeToggle lightModeToggle;
     [SerializeField] private LayerMask lanternMask;
+    [SerializeField] private LineRenderer travelLine;
 
     [Header("Travel Parameters: ")]
     public Transform cameraTransform;
@@ -51,6 +52,11 @@ public class LanternTravel : MonoBehaviour
     private void Start()
     {
         player = GameManager.Instance.Player;
+        if (travelLine != null)
+        {
+            travelLine.positionCount = 2;
+            travelLine.enabled = false;
+        }
     }
 
 
@@ -140,6 +146,19 @@ public class LanternTravel : MonoBehaviour
 
         //Lantern -> Lantern Traversal:
         target = GetLanternInView();
+
+        // Line drawing logic:
+        if (isInsideLantern && currentLantern != null && target != null && travelLine != null)
+        {
+            travelLine.enabled = true;
+            travelLine.SetPosition(0, currentLantern.lanternCore.position);
+            travelLine.SetPosition(1, target.lanternCore.position);
+        }
+        else if (travelLine != null)
+        {
+            travelLine.enabled = false;
+        }
+
         if (target != null && Input.GetKeyDown(moveLanternKey) && !isTraveling)
         {
             StartCoroutine(MoveToLantern(target));
