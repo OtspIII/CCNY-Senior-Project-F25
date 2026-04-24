@@ -223,6 +223,7 @@ MonoBehaviour:
   lightAuraFollower: {fileID: 5041905479972849320}
   lightAimingTool: {fileID: 0}
   inLantern: 0
+  inProjector: 0
 --- !u!114 &8506147056806153075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,14 +310,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPos: {x: 0, y: 0, z: 0}
   lightSource: {fileID: 4060938451981438882}
+  player: {fileID: 0}
   playerControl: 1
   moveSpeed: 6
   teleportForce: 0
   teleportCooldown: 0
   airMult: 0.6
-  jumpKey: 304
-  jumpForce: 10
-  jumpCooldown: 0.3
   isGround:
     serializedVersion: 2
     m_Bits: 1024
@@ -325,13 +324,10 @@ MonoBehaviour:
   maxSlopeAngle: 60
   camOrientation: {fileID: 0}
   aimCamOrientation: {fileID: 0}
-  grab: {fileID: 0}
-  moveable:
-    serializedVersion: 2
-    m_Bits: 32768
-  nearHandle: 0
   item: {fileID: 618828042576285089}
+  ladder: {fileID: 0}
   state: 0
+  rb: {fileID: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   isAiming: 0
   yawTarget: {fileID: 2615132810487529495}
@@ -340,11 +336,12 @@ MonoBehaviour:
   playerModel: {fileID: 6204566210901383350}
   aura: {fileID: 7303448709236753856}
   lantern: {fileID: 0}
+  inLantern: 0
+  projector: {fileID: 0}
   allLayersExceptPhase:
     serializedVersion: 2
     m_Bits: 1089473
   checkpoint: 0
-  inLantern: 0
   movementKeys: 77000000610000007300000064000000
   anim: {fileID: 8456931886576348232}
 --- !u!120 &2293655241027342894
@@ -471,14 +468,16 @@ MonoBehaviour:
   currentLantern: {fileID: 0}
   target: {fileID: 0}
   isInsideLantern: 0
-  player: {fileID: 5460015821586086780}
+  lanternTravel: {fileID: 0}
   rb: {fileID: 7428839617850256430}
   followerObject: {fileID: 1879981959113891099}
+  playerModel: {fileID: 0}
   lightReflection: {fileID: 4020236304273871723}
   lightModeToggle: {fileID: 1636535574859789902}
   lanternMask:
     serializedVersion: 2
     m_Bits: 0
+  travelLine: {fileID: 0}
   cameraTransform: {fileID: 0}
   LanternTravelRangeColor: {r: 0.91320753, g: 0.6391423, b: 0.048244953, a: 0}
   travelRange: 50
@@ -684,6 +683,9 @@ MonoBehaviour:
   cam: {fileID: 0}
   burningMaterial: {fileID: 2100000, guid: b065365a9b286344fa50f27210bf9c39, type: 2}
   idleMaterial: {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
+  pressFPrompt: {fileID: 0}
+  characterSwitcher: {fileID: 0}
+  spawnedPlayer: {fileID: 0}
 --- !u!1 &7303448709236753856
 GameObject:
   m_ObjectHideFlags: 0
