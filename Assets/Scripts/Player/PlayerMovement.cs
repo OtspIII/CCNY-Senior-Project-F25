@@ -313,7 +313,7 @@ public class PlayerMovement : MonoBehaviour
 
             float y = OnSlope() ? GetSlopeDashDirection().y : transform.forward.y;
 
-            Debug.Log(GetSlopeDashDirection());
+            //Debug.Log(GetSlopeDashDirection());
 
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);

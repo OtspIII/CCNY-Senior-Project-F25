@@ -99,7 +99,7 @@ public class Burnable : MonoBehaviour
 
         UpdateVFX();
 
-        if (GameManager.Instance.Player.projector != null && !outline.enabled)
+        if ((GameManager.Instance.Player.projector != null || isBurning) && !outline.enabled)
         {
             outline.enabled = true;
         }
