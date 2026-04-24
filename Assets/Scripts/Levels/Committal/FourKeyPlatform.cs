@@ -26,6 +26,8 @@ public class FourKeyPlatform : MonoBehaviour
 
     IEnumerator MovePlatform()
     {
+        lights[positionIndex].GetComponent<Renderer>().material = lit;
+
         Vector3 start = transform.position;
         Vector3 endPos = nextPosition[positionIndex];
 
@@ -43,7 +45,6 @@ public class FourKeyPlatform : MonoBehaviour
 
         // snap position
         transform.position = endPos;
-        lights[positionIndex].GetComponent<Renderer>().material = lit;
         positionIndex++;
     }
 }

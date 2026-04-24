@@ -849,7 +849,7 @@ PrefabInstance:
     - target: {fileID: 4020236304273871723, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: pressFPrompt
       value: 
-      objectReference: {fileID: 184428659}
+      objectReference: {fileID: 0}
     - target: {fileID: 4020236304273871723, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: lazerDistance
       value: 30
@@ -881,7 +881,7 @@ PrefabInstance:
     - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: pressFPrompt
       value: 
-      objectReference: {fileID: 184428659}
+      objectReference: {fileID: 0}
     - target: {fileID: 4119555641081350689, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: spawnedPlayer
       value: 
@@ -5600,7 +5600,7 @@ PrefabInstance:
     - target: {fileID: 4020236304273871723, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: pressFPrompt
       value: 
-      objectReference: {fileID: 184428659}
+      objectReference: {fileID: 0}
     - target: {fileID: 4020236304273871723, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: lazerDistance
       value: 30
@@ -20227,7 +20227,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1Controller: {fileID: 109011256}
   player2Controller: {fileID: 563466619}
-  uiElement: {fileID: 184428659}
   player1YawTarget: {fileID: 109011255}
   player1PitchTarget: {fileID: 109011254}
   player1Model: {fileID: 109011257}
@@ -22214,7 +22213,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1Controller: {fileID: 109011256}
   player2Controller: {fileID: 563466619}
-  uiElement: {fileID: 184428659}
   player1YawTarget: {fileID: 109011255}
   player1PitchTarget: {fileID: 109011254}
   player1Model: {fileID: 109011257}

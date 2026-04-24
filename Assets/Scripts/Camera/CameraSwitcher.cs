@@ -41,7 +41,6 @@ public class CameraSwitcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Camera.main.transform);
         bool aimPressed = Input.GetMouseButton(1) ||
         (GameManager.Instance.Player.projector != null && GameManager.Instance.Player.projector.isPlayerInside)
         || GameManager.Instance.LanternTravel.isInsideLantern;
