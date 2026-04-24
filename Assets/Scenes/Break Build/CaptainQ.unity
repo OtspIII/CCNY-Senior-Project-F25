@@ -3458,6 +3458,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1595279848}
   m_SourcePrefab: {fileID: 100100000, guid: 7531f8b9d084bea43a99b43248e310cc, type: 3}
+--- !u!1 &397046475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6204566210901383350, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+  m_PrefabInstance: {fileID: 1528931273}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &405203247
 GameObject:
   m_ObjectHideFlags: 0
@@ -4325,6 +4330,14 @@ PrefabInstance:
       propertyPath: lengthPerHit
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 8503743874331060181, guid: 1ba25b6e0a6dee34a834bf9974523517, type: 3}
+      propertyPath: chargingMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: fe130b600c7ec8a40990fcbe74ab4bfc, type: 2}
+    - target: {fileID: 8503743874331060181, guid: 1ba25b6e0a6dee34a834bf9974523517, type: 3}
+      propertyPath: nonchargingMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: b17498380ee94d54180d6089dd195d6c, type: 2}
     - target: {fileID: 8749961355824728295, guid: 1ba25b6e0a6dee34a834bf9974523517, type: 3}
       propertyPath: m_Name
       value: Projector
@@ -12133,7 +12146,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
+  - {fileID: 2100000, guid: 33b27416688f3754fad32c8ca190dd95, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12170,6 +12183,15 @@ LineRenderer:
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.74622643
+        value: 0.3821656
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -15341,6 +15363,10 @@ PrefabInstance:
       propertyPath: lineMaterial
       value: 
       objectReference: {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
+    - target: {fileID: 4287360551082252504, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4769232587425805802, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -15385,6 +15411,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
+    - target: {fileID: 5911976111174926735, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6204566210901383350, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -15394,9 +15424,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1239660915}
     - target: {fileID: 8358260772009126331, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: playerModel
+      value: 
+      objectReference: {fileID: 397046475}
+    - target: {fileID: 8358260772009126331, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 484995123}
+    - target: {fileID: 8358260772009126331, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: lineEndWidthMultiplier
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -25070,6 +25108,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 244461507827979259, guid: 2f365c7706d9df442b46ef6c3ca4c305, type: 3}
+      propertyPath: litGlow
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 244461507827979259, guid: 2f365c7706d9df442b46ef6c3ca4c305, type: 3}
+      propertyPath: closeGlow
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 244461507827979259, guid: 2f365c7706d9df442b46ef6c3ca4c305, type: 3}
+      propertyPath: insideGlow
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 244461507827979259, guid: 2f365c7706d9df442b46ef6c3ca4c305, type: 3}
       propertyPath: activeLantern
       value: 0

@@ -21,10 +21,16 @@ public class LanternTravel : MonoBehaviour
     public Rigidbody rb;
     [Space]
     public GameObject followerObject;
+    public GameObject playerModel;
     public LightReflection lightReflection;
     public LightModeToggle lightModeToggle;
     [SerializeField] private LayerMask lanternMask;
     [SerializeField] private LineRenderer travelLine;
+    [SerializeField] private float lineWidthStart = 0f;
+    [SerializeField] private float lineWidthEnd = 0.5f;
+    [SerializeField] private float lineStartWidthMultiplier = 1f;
+    [SerializeField] private float lineEndWidthMultiplier = 0.5f;
+    [SerializeField] private float lineLerpTime = 0.2f;
 
     [Header("Travel Parameters: ")]
     public Transform cameraTransform;
@@ -42,6 +48,8 @@ public class LanternTravel : MonoBehaviour
     public KeyCode exitLanternKey = KeyCode.Space;
     public KeyCode moveLanternKey = KeyCode.Mouse0;
     public bool isTraveling;
+    private float currentLineLerp = 0f;
+    private Lantern lastTarget = null;
 
 
     private void Awake()
@@ -150,14 +158,31 @@ public class LanternTravel : MonoBehaviour
         // Line drawing logic:
         if (isInsideLantern && currentLantern != null && target != null && travelLine != null)
         {
+            if (!travelLine.enabled || target != lastTarget)
+            {
+                currentLineLerp = 0f;
+                travelLine.startWidth = lineWidthStart;
+                travelLine.endWidth = lineWidthStart;
+            }
+
             travelLine.enabled = true;
             travelLine.SetPosition(0, currentLantern.lanternCore.position);
             travelLine.SetPosition(1, target.lanternCore.position);
+
+            if (currentLineLerp < 1f)
+            {
+                currentLineLerp += Time.deltaTime / lineLerpTime;
+                float baseWidth = Mathf.Lerp(lineWidthStart, lineWidthEnd, currentLineLerp);
+                travelLine.startWidth = baseWidth * lineStartWidthMultiplier;
+                travelLine.endWidth = baseWidth * lineEndWidthMultiplier;
+            }
         }
         else if (travelLine != null)
         {
             travelLine.enabled = false;
         }
+
+        lastTarget = target;
 
         if (target != null && Input.GetKeyDown(moveLanternKey) && !isTraveling)
         {
@@ -299,6 +324,8 @@ public class LanternTravel : MonoBehaviour
         if (!lightModeToggle.inLantern) lightModeToggle.inLantern = true;
         if (lightReflection != null) lightReflection.enabled = false;
 
+        if (playerModel != null) playerModel.SetActive(false);
+
         isInsideLantern = true;
     }
 
@@ -306,6 +333,9 @@ public class LanternTravel : MonoBehaviour
     private void ExitLanternMode()
     {
         isInsideLantern = false;
+
+        if (travelLine != null)
+            travelLine.enabled = false;
 
         if (currentLantern != null && currentLantern.aimCollider != null)
             currentLantern.aimCollider.enabled = true;
@@ -316,6 +346,8 @@ public class LanternTravel : MonoBehaviour
         //if (lightModeToggle != null) lightModeToggle.enabled = true;
         if (lightModeToggle.inLantern) lightModeToggle.inLantern = false;
         if (lightReflection != null) lightReflection.enabled = true;
+
+        if (playerModel != null) playerModel.SetActive(true);
 
 
         //Restore Default Position:
