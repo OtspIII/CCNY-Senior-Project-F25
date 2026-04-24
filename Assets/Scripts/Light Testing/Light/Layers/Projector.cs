@@ -18,6 +18,11 @@ public class Projector : MonoBehaviour
     [Header("Beam Settings: ")]
     public LightReflection beamLight;
     [Space]
+    public Material chargingMaterial;
+    public Material nonchargingMaterial;
+    private Material defaultBeamMaterial;
+    private bool hasDefaultMaterial = false;
+    [Space]
     public float maxAngle = 90f;
     [Space]
     public float beamWidth = 0.2f;
@@ -108,6 +113,37 @@ public class Projector : MonoBehaviour
         //Ensure Beam is Active:
         if (!beamRoot.gameObject.activeSelf)
             beamRoot.gameObject.SetActive(true);
+
+        // Update beam material based on whether it's hitting an unlit lantern
+        if (beamLight != null)
+        {
+            var lr = beamLight.GetComponent<LineRenderer>();
+            if (lr != null)
+            {
+                if (!hasDefaultMaterial)
+                {
+                    defaultBeamMaterial = lr.sharedMaterial;
+                    hasDefaultMaterial = true;
+                }
+
+                bool isCharging = beamLight.lanternHit && beamLight.currentLanternHit != null && !beamLight.currentLanternHit.activeLantern;
+                Material targetMaterial;
+                
+                if (isCharging)
+                {
+                    targetMaterial = (chargingMaterial != null) ? chargingMaterial : defaultBeamMaterial;
+                }
+                else
+                {
+                    targetMaterial = (nonchargingMaterial != null) ? nonchargingMaterial : defaultBeamMaterial;
+                }
+                
+                if (lr.sharedMaterial != targetMaterial)
+                {
+                    lr.sharedMaterial = targetMaterial;
+                }
+            }
+        }
 
         //Align Beam Root with Projector Transform:
         beamRoot.position = transform.position;

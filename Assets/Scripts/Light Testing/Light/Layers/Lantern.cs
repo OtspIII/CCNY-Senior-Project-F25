@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
 
 public class Lantern : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class Lantern : MonoBehaviour
 
     [Header("Lantern Activation Settings:")]
     public float activationTime = 2f;
+    public float detectionRadius = 5f;
     public enum ActivationMode { ResetWhenNotHit, PersistAfterHit }
     public ActivationMode activationMode = ActivationMode.ResetWhenNotHit;
     [Space]
@@ -31,42 +33,155 @@ public class Lantern : MonoBehaviour
     public int hitsThisFrame = 0;
 
     [Header("Lantern Colors: ")]
+    public Material defaultMaterial;
+    public Color unlitColor = Color.grey;
+    public Color litColor = Color.white;
+    public Color closeColorMaterial = Color.yellow;
+    public Color insideColorMaterial = Color.cyan;
+    [SerializeField] private string colorPropertyName = "_BaseColor";
 
-    public Material unlitMaterial;
-    public Material litMaterial;
+    [Header("Glow Settings: ")]
+    [SerializeField] private float unlitGlow = 0f;
+    [SerializeField] private float litGlow = 1f;
+    [SerializeField] private float closeGlow = 2f;
+    [SerializeField] private float insideGlow = 4f;
+    [SerializeField] private string emissionPropertyName = "_EmissionColor";
+
+    [Header("Outline Settings: ")]
+    [SerializeField] private Outline outline;
+    [SerializeField] private Color insideOutlineColor = Color.cyan;
+    [SerializeField] private Color closeColor = Color.yellow;
+    [SerializeField] private Color litOutlineColor = Color.white;
+    [SerializeField] private Color offColor = Color.white;
+    [SerializeField] private float insideOutlineWidth = 8f;
+    [SerializeField] private float closeWidth = 5f;
+    [SerializeField] private float litOutlineWidth = 2f;
+    [SerializeField] private float offWidth = 0f;
+    [SerializeField] private float lerpTime = 0.5f;
+
+    [SerializeField] private GameObject inputCanvas;
+    [SerializeField] private TMP_Text buttonPromptText;
+    [SerializeField] private GameObject lightModel;
     bool flicker;
     Animator anim;
     [SerializeField] Light lanternLight;
     PlayerMovement player;
     bool playerDetected;
+    private bool isPlayerInside = false;
+    private Material runtimeMaterial;
+    private Renderer lanternRenderer;
 
 
     private void Start()
     {
         player = GameManager.Instance.Player;
+        lanternRenderer = GetComponent<Renderer>();
+        
         if (activeLantern && GameManager.Instance.LanternTravel != null)
         {
             if (activeLantern) GameManager.Instance.LanternTravel?.RegisterActivatedLantern(this);
         }
 
+        if (inputCanvas != null)
+            inputCanvas.SetActive(false);
+
         anim = GetComponent<Animator>();
-        if (activeLantern)
-            GetComponent<Renderer>().material = litMaterial;
-        else
-            GetComponent<Renderer>().material = unlitMaterial;
+
+        if (defaultMaterial != null)
+        {
+            runtimeMaterial = new Material(defaultMaterial);
+            lanternRenderer.material = runtimeMaterial;
+            
+            // Set initial color and glow based on state
+            Color initialColor = activeLantern ? litColor : unlitColor;
+            float initialGlow = activeLantern ? litGlow : unlitGlow;
+            
+            runtimeMaterial.SetColor(colorPropertyName, initialColor);
+            
+            if (runtimeMaterial.HasProperty(emissionPropertyName))
+            {
+                runtimeMaterial.EnableKeyword("_EMISSION");
+                runtimeMaterial.SetColor(emissionPropertyName, initialColor * initialGlow);
+            }
+        }
         //lanternLight = GetComponent<Light>();
+
+        if (lightModel != null)
+            lightModel.SetActive(false);
     }
 
+
+    private enum LanternState { Unlit, Lit, Close, Inside }
 
     private void Update()
     {
         if (player != GameManager.Instance.Player) player = GameManager.Instance.Player;
         if (GameManager.Instance.LanternTravel == null) return;
 
-        // Extra lantern check 
-        //if (!playerDetected && !GameManager.Instance.LanternTravel.isTraveling && !player.inLantern && player.lantern == this) player.lantern = null;
+        HandlePlayerDetection();
+        UpdateActivation();
+        UpdateLightModel();
+        UpdateVisuals();
+    }
 
-        // Only count down while being hit
+    private void HandlePlayerDetection()
+    {
+        if (player == null) return;
+
+        float distToPlayer = Vector3.Distance(transform.position, player.transform.position);
+        bool wasPlayerInside = isPlayerInside;
+        isPlayerInside = distToPlayer <= detectionRadius;
+
+        if (isPlayerInside && !wasPlayerInside)
+        {
+            if (activeLantern && player.lantern == null)
+            {
+                playerDetected = true;
+                player.lantern = this;
+            }
+        }
+        else if (!isPlayerInside && wasPlayerInside)
+        {
+            if (playerDetected || player.lantern == this)
+            {
+                playerDetected = false;
+                if (player.lantern == this) player.lantern = null;
+            }
+            if (inputCanvas != null) inputCanvas.SetActive(false);
+        }
+
+        if (isPlayerInside)
+        {
+            if (activeLantern)
+            {
+                if (player.lantern == null)
+                {
+                    playerDetected = true;
+                    player.lantern = this;
+                }
+
+                if (inputCanvas != null && !inputCanvas.activeSelf)
+                    inputCanvas.SetActive(true);
+
+                if (buttonPromptText != null)
+                {
+                    var lanternTravel = GameManager.Instance.LanternTravel;
+                    if (lanternTravel != null && lanternTravel.isInsideLantern && lanternTravel.currentLantern == this)
+                        buttonPromptText.text = "Left-Click";
+                    else
+                        buttonPromptText.text = "Q";
+                }
+            }
+            else
+            {
+                if (player.lantern == this) player.lantern = null;
+                if (inputCanvas != null && inputCanvas.activeSelf) inputCanvas.SetActive(false);
+            }
+        }
+    }
+
+    private void UpdateActivation()
+    {
         if (hitsThisFrame > 0)
         {
             currentActivation += Time.deltaTime;
@@ -82,88 +197,122 @@ public class Lantern : MonoBehaviour
                 currentActivation = activationTime;
             }
         }
-        else
+        else if (!activeLantern && activationMode == ActivationMode.ResetWhenNotHit)
         {
-            if (!activeLantern)
-            {
-                if (activationMode == ActivationMode.ResetWhenNotHit)
-                {
-                    currentActivation = 0f;
-                }
-            }
+            currentActivation = 0f;
         }
+    }
 
-        if (GameManager.Instance.LanternTravel.currentLantern == this)
+    private void UpdateLightModel()
+    {
+        var lanternTravel = GameManager.Instance.LanternTravel;
+        if (lanternTravel.currentLantern == this)
         {
-            // Start flicker animation
             if (!flicker)
             {
-                if (anim != null)
-                    anim.SetTrigger("Flicker");
+                if (anim != null) anim.SetTrigger("Flicker");
                 flicker = true;
             }
-        }
-        else if (flicker)
-        {
-            flicker = false;
-        }
-        else if (activeLantern)
-        {
-            //Set To litMaterial:
-            if (!lanternLight.enabled) lanternLight.enabled = true;
-            GetComponent<Renderer>().material = litMaterial;
 
+            if (lightModel != null)
+            {
+                bool isInsideThisLantern = lanternTravel.isInsideLantern;
+                if (lightModel.activeSelf != isInsideThisLantern)
+                    lightModel.SetActive(isInsideThisLantern);
+            }
         }
         else
         {
-            //Set To unlitMaterial:
-            if (lanternLight.enabled) lanternLight.enabled = false;
-            GetComponent<Renderer>().material = unlitMaterial;
+            if (flicker) flicker = false;
+            if (lightModel != null && lightModel.activeSelf)
+                lightModel.SetActive(false);
         }
     }
 
-    public void HandlePlayerEnter(Collider col)
+    private void UpdateVisuals()
     {
-        if (!activeLantern) return;
+        LanternState state = GetCurrentState();
+        float activationRatio = currentActivation / activationTime;
 
-        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == null)
+        // Determine target visual values
+        Color targetMaterialColor;
+        float targetGlow;
+        Color targetOutlineColor;
+        float targetOutlineWidth;
+
+        switch (state)
         {
-            playerDetected = true;
-            player.lantern = this;
+            case LanternState.Inside:
+                targetMaterialColor = insideColorMaterial;
+                targetGlow = insideGlow;
+                targetOutlineColor = insideOutlineColor;
+                targetOutlineWidth = insideOutlineWidth;
+                break;
+            case LanternState.Close:
+                targetMaterialColor = closeColorMaterial;
+                targetGlow = closeGlow;
+                targetOutlineColor = closeColor;
+                targetOutlineWidth = closeWidth;
+                break;
+            case LanternState.Lit:
+                targetMaterialColor = litColor;
+                targetGlow = litGlow;
+                targetOutlineColor = litOutlineColor;
+                targetOutlineWidth = litOutlineWidth;
+                break;
+            case LanternState.Unlit:
+            default:
+                targetMaterialColor = Color.Lerp(unlitColor, litColor, activationRatio);
+                targetGlow = Mathf.Lerp(unlitGlow, litGlow, activationRatio);
+                targetOutlineColor = Color.Lerp(offColor, litOutlineColor, activationRatio);
+                targetOutlineWidth = Mathf.Lerp(offWidth, litOutlineWidth, activationRatio);
+                break;
+        }
+
+        // Apply Light component state
+        if (lanternLight != null)
+        {
+            bool shouldBeOn = activeLantern;
+            if (lanternLight.enabled != shouldBeOn)
+                lanternLight.enabled = shouldBeOn;
+        }
+
+        // Lerp Material
+        if (runtimeMaterial != null)
+        {
+            float t = (lerpTime > 0) ? Time.deltaTime / lerpTime : 1f;
+            
+            Color currentColor = runtimeMaterial.GetColor(colorPropertyName);
+            Color nextColor = Color.Lerp(currentColor, targetMaterialColor, t);
+            runtimeMaterial.SetColor(colorPropertyName, nextColor);
+
+            if (runtimeMaterial.HasProperty(emissionPropertyName))
+            {
+                Color currentEmission = runtimeMaterial.GetColor(emissionPropertyName);
+                Color targetEmissionColor = targetMaterialColor * targetGlow;
+                Color nextEmissionColor = Color.Lerp(currentEmission, targetEmissionColor, t);
+                runtimeMaterial.SetColor(emissionPropertyName, nextEmissionColor);
+            }
+        }
+
+        // Lerp Outline
+        if (outline != null)
+        {
+            float t = (lerpTime > 0) ? Time.deltaTime / lerpTime : 1f;
+            outline.OutlineColor = Color.Lerp(outline.OutlineColor, targetOutlineColor, t);
+            outline.OutlineWidth = Mathf.Lerp(outline.OutlineWidth, targetOutlineWidth, t);
         }
     }
 
-    public void HandlePlayerExit(Collider col)
+    private LanternState GetCurrentState()
     {
-        if (!activeLantern) return;
-
-        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == this)
-        {
-            playerDetected = false;
-            player.lantern = null;
-        }
+        var lanternTravel = GameManager.Instance.LanternTravel;
+        if (lanternTravel != null && lanternTravel.isInsideLantern && lanternTravel.currentLantern == this)
+            return LanternState.Inside;
+        
+        if (activeLantern)
+            return isPlayerInside ? LanternState.Close : LanternState.Lit;
+        
+        return LanternState.Unlit;
     }
-
-    /*void OnTriggerEnter(Collider col)
-    {
-        if (!activeLantern) return;
-
-        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern == null)
-        {
-            playerDetected = true;
-            player.lantern = this;
-        }
-    }
-
-    void OnTriggerExit(Collider col)
-    {
-        if (!activeLantern) return;
-
-        if (col.CompareTag("Player") && col.gameObject.GetComponent<PlayerMovement>() == player && player.lantern != null)
-        {
-            playerDetected = false;
-            player.lantern = null;
-        }
-    }*/
-
 }
