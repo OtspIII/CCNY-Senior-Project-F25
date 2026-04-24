@@ -15537,6 +15537,8 @@ MonoBehaviour:
   playerCamera: {fileID: 484995125}
   lightReflection: {fileID: 1528931276}
   lightModeToggle: {fileID: 1528931283}
+  activeWhenNear: 0
+  straightAlignWhenEntering: 0
   rotateYLeftKey: 97
   rotateYRightKey: 100
   ySpeedDegPerSec: 120
