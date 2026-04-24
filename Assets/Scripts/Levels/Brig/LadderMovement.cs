@@ -60,6 +60,9 @@ public class LadderMovement : MonoBehaviour
             if (dot > -0.5f && !turnAround)
                 ChangeDirection();
 
+            // Checks to see if player can move backward
+            if (removeStart && currentJumpPoint == jumpPoints[0] && !turnAround) return;
+
             // Find and move to next step
             Transform nextStep = jumpPoints[jumpPoints.IndexOf(currentJumpPoint) + direction];
             StartCoroutine(MoveToStep(nextStep));

@@ -94,7 +94,7 @@ public class LightReflection : MonoBehaviour
     private float crystalHitTimer = 0f;
     private float crystalActivationTime = 3f;
     private bool crystalActivated = false;
-    [SerializeField] private GameObject pressFPrompt;
+    //[SerializeField] private GameObject pressFPrompt;
     [SerializeField] private CharacterSwitcher characterSwitcher;
     [SerializeField] private GameObject spawnedPlayer;
 
@@ -430,7 +430,7 @@ public class LightReflection : MonoBehaviour
                     splitRayMarkers.Add(dataPoint);
                 }
                 break;
-            }  
+            }
 
             //Lens Collision:
             if (hitLens != null)
@@ -604,7 +604,7 @@ public class LightReflection : MonoBehaviour
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
 
-            
+
             /*
             //If Enough Increments & Bool Becomes True:
             if (lantern.activeLantern && GameManager.Instance.LanternTravel != null)
@@ -798,8 +798,8 @@ public class LightReflection : MonoBehaviour
         if (!IsCrystalBeingHit())
         {
             crystalHitTimer = 0f;
-            if (pressFPrompt != null && !crystalActivated)
-                pressFPrompt.SetActive(false);
+            // if (pressFPrompt != null && !crystalActivated)
+            //     pressFPrompt.SetActive(false);
         }
     }
 
@@ -1158,13 +1158,13 @@ public class LightReflection : MonoBehaviour
 
         crystalHitTimer += Time.deltaTime;
 
-        if (pressFPrompt != null)
-            pressFPrompt.SetActive(true);
+        // if (pressFPrompt != null)
+        //     pressFPrompt.SetActive(true);
 
         if (crystalHitTimer >= crystalActivationTime && !crystalActivated)
         {
             crystalActivated = true;
-            pressFPrompt?.SetActive(false);
+            //pressFPrompt?.SetActive(false);
             spawnedPlayer.SetActive(true);
             spawnedPlayer.transform.position = hit.point;
             characterSwitcher.UnlockSplitMode();

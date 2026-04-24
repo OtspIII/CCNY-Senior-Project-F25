@@ -13,6 +13,7 @@ public class Projector : MonoBehaviour
     public Transform beamRoot;
     public Transform PivotPosition;
     [SerializeField] GameObject promptText;
+    [SerializeField] GameObject promptLights;
 
     [Header("Beam Settings: ")]
     public LightReflection beamLight;
@@ -36,7 +37,6 @@ public class Projector : MonoBehaviour
     public float fixedBeamDistance = 5f;
     public float maxVerticalRotatation = 30f;
     public float maxHorizontalRotatation = 45f;
-
 
     //# of hits:
     [HideInInspector] public int hitsThisFrame = 0;
@@ -214,6 +214,7 @@ public class Projector : MonoBehaviour
         if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector == null)
         {
             GameManager.Instance.Player.projector = this;
+            if (promptLights != null) promptLights.SetActive(true);
         }
     }
 
@@ -224,6 +225,7 @@ public class Projector : MonoBehaviour
         if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector != null)
         {
             GameManager.Instance.Player.projector = null;
+            if (promptLights != null) promptLights.SetActive(false);
         }
     }
 }

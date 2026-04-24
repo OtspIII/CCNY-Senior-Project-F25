@@ -55,6 +55,13 @@ public class PlayerMovement : MonoBehaviour
         ladder,
         light,
     }
+
+    [Space(15)]
+    [Header("Dash")]
+    [SerializeField] LayerMask phaseLayer;
+    RaycastHit glassHit;
+
+
     public Rigidbody rb;
     public Vector3 moveDirection;
     RaycastHit floorHit;
@@ -280,6 +287,19 @@ public class PlayerMovement : MonoBehaviour
         //rb.linearDamping = grounded ? groundDrag : 0;
     }
 
+    // **From Unity API*** //
+    //Draw the BoxCast as a gizmo to show where it currently is testing. Click the Gizmos button to see this
+    /*void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Vector3 offset = new Vector3(0f, 0.2f, 0f);
+        //Draw a Ray forward from GameObject toward the maximum distance
+        Gizmos.DrawRay(transform.position, transform.forward * 3.1f);
+        //Draw a cube at the maximum distance
+        Gizmos.DrawWireCube(transform.position - offset + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.1f, new Vector3(0.5f, 0.8f, 0.5f));
+
+    }*/
+
     void Teleport()
     {
         if (!isAiming)
@@ -290,15 +310,33 @@ public class PlayerMovement : MonoBehaviour
             new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
             bool clearRight = !Physics.Raycast(new Vector3(transform.position.x + 0.5f, transform.position.y, transform.position.z),
             new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z), 3.1f, allLayersExceptPhase, QueryTriggerInteraction.Ignore);
-            // Draw line for debug
+
+            float y = OnSlope() ? GetSlopeDashDirection().y : transform.forward.y;
+
+            //Debug.Log(GetSlopeDashDirection());
 
             // Eventually will switch to raycast or something
             line.SetPosition(0, transform.position);
-            line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, transform.forward.y, camOrientation.forward.z) * 3.0f);
+            line.SetPosition(1, transform.position + new Vector3(camOrientation.forward.x, y, camOrientation.forward.z) * 3.0f);
+
 
             // Check for jump
-            if (clearLeft && clearRight && Input.GetKeyDown(KeyCode.Space) && grounded && ladder == null)
+            if ((clearLeft && clearRight || OnSlope()) && Input.GetKeyDown(KeyCode.Space) && grounded && ladder == null)
             {
+                float capsuleSize = y < -0.1f ? 0.7f : 0.4f;
+                // Check to see if the space is clear
+                Collider[] hitColliders = Physics.OverlapSphere(line.GetPosition(1), capsuleSize);
+                //if (hitColliders.Length != 0) Debug.Log(hitColliders[0].name);
+                if (hitColliders.Length > 0)
+                {
+                    bool canPass = true;
+                    for (int i = 0; i < hitColliders.Length; i++)
+                    {
+                        if (!hitColliders[i].isTrigger) canPass = false;
+                    }
+                    if (!canPass) return;
+                }
+
                 canTeleport = false;
                 rb.isKinematic = true; // player unaffected by physics
                 //if (ladder != null) teleportFromLadder = true;
@@ -367,6 +405,13 @@ public class PlayerMovement : MonoBehaviour
     Vector3 GetSlopeMoveDirection()
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
+    }
+
+    Vector3 GetSlopeDashDirection()
+    {
+        float dot = Vector3.Dot(transform.forward, camOrientation.forward);
+        Vector3 v = dot > 0 ? transform.forward : -transform.forward;
+        return Vector3.ProjectOnPlane(v, slopeHit.normal).normalized;
     }
 
     void LightSwitch(bool active)
