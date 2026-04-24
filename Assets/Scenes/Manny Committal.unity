@@ -1134,12 +1134,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 151063815}
 --- !u!114 &151063814
 MonoBehaviour:
@@ -1704,6 +1727,8 @@ MonoBehaviour:
   hasDoor: 1
   door: {fileID: 1845119865}
   doorTarget: {fileID: 1543450128}
+  doorSpeed: 0
+  doorDelay: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 0
@@ -3542,8 +3567,8 @@ Transform:
   m_GameObject: {fileID: 331150773}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.678, y: 2.09, z: 11.567}
-  m_LocalScale: {x: 0.03694424, y: 1.6935483, z: 0.007986952}
+  m_LocalPosition: {x: -0.071011, y: 2.09, z: 11.567}
+  m_LocalScale: {x: 0.06807346, y: 1.6935483, z: 0.007986952}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 15500246}
@@ -3846,6 +3871,97 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &342437117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 342437119}
+  - component: {fileID: 342437118}
+  m_Layer: 0
+  m_Name: Mural 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &342437118
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342437117}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: fe5a2461ed56bbb4e8b01fee2320e4f1, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 21, y: 15.001465}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!4 &342437119
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342437117}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -1.077, y: 2.639, z: 11.89}
+  m_LocalScale: {x: 0.08, y: 0.08, z: 0.08}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &344206577
 GameObject:
   m_ObjectHideFlags: 0
@@ -3976,6 +4092,7 @@ MonoBehaviour:
   mirror: {fileID: 0}
   unlit: {fileID: 0}
   lit: {fileID: 0}
+  shadowBurn: {fileID: 0}
 --- !u!1 &355378729
 GameObject:
   m_ObjectHideFlags: 0
@@ -4894,12 +5011,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 542336525}
 --- !u!114 &542336524
 MonoBehaviour:
@@ -5793,6 +5933,8 @@ MonoBehaviour:
   hasDoor: 0
   door: {fileID: 0}
   doorTarget: {fileID: 0}
+  doorSpeed: 0
+  doorDelay: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 1
@@ -6806,12 +6948,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 0
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 748947670}
 --- !u!114 &748947669
 MonoBehaviour:
@@ -7874,12 +8039,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 824215898}
 --- !u!114 &824215897
 MonoBehaviour:
@@ -8638,6 +8826,8 @@ MonoBehaviour:
   hasDoor: 0
   door: {fileID: 0}
   doorTarget: {fileID: 0}
+  doorSpeed: 0
+  doorDelay: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 0
@@ -9670,6 +9860,7 @@ MonoBehaviour:
   mirror: {fileID: 257041359}
   unlit: {fileID: 2100000, guid: fa2d62950de10194ebc1ff731f9ecdc7, type: 2}
   lit: {fileID: 2100000, guid: ad900119dc295534b9c63509908008df, type: 2}
+  shadowBurn: {fileID: 0}
 --- !u!65 &1069222955
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -13409,7 +13600,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1Controller: {fileID: 127539799}
   player2Controller: {fileID: 2111569468}
-  uiElement: {fileID: 611220689}
   player1YawTarget: {fileID: 1762882700}
   player1PitchTarget: {fileID: 727730368}
   player1Model: {fileID: 127539798}
@@ -13420,6 +13610,7 @@ MonoBehaviour:
   player1Active: 1
   isSplitModeUnlocked: 0
   camManager: {fileID: 628779999}
+  mainCam: {fileID: 0}
   player1Anchor: {fileID: 1464745978}
   player2Anchor: {fileID: 1674251236}
   p1POVCamera: {fileID: 1695346265}
@@ -16718,7 +16909,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player1Controller: {fileID: 127539799}
   player2Controller: {fileID: 2111569468}
-  uiElement: {fileID: 1031046884}
   player1YawTarget: {fileID: 1762882700}
   player1PitchTarget: {fileID: 727730368}
   player1Model: {fileID: 127539798}
@@ -16729,6 +16919,7 @@ MonoBehaviour:
   player1Active: 1
   isSplitModeUnlocked: 0
   camManager: {fileID: 628779999}
+  mainCam: {fileID: 0}
   player1Anchor: {fileID: 1464745978}
   player2Anchor: {fileID: 1674251236}
   p1POVCamera: {fileID: 1695346265}
@@ -21327,7 +21518,8 @@ MonoBehaviour:
   lightReflection: {fileID: 0}
   isHitting: 0
   gem: {fileID: 1237532575}
-  shadowBurn: {fileID: 971169338}
+  wall: {fileID: 0}
+  target: {x: 0, y: 0, z: 0}
   unlit: {fileID: 2100000, guid: fa2d62950de10194ebc1ff731f9ecdc7, type: 2}
   lit: {fileID: 2100000, guid: ad900119dc295534b9c63509908008df, type: 2}
 --- !u!1 &2010452020
@@ -23242,6 +23434,8 @@ MonoBehaviour:
   hasDoor: 0
   door: {fileID: 0}
   doorTarget: {fileID: 0}
+  doorSpeed: 0
+  doorDelay: 0
   doorOpened: 0
   moveDoor: 0
   hasMultipleChecks: 0
@@ -23564,3 +23758,4 @@ SceneRoots:
   - {fileID: 1934025306}
   - {fileID: 764993953}
   - {fileID: 1306936894}
+  - {fileID: 342437119}
