@@ -1523,6 +1523,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 987238808}
     - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: teleportForce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: camOrientation
       value: 
       objectReference: {fileID: 1146021787}

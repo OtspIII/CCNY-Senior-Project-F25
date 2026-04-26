@@ -562,8 +562,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
-<<<<<<< Updated upstream
-=======
 --- !u!54 &8952546
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1111,8 +1109,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 114952937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
-<<<<<<< Updated upstream
-=======
 --- !u!114 &94596897 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2660206828628741513, guid: 380a918a878873b45984b55e5e80ff1b, type: 3}
@@ -2704,7 +2700,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 114952937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-<<<<<<< Updated upstream
 --- !u!43 &197265470
 Mesh:
   m_ObjectHideFlags: 0
@@ -2972,7 +2967,6 @@ Transform:
   m_PrefabInstance: {fileID: 217321315}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &217321318
-=======
 --- !u!1 &191606353
 GameObject:
   m_ObjectHideFlags: 0
@@ -28616,19 +28610,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 217321317}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-=======
-  m_GameObject: {fileID: 2079998175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f15b353a71904fada06a81e6d55dba2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  railStart: {fileID: 1241171916}
-  railEnd: {fileID: 95420705}
-  friction: 0.3
-  stopThreshold: 0.02
-  ingredient: {fileID: 598242404}
->>>>>>> Stashed changes
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -28648,8 +28629,7 @@ SceneRoots:
   - {fileID: 217321315}
   - {fileID: 757343830}
   - {fileID: 686968250}
-<<<<<<< Updated upstream
-=======
+
   - {fileID: 742599672}
   - {fileID: 1564990237}
   - {fileID: 1052548853}
@@ -28662,4 +28642,3 @@ SceneRoots:
   - {fileID: 1589975527}
   - {fileID: 1070055553}
   - {fileID: 1693679449}
->>>>>>> Stashed changes
