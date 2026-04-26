@@ -38,6 +38,11 @@ public class Burnable : MonoBehaviour
             materialInstance.color = initialColor;
         }
     }
+
+    public void RegisterHit(Vector3 hitPoint)
+    {
+        hitsThisFrame++;
+    }
     private void Update()
     {
         if (completed)
