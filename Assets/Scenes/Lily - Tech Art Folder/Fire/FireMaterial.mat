@@ -105,10 +105,10 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FireDetail: 14
-    - _FirePower: 0.175
+    - _FireDetail: 15.1
+    - _FirePower: 0.08
     - _FireStrength: 0.66
-    - _FireThreshold: -0.5
+    - _FireThreshold: -0.52
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
