@@ -5,7 +5,7 @@ public class CameraAiming : MonoBehaviour
     public Camera mainCamera;
 
     [Header("Rotation Settings")]
-    public float horizontalSpeed = 100f; 
+    public float horizontalSpeed = 100f;
     public float verticalSpeed = 80f;
     [Space]
     public Vector3 rotationOffset = new Vector3(-90f, 0f, 0f); // Offset to align Light Forward Since it Faces Upwards
