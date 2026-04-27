@@ -15,6 +15,12 @@ public class LightReflection : MonoBehaviour
     private List<GameObject> laserPointMarkers = new List<GameObject>();
     [Space]
 
+    [Header("Wall Collision: ")]
+    public LayerMask wallLayer;
+    public bool wallHit;
+    private Wall wall;
+    [Space]
+
     [Header("Lens Collision: ")]
     public LayerMask lensLayer;
     public bool lensHit;
@@ -88,7 +94,7 @@ public class LightReflection : MonoBehaviour
     private float crystalHitTimer = 0f;
     private float crystalActivationTime = 3f;
     private bool crystalActivated = false;
-    [SerializeField] private GameObject pressFPrompt;
+    //[SerializeField] private GameObject pressFPrompt;
     [SerializeField] private CharacterSwitcher characterSwitcher;
     [SerializeField] private GameObject spawnedPlayer;
 
@@ -151,7 +157,7 @@ public class LightReflection : MonoBehaviour
 
             //Ray Setup:
             Ray ray = new Ray(ObjectPosition, ObjectDirection);
-            hits = Physics.RaycastAll(ray, remainingLazerDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer | mirrorBlock | crystalLayer, QueryTriggerInteraction.Ignore);
+            hits = Physics.RaycastAll(ray, remainingLazerDistance, wallLayer | lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer | gemLayer | mirrorBlock | crystalLayer, QueryTriggerInteraction.Ignore);
 
             if (playFire)
             {
@@ -181,7 +187,8 @@ public class LightReflection : MonoBehaviour
                 break;
             }
 
-            //Object Refrences:
+            //Object Refrences: [If the hit object has a component, get it, if not, check the parent object for the component (for larger objects made of multiple colliders)]
+            wall = hit.collider.GetComponent<Wall>() ?? hit.collider.GetComponentInParent<Wall>();
             lens = hit.collider.GetComponent<Lens>() ?? hit.collider.GetComponentInParent<Lens>();
             prism = hit.collider.GetComponent<Prism>() ?? hit.collider.GetComponentInParent<Prism>();
             burnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
@@ -191,9 +198,18 @@ public class LightReflection : MonoBehaviour
             gem = hit.collider.CompareTag("Gem 1") ? hit.collider.GetComponent<FlipMirror>() : hit.collider.GetComponent<RotateGem>();
 
             //Null Object Checks:
-            if (lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null && gem == null && hit.collider.gameObject.layer != 16)
+            if (wall == null && lens == null && prism == null && burnable == null && mirror == null && lantern == null && projector == null && gem == null && hit.collider.gameObject.layer != 16)
             {
                 laserPoints.Add(ObjectPosition + ObjectDirection * remainingLazerDistance);
+                break;
+            }
+
+            //Wall Collision:
+            if (wall != null)
+            {
+                wallHit = true;
+                laserPoints.Add(hit.point);
+                obstructionPoints.Add(hit.point);
                 break;
             }
 
@@ -378,7 +394,7 @@ public class LightReflection : MonoBehaviour
         {
             //Ray Setup:
             Ray ray = new Ray(currentPos, currentDir);
-            RaycastHit[] hits = Physics.RaycastAll(ray, remaining, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer);
+            RaycastHit[] hits = Physics.RaycastAll(ray, remaining, wallLayer | lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer, QueryTriggerInteraction.Ignore);
 
             //No Collision + End of Ray:
             if (!ClosestValidHit(hits, hitLenses, out RaycastHit hit))
@@ -396,12 +412,25 @@ public class LightReflection : MonoBehaviour
             }
 
             //Object Refrences:
+            Wall hitWall = hit.collider.GetComponent<Wall>() ?? hit.collider.GetComponentInParent<Wall>();
             Lens hitLens = hit.collider.GetComponent<Lens>() ?? hit.collider.GetComponentInParent<Lens>();
             Prism hitPrism = hit.collider.GetComponent<Prism>() ?? hit.collider.GetComponentInParent<Prism>();
             Burnable hitBurnable = hit.collider.GetComponent<Burnable>() ?? hit.collider.GetComponentInParent<Burnable>();
             Mirror hitMirror = hit.collider.GetComponent<Mirror>() ?? hit.collider.GetComponentInParent<Mirror>();
             Lantern hitLantern = hit.collider.GetComponent<Lantern>() ?? hit.collider.GetComponentInParent<Lantern>();
             Projector hitProjector = hit.collider.GetComponent<Projector>() ?? hit.collider.GetComponentInParent<Projector>();
+
+            //Wall Collision:
+            if (hitWall != null)
+            {
+                points.Add(hit.point);
+                if (obstructionPointMarkerPrefab != null)
+                {
+                    GameObject dataPoint = Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity);
+                    splitRayMarkers.Add(dataPoint);
+                }
+                break;
+            }
 
             //Lens Collision:
             if (hitLens != null)
@@ -471,6 +500,7 @@ public class LightReflection : MonoBehaviour
             if (hitLantern != null)
             {
                 points.Add(hit.point);
+
                 if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
                 HandleLanternHit(hit);
 
@@ -481,6 +511,7 @@ public class LightReflection : MonoBehaviour
             if (hitProjector != null)
             {
                 points.Add(hit.point);
+
                 if (obstructionPointMarkerPrefab != null) splitRayMarkers.Add(Instantiate(obstructionPointMarkerPrefab, hit.point, Quaternion.identity));
                 HandleProjectorHit(hit);
 
@@ -573,6 +604,8 @@ public class LightReflection : MonoBehaviour
             laserPoints.Add(hit.point);
             obstructionPoints.Add(hit.point);
 
+
+            /*
             //If Enough Increments & Bool Becomes True:
             if (lantern.activeLantern && GameManager.Instance.LanternTravel != null)
             {
@@ -595,6 +628,8 @@ public class LightReflection : MonoBehaviour
                     playFire = true;
                 }
             }
+
+            */
         }
         else
         {
@@ -763,8 +798,8 @@ public class LightReflection : MonoBehaviour
         if (!IsCrystalBeingHit())
         {
             crystalHitTimer = 0f;
-            if (pressFPrompt != null && !crystalActivated)
-                pressFPrompt.SetActive(false);
+            // if (pressFPrompt != null && !crystalActivated)
+            //     pressFPrompt.SetActive(false);
         }
     }
 
@@ -877,13 +912,14 @@ public class LightReflection : MonoBehaviour
         //Ray Setup:
         Ray obstructionRay = new Ray(currentHitPoint, toImageDir);
         float rayDistance = toImageDistance + extraDistanceUsed;
-        RaycastHit[] obstructionHits = Physics.RaycastAll(obstructionRay, rayDistance, lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer);
+        RaycastHit[] obstructionHits = Physics.RaycastAll(obstructionRay, rayDistance, wallLayer | lensLayer | prismLayer | burnableLayer | mirrorLayer | lanternLayer | projectorLayer, QueryTriggerInteraction.Ignore);
 
 
         //No Lens Collision: [Return False Since This Function is Used to Check Multiple Lens Collisions]
         if (!ClosestValidHit(obstructionHits, lensesHit, out RaycastHit obstructionHit)) return false;
 
 
+        var hitWall = obstructionHit.collider.GetComponent<Wall>() ?? obstructionHit.collider.GetComponentInParent<Wall>();
         var nextLens = obstructionHit.collider.GetComponent<Lens>() ?? obstructionHit.collider.GetComponentInParent<Lens>();
         var hitMirror = obstructionHit.collider.GetComponent<Mirror>() ?? obstructionHit.collider.GetComponentInParent<Mirror>();
         var hitPrism = obstructionHit.collider.GetComponent<Prism>() ?? obstructionHit.collider.GetComponentInParent<Prism>();
@@ -892,6 +928,20 @@ public class LightReflection : MonoBehaviour
         var hitProjector = obstructionHit.collider.GetComponent<Projector>() ?? obstructionHit.collider.GetComponentInParent<Projector>();
         GemInteractions hitGem = obstructionHit.collider.CompareTag("Gem 1") ? obstructionHit.collider.GetComponent<FlipMirror>() : obstructionHit.collider.GetComponent<RotateGem>();
 
+        //Wall Collision:
+        if (hitWall != null)
+        {
+            //Add Wall Hit Point to Laser Points & Obstruction Points:
+            laserPoints.Add(obstructionHit.point);
+            obstructionPoints.Add(obstructionHit.point);
+
+            //Set Outputs:
+            finalImagePoint = obstructionHit.point;
+            nextPosition = obstructionHit.point;
+            nextDirection = toImageDir;
+            totalDistanceUsed = Vector3.Distance(currentHitPoint, obstructionHit.point) + extraDistanceUsed;
+            return true;
+        }
 
         //Lens Collison:
         if (nextLens != null)
@@ -1108,13 +1158,13 @@ public class LightReflection : MonoBehaviour
 
         crystalHitTimer += Time.deltaTime;
 
-        if (pressFPrompt != null)
-            pressFPrompt.SetActive(true);
+        // if (pressFPrompt != null)
+        //     pressFPrompt.SetActive(true);
 
         if (crystalHitTimer >= crystalActivationTime && !crystalActivated)
         {
             crystalActivated = true;
-            pressFPrompt?.SetActive(false);
+            //pressFPrompt?.SetActive(false);
             spawnedPlayer.SetActive(true);
             spawnedPlayer.transform.position = hit.point;
             characterSwitcher.UnlockSplitMode();

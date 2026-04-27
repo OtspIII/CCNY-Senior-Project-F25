@@ -10,8 +10,8 @@ public class CamZoom : MonoBehaviour
     [SerializeField] private float minZoom = 0.25f;   // closest
     [SerializeField] private float maxZoom = 2.5f;    // farthest
     [SerializeField] private float zoomSpeed = 5f;    // how fast zoom reacts
-    [SerializeField] private float smoothness = 10f;  // how smooth the zoom is
-
+    private float zoomInSmoothness;
+    private float zoomOutSmoothness;
     private float targetZoom;
 
     private void Start()
@@ -23,24 +23,19 @@ public class CamZoom : MonoBehaviour
         targetZoom = orbitalFollow.RadialAxis.Value;
     }
 
-    private void Update()
+    void Update()
     {
         float scroll = Input.mouseScrollDelta.y;
 
         if (Mathf.Abs(scroll) > 0.01f)
         {
-            // Apply zoom direction (invert scroll if needed)
             targetZoom -= scroll * zoomSpeed * Time.deltaTime;
-
-            // Clamp the zoom distance
             targetZoom = Mathf.Clamp(targetZoom, minZoom, maxZoom);
         }
 
-        // Smoothly interpolate zoom, not instantly snap
-        orbitalFollow.RadialAxis.Value = Mathf.Lerp(
-            orbitalFollow.RadialAxis.Value,
-            targetZoom,
-            Time.deltaTime * smoothness
-        );
+        float currentZoom = orbitalFollow.RadialAxis.Value;
+        float smoothness = (targetZoom > currentZoom) ? zoomInSmoothness : zoomOutSmoothness;
+
+        orbitalFollow.RadialAxis.Value = Mathf.Lerp(currentZoom, targetZoom, Time.deltaTime * smoothness);
     }
 }

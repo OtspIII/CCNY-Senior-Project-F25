@@ -29,91 +29,87 @@ public class CameraSwitcher : MonoBehaviour
     void Start()
     {
         aimCamController = aimCam.GetComponent<AimCameraController>();
-
         inputAxisController = freelookCam.GetComponent<CinemachineInputAxisController>();
 
         input = new PlayerControls();
         input.Enable();
         aimAction = input.Gameplay.Aim;
 
-        // For some reason, the camera is wonky when player first enters a lantern
-        // unless this function has run at least once 
-        // Running this function at start is a temp fix 
         ExitAimMode();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //bool aimPressed = aimAction.IsPressed();
-
-        bool aimPressed = Input.GetMouseButton(1);
+        bool aimPressed = Input.GetMouseButton(1) ||
+        (GameManager.Instance.Player.projector != null && GameManager.Instance.Player.projector.isPlayerInside) ||
+        GameManager.Instance.LanternTravel.isInsideLantern;
 
         if (aimPressed && !isAiming)
-        {
             EnterAimMode();
-        }
         else if (!aimPressed && isAiming)
-        {
             ExitAimMode();
-        }
     }
+
 
     private void ExitAimMode()
     {
         isAiming = false;
-
-        SnapFreeLookBehindPlayer();
+        SnapFreeLookToAimForward();
 
         aimCam.Priority = 10;
         freelookCam.Priority = 20;
 
         inputAxisController.enabled = true;
+
+        if (crosshairUI != null) crosshairUI.SetActive(false);
     }
 
-    private void SnapFreeLookBehindPlayer()
+    private void SnapFreeLookToAimForward()
     {
         CinemachineOrbitalFollow orbitalFollow = freelookCam.GetComponent<CinemachineOrbitalFollow>();
-        Vector3 forward = aimCam.transform.forward;
+        if (orbitalFollow == null) return;
+
+        Vector3 forward = (aimCamController != null && aimCamController.YawTarget != null)
+            ? aimCamController.YawTarget.forward : aimCam.transform.forward;
+
         float angle = Mathf.Atan2(forward.x, forward.z) * Mathf.Rad2Deg;
         orbitalFollow.HorizontalAxis.Value = angle;
     }
 
-    private void SnapAimCameraToPlayerForward()
+    private void SnapAimCameraToFreelookForward()
     {
-        aimCamController.SetYawPitchFromCameraForward(freelookCam.transform);
+        if (GameManager.Instance.Player.projector == null &&
+        !GameManager.Instance.LanternTravel.isInsideLantern)
+            aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
+        else
+            aimCamController.SetYawPitchFromCamForward(GameManager.Instance.Player.transform);
     }
 
     private void EnterAimMode()
     {
         isAiming = true;
-
-        SnapAimCameraToPlayerForward();
+        SnapAimCameraToFreelookForward();
 
         aimCam.Priority = 20;
         freelookCam.Priority = 10;
 
-        inputAxisController.enabled = false; // freelook cam cannot rotate
+        inputAxisController.enabled = false;
+
+        if (crosshairUI != null) crosshairUI.SetActive(true);
     }
 
-    public void UpdateTargets(
-     Transform followTarget,
-     Transform yawTarget,
-     Transform pitchTarget,
-     Transform playerModel)
+
+    public void UpdateTargets(Transform followTarget, Transform yawTarget, Transform pitchTarget, Transform playerModel)
     {
         freelookCam.Follow = followTarget;
         freelookCam.LookAt = followTarget;
+
         aimCam.Follow = pitchTarget;
         aimCam.LookAt = pitchTarget;
+
         aimController.SetTargets(yawTarget, pitchTarget, playerModel);
-
-        StartCoroutine(DelayedSnap());
+        SnapFreeLookToAimForward();
     }
 
-    private System.Collections.IEnumerator DelayedSnap()
-    {
-        yield return null; // wait one frame for camera to update
-        SnapFreeLookBehindPlayer();
-    }
 }

@@ -6,7 +6,7 @@ public class CharacterSwitcher : MonoBehaviour
     [Header("References")]
     [SerializeField] private PlayerMovement player1Controller;
     [SerializeField] private PlayerMovement player2Controller;
-    [SerializeField] private GameObject uiElement;
+    //[SerializeField] private GameObject uiElement;
 
     [SerializeField] private Transform player1YawTarget;
     [SerializeField] private Transform player1PitchTarget;
@@ -25,6 +25,7 @@ public class CharacterSwitcher : MonoBehaviour
 
     [Header("Cinemachine References")]
     [SerializeField] private CameraSwitcher camManager;
+    [SerializeField] private Test_CamDistance mainCam;
     [SerializeField] private Transform player1Anchor; // child obj on player1 for the cam to follow
     [SerializeField] private Transform player2Anchor;
 
@@ -68,7 +69,7 @@ public class CharacterSwitcher : MonoBehaviour
     public void UnlockSplitMode()
     {
         isSplitModeUnlocked = true;
-        uiElement.SetActive(false);
+        //uiElement.SetActive(false);
         povUIPanel.SetActive(true); // shows small pov window
 
         foreach (PromptTrigger pt in promptTriggers)
@@ -94,7 +95,7 @@ public class CharacterSwitcher : MonoBehaviour
         if (other.CompareTag("Player") && !isSplitModeUnlocked)
         {
             isPlayerInside = true;
-            uiElement.SetActive(true);
+            //uiElement.SetActive(true);
         }
     }
 
@@ -103,7 +104,7 @@ public class CharacterSwitcher : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInside = false;
-            if (!isSplitModeUnlocked) uiElement.SetActive(false);
+            //if (!isSplitModeUnlocked) uiElement.SetActive(false);
         }
     }
 
@@ -170,6 +171,9 @@ public class CharacterSwitcher : MonoBehaviour
             player1Controller.GetComponent<LanternTravel>().enabled = true;
             player2Controller.GetComponent<LanternTravel>().enabled = false;
 
+            // Update Main Camera player reference
+            mainCam.playerTarget = player1Controller.yawTarget;
+
             // Add active lantern travel to Game Manager
             GameManager.Instance.LanternTravel = player1Controller.gameObject.GetComponent<LanternTravel>();
 
@@ -216,6 +220,9 @@ public class CharacterSwitcher : MonoBehaviour
 
             GameManager.Instance.Player = player2Controller;
             player2Controller.GetComponent<LanternTravel>().enabled = true;
+
+            // Update Main Camera player reference
+            mainCam.playerTarget = player2Controller.yawTarget;
 
             // Add active lantern travel to Game Manager
             GameManager.Instance.LanternTravel = player2Controller.gameObject.GetComponent<LanternTravel>();

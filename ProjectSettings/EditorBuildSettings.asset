@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Break Build/BreakBuild_Storage.unity
-    guid: 3d86029676b685b4b8b7aa3e65e83d7e
+    path: Assets/Scenes/4-24/Pirate Storage Build.unity
+    guid: 2fe5d1938c59c2b43b552a53b7fd9235
   - enabled: 1
-    path: Assets/Scenes/Break Build/BreakBuild_Committal.unity
-    guid: 8add83f2fc95afd4ca5668f70bd196cc
+    path: Assets/Scenes/4-24/Committal Build.unity
+    guid: b1e20a6d679282045926bae9d2f6c7a2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -12,9 +12,16 @@ public class Projector : MonoBehaviour
     [Space]
     public Transform beamRoot;
     public Transform PivotPosition;
+    [SerializeField] GameObject promptText;
+    [SerializeField] GameObject promptLights;
 
     [Header("Beam Settings: ")]
     public LightReflection beamLight;
+    [Space]
+    public Material chargingMaterial;
+    public Material nonchargingMaterial;
+    private Material defaultBeamMaterial;
+    private bool hasDefaultMaterial = false;
     [Space]
     public float maxAngle = 90f;
     [Space]
@@ -30,7 +37,6 @@ public class Projector : MonoBehaviour
     public float fixedBeamDistance = 5f;
     public float maxVerticalRotatation = 30f;
     public float maxHorizontalRotatation = 45f;
-
 
     //# of hits:
     [HideInInspector] public int hitsThisFrame = 0;
@@ -108,6 +114,37 @@ public class Projector : MonoBehaviour
         if (!beamRoot.gameObject.activeSelf)
             beamRoot.gameObject.SetActive(true);
 
+        // Update beam material based on whether it's hitting an unlit lantern
+        if (beamLight != null)
+        {
+            var lr = beamLight.GetComponent<LineRenderer>();
+            if (lr != null)
+            {
+                if (!hasDefaultMaterial)
+                {
+                    defaultBeamMaterial = lr.sharedMaterial;
+                    hasDefaultMaterial = true;
+                }
+
+                bool isCharging = beamLight.lanternHit && beamLight.currentLanternHit != null && !beamLight.currentLanternHit.activeLantern;
+                Material targetMaterial;
+                
+                if (isCharging)
+                {
+                    targetMaterial = (chargingMaterial != null) ? chargingMaterial : defaultBeamMaterial;
+                }
+                else
+                {
+                    targetMaterial = (nonchargingMaterial != null) ? nonchargingMaterial : defaultBeamMaterial;
+                }
+                
+                if (lr.sharedMaterial != targetMaterial)
+                {
+                    lr.sharedMaterial = targetMaterial;
+                }
+            }
+        }
+
         //Align Beam Root with Projector Transform:
         beamRoot.position = transform.position;
         beamRoot.rotation = transform.rotation;
@@ -177,6 +214,7 @@ public class Projector : MonoBehaviour
         if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector == null)
         {
             GameManager.Instance.Player.projector = this;
+            if (promptLights != null) promptLights.SetActive(true);
         }
     }
 
@@ -187,6 +225,7 @@ public class Projector : MonoBehaviour
         if (col.gameObject.CompareTag("Player") && GameManager.Instance.Player.projector != null)
         {
             GameManager.Instance.Player.projector = null;
+            if (promptLights != null) promptLights.SetActive(false);
         }
     }
 }

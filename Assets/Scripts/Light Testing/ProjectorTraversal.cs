@@ -15,6 +15,10 @@ public class ProjectorTraversal : MonoBehaviour
     public LightModeToggle lightModeToggle;
     [Space]
 
+    [Header("Design Parameters: ")]
+    public bool activeWhenNear;
+    public bool straightAlignWhenEntering;
+
     [Header("Projector Rotation Controls (when inside): ")]
     public KeyCode rotateYLeftKey = KeyCode.A;
     public KeyCode rotateYRightKey = KeyCode.D;
@@ -57,19 +61,19 @@ public class ProjectorTraversal : MonoBehaviour
             if (detected != null)
             {
                 // Ensure beam updates immediately when a projector is detected (no ray hit yet).
-                if (lightReflection != null)
+                if (lightReflection != null && activeWhenNear)
                 {
                     Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
                     lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: false);
                 }
 
-                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && (player == null || player.state != PlayerMovement.PlayerState.grabbing))
+                if (Input.GetKeyDown(enterTraversalKey) && detected.enterable && !isTraveling && player != null)
                 {
                     currentProjector = detected;
                     if (currentProjector != null)
                     {
-                        EnterProjectorMode();
                         StartCoroutine(MoveToProjector(currentProjector));
+                        EnterProjectorMode();
                     }
                 }
             }
@@ -105,8 +109,6 @@ public class ProjectorTraversal : MonoBehaviour
             }
 
 
-
-
             //Beam Visual:
             Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
             lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: true);
@@ -129,9 +131,9 @@ public class ProjectorTraversal : MonoBehaviour
 
         // Y-axis rotation controlled by A/D, clamped to +/- maxAngleVertical
         float yDelta = 0f;
-        float ySpeed = Input.GetMouseButton(1) ? yAimSpeedDegPerSec : ySpeedDegPerSec;
-        if (Input.GetKey(rotateYLeftKey)) yDelta -= ySpeed * Time.deltaTime;
-        if (Input.GetKey(rotateYRightKey)) yDelta += ySpeed * Time.deltaTime;
+        //float ySpeed = Input.GetMouseButton(1) ? yAimSpeedDegPerSec : ySpeedDegPerSec;
+        if (Input.GetKey(rotateYLeftKey)) yDelta -= yAimSpeedDegPerSec * Time.deltaTime;
+        if (Input.GetKey(rotateYRightKey)) yDelta += yAimSpeedDegPerSec * Time.deltaTime;
 
         if (Mathf.Abs(yDelta) > Mathf.Epsilon)
         {
@@ -148,9 +150,9 @@ public class ProjectorTraversal : MonoBehaviour
 
         // Z-axis rotation controlled by W/S, clamped to +/- maxAngleVertical
         float zDelta = 0f;
-        float zSpeed = Input.GetMouseButton(1) ? zAimSpeedDegPerSec : zSpeedDegPerSec;
-        if (Input.GetKey(rotateZUpKey)) zDelta -= zSpeed * Time.deltaTime;
-        if (Input.GetKey(rotateZDownKey)) zDelta += zSpeed * Time.deltaTime;
+        //float zSpeed = Input.GetMouseButton(1) ? zAimSpeedDegPerSec : zSpeedDegPerSec;
+        if (Input.GetKey(rotateZUpKey)) zDelta -= zAimSpeedDegPerSec * Time.deltaTime;
+        if (Input.GetKey(rotateZDownKey)) zDelta += zAimSpeedDegPerSec * Time.deltaTime;
 
         if (Mathf.Abs(zDelta) > Mathf.Epsilon)
         {
@@ -209,6 +211,23 @@ public class ProjectorTraversal : MonoBehaviour
 
         isInsideProjector = true;
         if (currentProjector != null) currentProjector.isPlayerInside = true;
+
+        // Align projector forward with player forward when entering:
+        if (straightAlignWhenEntering && currentProjector != null)
+        {
+            // Get Projector Object:
+            Transform rotationTarget = currentProjector.ParentObject != null ? currentProjector.ParentObject : currentProjector.transform;
+
+            // Reset Y and Z for staight allignment (X is forward, so it can be left unchanged):
+            Vector3 localEuler = rotationTarget.localEulerAngles;
+            localEuler.y = 0f;
+            localEuler.z = 0f;
+            rotationTarget.localEulerAngles = localEuler;
+
+            // Reset Offsets to match new base rotation:
+            currentProjector.lightRotationOffset = Quaternion.Euler(currentProjector.baseRotationEuler);
+            currentProjector.cameraRotationOffset = Quaternion.identity;
+        }
     }
 
     private void ExitProjectorMode()
