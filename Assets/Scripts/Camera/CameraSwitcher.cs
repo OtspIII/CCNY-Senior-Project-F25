@@ -42,8 +42,8 @@ public class CameraSwitcher : MonoBehaviour
     void Update()
     {
         bool aimPressed = Input.GetMouseButton(1) ||
-        (GameManager.Instance.Player.projector != null && GameManager.Instance.Player.projector.isPlayerInside) ||
-        GameManager.Instance.LanternTravel.isInsideLantern;
+        (GameManager.Instance.Player.projector != null && GameManager.Instance.Player.projector.isPlayerInside)
+        || GameManager.Instance.LanternTravel.isInsideLantern;
 
         if (aimPressed && !isAiming)
             EnterAimMode();
@@ -84,6 +84,8 @@ public class CameraSwitcher : MonoBehaviour
             aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
         else
             aimCamController.SetYawPitchFromCamForward(GameManager.Instance.Player.transform);
+        //aimCamController.SetYawPitchFromCamForward(freelookCam.transform);
+
     }
 
     private void EnterAimMode()
