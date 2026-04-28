@@ -15,6 +15,10 @@ public class ProjectorTraversal : MonoBehaviour
     public LightModeToggle lightModeToggle;
     [Space]
 
+    [Header("Design Parameters: ")]
+    public bool activeWhenNear;
+    public bool straightAlignWhenEntering;
+
     [Header("Projector Rotation Controls (when inside): ")]
     public KeyCode rotateYLeftKey = KeyCode.A;
     public KeyCode rotateYRightKey = KeyCode.D;
@@ -57,7 +61,7 @@ public class ProjectorTraversal : MonoBehaviour
             if (detected != null)
             {
                 // Ensure beam updates immediately when a projector is detected (no ray hit yet).
-                if (lightReflection != null)
+                if (lightReflection != null && activeWhenNear)
                 {
                     Vector3 point = detected.beamRoot != null ? detected.beamRoot.position : detected.transform.position;
                     lightReflection.RefreshProjectorProjection(detected, point, registerHit: true, insideProjector: false);
@@ -68,8 +72,8 @@ public class ProjectorTraversal : MonoBehaviour
                     currentProjector = detected;
                     if (currentProjector != null)
                     {
-                        EnterProjectorMode();
                         StartCoroutine(MoveToProjector(currentProjector));
+                        EnterProjectorMode();
                     }
                 }
             }
@@ -103,8 +107,6 @@ public class ProjectorTraversal : MonoBehaviour
                 //Final Light Rotation:
                 //detected.lightRotationOffset = cameraRotationY * horizontalFix * baseOffset;
             }
-
-
 
 
             //Beam Visual:
@@ -209,6 +211,23 @@ public class ProjectorTraversal : MonoBehaviour
 
         isInsideProjector = true;
         if (currentProjector != null) currentProjector.isPlayerInside = true;
+
+        // Align projector forward with player forward when entering:
+        if (straightAlignWhenEntering && currentProjector != null)
+        {
+            // Get Projector Object:
+            Transform rotationTarget = currentProjector.ParentObject != null ? currentProjector.ParentObject : currentProjector.transform;
+
+            // Reset Y and Z for staight allignment (X is forward, so it can be left unchanged):
+            Vector3 localEuler = rotationTarget.localEulerAngles;
+            localEuler.y = 0f;
+            localEuler.z = 0f;
+            rotationTarget.localEulerAngles = localEuler;
+
+            // Reset Offsets to match new base rotation:
+            currentProjector.lightRotationOffset = Quaternion.Euler(currentProjector.baseRotationEuler);
+            currentProjector.cameraRotationOffset = Quaternion.identity;
+        }
     }
 
     private void ExitProjectorMode()
