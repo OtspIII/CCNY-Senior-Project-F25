@@ -11,6 +11,9 @@ TagManager:
   - Fire
   - Obstruction
   - Burn
+  - Ladder Start Point
+  - Ladder End Point
+  - Gem 1
   layers:
   - Default
   - TransparentFX
