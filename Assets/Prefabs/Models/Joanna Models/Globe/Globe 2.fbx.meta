@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Art/Completed/Models/Crystal Cluster.fbx.meta
+guid: 71803216939142446a74bcf8af2217b7
+========
 guid: 27b61e93752734c9481796f085e7107a
+>>>>>>>> main:Assets/Prefabs/Models/Joanna Models/Globe/Globe 2.fbx.meta
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
