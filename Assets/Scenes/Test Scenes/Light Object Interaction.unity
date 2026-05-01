@@ -734,6 +734,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2567343082137966075, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 1716149262}
     - target: {fileID: 4020236304273871723, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
       propertyPath: fireParent
       value: 
@@ -809,33 +813,14 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 632219887}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
---- !u!1 &632219882 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1879981959113891099, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
-  m_PrefabInstance: {fileID: 632219881}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &632219883 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4020236304273871723, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
-  m_PrefabInstance: {fileID: 632219881}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc32caca0425bba41809f3827c30a245, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &632219884 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5460015821586086780, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
   m_PrefabInstance: {fileID: 632219881}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 632219882}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17f81db832932ae4f9fe0d67012e6824, type: 3}
@@ -846,57 +831,12 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 7428839617850256430, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
   m_PrefabInstance: {fileID: 632219881}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &632219886 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1636535574859789902, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
-  m_PrefabInstance: {fileID: 632219881}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 632219882}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7e24a9d0f01cc84f8e8af47d9c3eaa6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &632219887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 632219882}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c37e7cfbfe6a7f546a75a50d10a1ab70, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 632219884}
-  rb: {fileID: 632219885}
-  playerCamera: {fileID: 1716149262}
-  lightReflection: {fileID: 632219883}
-  lightModeToggle: {fileID: 632219886}
-  activeWhenNear: 1
-  straightAlignWhenEntering: 0
-  rotateYLeftKey: 97
-  rotateYRightKey: 100
-  ySpeedDegPerSec: 120
-  rotateZUpKey: 119
-  rotateZDownKey: 115
-  zSpeedDegPerSec: 60
-  xOffset: 0
-  yOffset: 0
-  zOffset: 0
-  enterTraversalKey: 101
-  exitTraversalKey: 32
-  travelSpeed: 10
-  currentProjector: {fileID: 0}
-  isInsideProjector: 0
-  isTraveling: 0
 --- !u!114 &632219888 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8358260772009126331, guid: 2d74d9ce3caa00244922fc9e5cc374ac, type: 3}
   m_PrefabInstance: {fileID: 632219881}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 632219882}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11f2dfd149be4b54db1e6aa42dbda446, type: 3}
