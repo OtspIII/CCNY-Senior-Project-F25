@@ -18,6 +18,7 @@ TagManager:
   - Gem 2
   - Ladder End Point
   - Ladder Start Point
+  - Shadow
   layers:
   - Default
   - TransparentFX
