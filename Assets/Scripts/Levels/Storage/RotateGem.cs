@@ -6,9 +6,12 @@ public class RotateGem : GemInteractions
 {
     public bool isHitting;
     //[SerializeField] LightReflection lightSource;
-    [SerializeField] GameObject gem;
-    [SerializeField] ShadowBurn shadowBurn;
+    [SerializeField] GameObject gem, wall;
     Coroutine currentCoroutine;
+    [SerializeField] Vector3 target;
+    Vector3 startPos;
+    float maxDist;
+    bool moveWall;
     bool flip = true;
     [SerializeField] Material unlit, lit;
     //[SerializeField] bool temp = true;
@@ -16,6 +19,9 @@ public class RotateGem : GemInteractions
     public override void Start()
     {
         GetComponent<Renderer>().material = unlit;
+        startPos = wall.transform.position;
+        target = startPos + Vector3.up * 4f;
+        maxDist = Vector3.Distance(startPos, target);
     }
 
     public override void Update()
@@ -24,15 +30,15 @@ public class RotateGem : GemInteractions
 
         isHitting = LightTool() != null;
 
-        if (isHitting && !flip)
+        if (isHitting && !moveWall)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-            currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(0f, 269f, -45f)));
+            currentCoroutine = StartCoroutine(MoveWall(target));//StartCoroutine(Flip(Quaternion.Euler(0f, 269f, -45f)));
         }
-        else if (!isHitting && flip)
+        else if (!isHitting && moveWall)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-            currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(0f, 269f, 0f)));
+            currentCoroutine = StartCoroutine(MoveWall(startPos));//StartCoroutine(Flip(Quaternion.Euler(0f, 269f, 0f)));
         }
 
     }
@@ -54,8 +60,43 @@ public class RotateGem : GemInteractions
         }
 
         gem.transform.rotation = target;
-        shadowBurn.isChecking = flip;
         currentCoroutine = null;
 
+    }
+
+    IEnumerator MoveWall(Vector3 target)
+    {
+        moveWall = !moveWall;
+        if (moveWall) if (GetComponent<Renderer>().material != lit) GetComponent<Renderer>().material = lit;
+        if (!moveWall) if (GetComponent<Renderer>().material != unlit) GetComponent<Renderer>().material = unlit;
+
+        Vector3 start = wall.transform.position;
+        Vector3 endPos = target;
+
+        float elapsed = 0f;
+        float currentDistance = Vector3.Distance(wall.transform.position, target);
+        float duration = map(currentDistance, 0f, maxDist, 0f, 2.0f);
+
+        // lerp to target
+        while (elapsed < duration)
+        {
+            wall.transform.position = Vector3.Lerp(start, endPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // snap position
+        wall.transform.position = endPos;
+        currentCoroutine = null;
+    }
+
+    float map(float value, float minA, float maxA, float minB, float maxB)
+    {
+        float range = maxA - minA;
+        float valuePercent = (value - minA) / range;
+
+        float newRange = maxB - minB;
+
+        return valuePercent * newRange + minB;
     }
 }

@@ -10,6 +10,7 @@ public class FlipMirror : GemInteractions
     Coroutine currentCoroutine;
     [SerializeField] Material unlit, lit;
     //public LightReflection lightReflection;
+    [SerializeField] ShadowBurn shadowBurn;
 
     bool flip;
     //[SerializeField] bool temp = true;
@@ -29,12 +30,12 @@ public class FlipMirror : GemInteractions
         if (isHitting && !flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-            currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(-5f, 180f, 0f)));
+            currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(0f, 180f, 0f)));
         }
         else if (!isHitting && flip)
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-            currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(-5f, 0f, 0f)));
+            currentCoroutine = StartCoroutine(Flip(Quaternion.Euler(0f, 0f, 0f)));
         }
 
     }
@@ -56,8 +57,11 @@ public class FlipMirror : GemInteractions
         }
 
         mirror.transform.rotation = target;
+        shadowBurn.isChecking = flip;
         currentCoroutine = null;
 
     }
+
+
 
 }
