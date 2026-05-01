@@ -249,17 +249,25 @@ public class LanternTravel : MonoBehaviour
 
         foreach (Lantern lit in visibleLanterns)
         {
+            //Empty or current lantern is only available:
             if (lit == null) continue;
             if (lit == currentLantern) continue;
 
+            //FOR EACH LANTERN (Vector From Camera -> Lit Lanterns on scene):
             Vector3 to = (lit.lanternCore.position - origin).normalized;
             float score = Vector3.Dot(cameraTransform.forward, to);
 
+            //Compare all calculated score's from each lantern:
             if (score > 0.5f && score > bestScore)
             {
                 bestScore = score;
                 best = lit;
             }
+
+            // make a ray direction from current -> best
+            //if ground layer overlaps this direction, skip
+            Vector3 FinalDirection = (best.lanternCore.position - origin).normalized;
+
         }
 
         return best;
