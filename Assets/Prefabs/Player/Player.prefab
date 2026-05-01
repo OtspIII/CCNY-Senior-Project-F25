@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4365418086766339253
 Transform:
   m_ObjectHideFlags: 0
@@ -44,7 +44,7 @@ Light:
   serializedVersion: 11
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 3
+  m_Intensity: 0
   m_Range: 10
   m_SpotAngle: 45
   m_InnerSpotAngle: 21.80208
@@ -121,6 +121,152 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &145256622539434956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4679776768144974277}
+  - component: {fileID: 3980997654360733542}
+  m_Layer: 3
+  m_Name: LanternLine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4679776768144974277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145256622539434956}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 300165265513381704}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!120 &3980997654360733542
+LineRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145256622539434956}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 33b27416688f3754fad32c8ca190dd95, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Positions: []
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0.38746452
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.74622643
+        value: 0.3821656
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 0, b: 0, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_ColorSpace: 0
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    textureScale: {x: 1, y: 1}
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_MaskInteraction: 0
+  m_UseWorldSpace: 1
+  m_Loop: 0
+  m_ApplyActiveColorSpace: 1
 --- !u!1 &1748696828009216799
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,6 +315,7 @@ GameObject:
   - component: {fileID: 5460015821586086780}
   - component: {fileID: 2293655241027342894}
   - component: {fileID: 8358260772009126331}
+  - component: {fileID: 2567343082137966075}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -198,6 +345,7 @@ Transform:
   - {fileID: 235588331499623215}
   - {fileID: 3942281504127494620}
   - {fileID: 8016450758421822001}
+  - {fileID: 4679776768144974277}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &6534085283548163385
@@ -223,6 +371,7 @@ MonoBehaviour:
   lightAuraFollower: {fileID: 5041905479972849320}
   lightAimingTool: {fileID: 0}
   inLantern: 0
+  inProjector: 0
 --- !u!114 &8506147056806153075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,14 +458,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPos: {x: 0, y: 0, z: 0}
   lightSource: {fileID: 4060938451981438882}
+  player: {fileID: 0}
   playerControl: 1
   moveSpeed: 6
-  teleportForce: 0
-  teleportCooldown: 0
+  teleportForce: 4
+  teleportCooldown: 0.5
   airMult: 0.6
-  jumpKey: 304
-  jumpForce: 10
-  jumpCooldown: 0.3
   isGround:
     serializedVersion: 2
     m_Bits: 1024
@@ -325,13 +472,13 @@ MonoBehaviour:
   maxSlopeAngle: 60
   camOrientation: {fileID: 0}
   aimCamOrientation: {fileID: 0}
-  grab: {fileID: 0}
-  moveable:
-    serializedVersion: 2
-    m_Bits: 32768
-  nearHandle: 0
   item: {fileID: 618828042576285089}
+  ladder: {fileID: 0}
   state: 0
+  phaseLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  rb: {fileID: 0}
   moveDirection: {x: 0, y: 0, z: 0}
   isAiming: 0
   yawTarget: {fileID: 2615132810487529495}
@@ -340,11 +487,12 @@ MonoBehaviour:
   playerModel: {fileID: 6204566210901383350}
   aura: {fileID: 7303448709236753856}
   lantern: {fileID: 0}
+  inLantern: 0
+  projector: {fileID: 0}
   allLayersExceptPhase:
     serializedVersion: 2
     m_Bits: 1089473
   checkpoint: 0
-  inLantern: 0
   movementKeys: 77000000610000007300000064000000
   anim: {fileID: 8456931886576348232}
 --- !u!120 &2293655241027342894
@@ -471,14 +619,21 @@ MonoBehaviour:
   currentLantern: {fileID: 0}
   target: {fileID: 0}
   isInsideLantern: 0
-  player: {fileID: 5460015821586086780}
+  lanternTravel: {fileID: 0}
   rb: {fileID: 7428839617850256430}
   followerObject: {fileID: 1879981959113891099}
+  playerModel: {fileID: 6204566210901383350}
   lightReflection: {fileID: 4020236304273871723}
   lightModeToggle: {fileID: 1636535574859789902}
   lanternMask:
     serializedVersion: 2
     m_Bits: 0
+  travelLine: {fileID: 3980997654360733542}
+  lineWidthStart: 0
+  lineWidthEnd: 0.5
+  lineStartWidthMultiplier: 1
+  lineEndWidthMultiplier: 0
+  lineLerpTime: 0.2
   cameraTransform: {fileID: 0}
   LanternTravelRangeColor: {r: 0.91320753, g: 0.6391423, b: 0.048244953, a: 0}
   travelRange: 50
@@ -489,6 +644,40 @@ MonoBehaviour:
   enterLanternKey: 113
   exitLanternKey: 113
   moveLanternKey: 323
+  isTraveling: 0
+--- !u!114 &2567343082137966075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1879981959113891099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c37e7cfbfe6a7f546a75a50d10a1ab70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 5460015821586086780}
+  rb: {fileID: 7428839617850256430}
+  playerCamera: {fileID: 0}
+  lightReflection: {fileID: 4020236304273871723}
+  lightModeToggle: {fileID: 1636535574859789902}
+  activeWhenNear: 0
+  straightAlignWhenEntering: 0
+  rotateYLeftKey: 97
+  rotateYRightKey: 100
+  ySpeedDegPerSec: 120
+  rotateZUpKey: 119
+  rotateZDownKey: 115
+  zSpeedDegPerSec: 60
+  xOffset: 0
+  yOffset: 0
+  zOffset: 0
+  enterTraversalKey: 113
+  exitTraversalKey: 113
+  travelSpeed: 10
+  currentProjector: {fileID: 0}
+  isInsideProjector: 0
   isTraveling: 0
 --- !u!1 &3131787222639509743
 GameObject:
@@ -684,6 +873,9 @@ MonoBehaviour:
   cam: {fileID: 0}
   burningMaterial: {fileID: 2100000, guid: b065365a9b286344fa50f27210bf9c39, type: 2}
   idleMaterial: {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
+  pressFPrompt: {fileID: 0}
+  characterSwitcher: {fileID: 0}
+  spawnedPlayer: {fileID: 0}
 --- !u!1 &7303448709236753856
 GameObject:
   m_ObjectHideFlags: 0
@@ -1196,6 +1388,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 300165265513381704}
     m_Modifications:
+    - target: {fileID: 1196943749407608355, guid: 54cb407dd0290da4ca3118dc5259920e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
     - target: {fileID: 2029804623361766312, guid: 54cb407dd0290da4ca3118dc5259920e, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -1268,6 +1464,10 @@ PrefabInstance:
       propertyPath: laserWidth
       value: 0.05
       objectReference: {fileID: 0}
+    - target: {fileID: 7600370247431198308, guid: 54cb407dd0290da4ca3118dc5259920e, type: 3}
+      propertyPath: lineMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 7989e79609915824586c285faddb019e, type: 2}
     - target: {fileID: 7600370247431198308, guid: 54cb407dd0290da4ca3118dc5259920e, type: 3}
       propertyPath: mirrorLayer.m_Bits
       value: 2048

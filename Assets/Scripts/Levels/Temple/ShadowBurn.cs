@@ -24,6 +24,7 @@ public class ShadowBurn : MonoBehaviour
     [SerializeField] Transform door;
     [SerializeField] Transform doorTarget;
     [SerializeField] float doorSpeed;
+    [SerializeField] float doorDelay = 0f;
     bool keyLight;
     public bool doorOpened;
     [SerializeField] bool moveDoor;
@@ -164,6 +165,9 @@ public class ShadowBurn : MonoBehaviour
     IEnumerator OpenDoor(Vector3 target)
     {
         moveDoor = true; // Door stays unlocked once opened
+
+        yield return new WaitForSeconds(doorDelay);
+
         Vector3 start = door.position;
         Vector3 endPos = target;
 
