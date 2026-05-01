@@ -25,7 +25,7 @@ public class AimCameraController : MonoBehaviour
 
     [SerializeField] private Transform playerModel;
     [SerializeField] private LayerMask collisionMask;
-    //public Transform YawTarget => yawTarget;
+    public Transform YawTarget => yawTarget;
 
     private float yaw;
     private float pitch;
