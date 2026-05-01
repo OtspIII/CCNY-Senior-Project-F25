@@ -99,7 +99,7 @@ public class ShadowCheck : MonoBehaviour
             //Raycast form all corners of gameObject toward player 
             Vector3 direction = playerLight.position - corners[i].position;
             direction.Normalize();
-            Debug.DrawRay(corners[i].position, direction * 30f, Color.magenta);
+            //Debug.DrawRay(corners[i].position, direction * 30f, Color.magenta);
 
             RaycastHit hit; //***
             if (Physics.Raycast(corners[i].position, direction, out hit, Mathf.Infinity, layerMask))
