@@ -16,7 +16,11 @@ public class ShadowDetection : MonoBehaviour
     {
         if (shadowDetected)
         {
-            Debug.Log(ContainsCollider(detectionCol, shadowCol) + "  |  " + NoCornersDetected(sizeCheckCol, shadowCol));
+            shadowIsInside = ContainsCollider(detectionCol, shadowCol) && NoCornersDetected(sizeCheckCol, shadowCol);
+        }
+        else
+        {
+            if (shadowIsInside) shadowIsInside = false;
         }
     }
 

@@ -38,6 +38,7 @@ public class ShadowBurn : MonoBehaviour
     [SerializeField] ShadowCheck shadowBoundary;
     [SerializeField] ShadowCheck[] multChecks, multBoundaries;
     [SerializeField] bool committalLevel;
+    [SerializeField] ShadowDetection shadowDetection;
 
 
     void Awake()
@@ -107,7 +108,7 @@ public class ShadowBurn : MonoBehaviour
     void CheckForShadow()
     {
         //If first ShadowCheck is in shadow and the second is not, the player has correctly positioned the shadow
-        if (shadowCheck.IsInShadow() && !shadowBoundary.IsInShadow())
+        if ((shadowCheck.IsInShadow() && !shadowBoundary.IsInShadow()) || (shadowDetection != null && shadowDetection.shadowIsInside))
         {
             if (currentBurnTime != 1f)
             {
