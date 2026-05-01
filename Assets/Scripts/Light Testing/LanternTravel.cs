@@ -33,6 +33,8 @@ public class LanternTravel : MonoBehaviour
     [SerializeField] private float lineLerpTime = 0.2f;
 
     [Header("Travel Parameters: ")]
+    [SerializeField] private LayerMask obstacleMask;
+    [Space]
     public Transform cameraTransform;
     [Space]
     public Color LanternTravelRangeColor;
@@ -243,22 +245,37 @@ public class LanternTravel : MonoBehaviour
     {
         if (cameraTransform == null) return null;
 
-        Vector3 origin = cameraTransform.position;
+       
+        Vector3 origin = currentLantern.lanternCore.position;
         Lantern best = null;
         float bestScore = float.NegativeInfinity;
 
+        //FOR EACH LANTERN IN RANGE (Capsule Range):
         foreach (Lantern lit in visibleLanterns)
         {
-            if (lit == null) continue;
-            if (lit == currentLantern) continue;
+            //Skip If Null or Current Lantern:
+            if (lit == null || lit == currentLantern) continue;
 
-            Vector3 to = (lit.lanternCore.position - origin).normalized;
-            float score = Vector3.Dot(cameraTransform.forward, to);
+            //Calculate The Score For Each Lantern Based On Angle To Camera Forward:
+            Vector3 targetPos = lit.lanternCore.position;
+            Vector3 toFromCamera = (targetPos - cameraTransform.position).normalized; 
+            float score = Vector3.Dot(cameraTransform.forward, toFromCamera);
 
-            if (score > 0.5f && score > bestScore)
+            //If Angle Is Within Threshold (e.g., 60 degrees = dot > 0.5), Consider For Best Candidate:
+            if (score > 0.5f)
             {
-                bestScore = score;
-                best = lit;
+                //If There Are No Obstacles Between Current Lantern And Candidate Lantern, Consider For Best Candidate:
+                Vector3 pathDirection = (targetPos - origin).normalized;
+                float distanceToLantern = Vector3.Distance(origin, targetPos);
+                if (!Physics.Raycast(origin, pathDirection, distanceToLantern, obstacleMask))
+                {
+                    //If This Candidate Has A Better Score Than Current Best, Update Best Candidate:
+                    if (score > bestScore)
+                    {
+                        bestScore = score;
+                        best = lit;
+                    }
+                }
             }
         }
 
@@ -390,6 +407,27 @@ public class LanternTravel : MonoBehaviour
 
         //Visualize:
         DrawWireCapsule(start, end, capsuleRadius);
+
+        //-------------------------------------------------------
+
+        //Path To Target Lantern:
+        if (target != null)
+        {
+            //Initial Variables:
+            Vector3 startPos = currentLantern.lanternCore.position;
+            Vector3 targetPos = target.lanternCore.position;
+
+            //Direction & Distance To Target:
+            float dist = Vector3.Distance(startPos, targetPos);
+            Vector3 dir = (targetPos - startPos).normalized;
+
+            //Condition:
+            bool isBlocked = Physics.Raycast(startPos, dir, dist, obstacleMask);
+
+            //Visualize:
+            Gizmos.color = isBlocked ? Color.red : Color.green;
+            Gizmos.DrawLine(startPos, targetPos);
+        }
     }
 
 

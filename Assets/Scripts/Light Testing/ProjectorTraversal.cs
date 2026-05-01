@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TreeEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -17,7 +18,9 @@ public class ProjectorTraversal : MonoBehaviour
 
     [Header("Design Parameters: ")]
     public bool activeWhenNear;
+    [Space]
     public bool straightAlignWhenEntering;
+    public bool playerAlignWhenEntering;
 
     [Header("Projector Rotation Controls (when inside): ")]
     public KeyCode rotateYLeftKey = KeyCode.A;
@@ -88,6 +91,16 @@ public class ProjectorTraversal : MonoBehaviour
             transform.position = currentProjector.PivotPosition.position;
 
             Projector detected = GameManager.Instance.Player != null ? GameManager.Instance.Player.projector : null;
+
+            if (playerAlignWhenEntering)
+            {
+                Transform rotationTarget = currentProjector.ParentObject;
+                if (rotationTarget != null)
+                {
+                    Vector3 targetForwardDirection = -rotationTarget.right; // Projector's forward is negative right
+                    player.transform.rotation = Quaternion.LookRotation(targetForwardDirection, Vector3.up);
+                }
+            }
 
             //Aim Alignment:
             if (player.isAiming)
@@ -184,6 +197,11 @@ public class ProjectorTraversal : MonoBehaviour
         Vector3 startPosition = transform.position;
         Vector3 endPosition = target.PivotPosition.position;
 
+        Quaternion startRotation = player.transform.rotation;
+        Transform rotationTarget = target.ParentObject;
+        Vector3 targetForwardDirection = -rotationTarget.right; // Projector's forward is negative right
+        Quaternion endRotation = Quaternion.LookRotation(targetForwardDirection, Vector3.up);
+
         float elapsed = 0f;
         float duration = Vector3.Distance(startPosition, endPosition) / travelSpeed;
 
@@ -192,11 +210,19 @@ public class ProjectorTraversal : MonoBehaviour
         while (elapsed < duration)
         {
             transform.position = Vector3.Lerp(startPosition, endPosition, elapsed / duration);
+
+            if (playerAlignWhenEntering)
+            {
+                player.transform.rotation = Quaternion.Slerp(startRotation, endRotation, elapsed / duration);
+            }
+
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         transform.position = endPosition;
+        if (playerAlignWhenEntering) player.transform.rotation = endRotation;
+
         isTraveling = false;
     }
 
@@ -212,19 +238,10 @@ public class ProjectorTraversal : MonoBehaviour
         isInsideProjector = true;
         if (currentProjector != null) currentProjector.isPlayerInside = true;
 
-        // Align projector forward with player forward when entering:
-        if (straightAlignWhenEntering && currentProjector != null)
+        // Align light rotation with projector forward when entering, to prevent jarring changes if player was aiming in a different direction before entering.
+        if (straightAlignWhenEntering)
         {
-            // Get Projector Object:
-            Transform rotationTarget = currentProjector.ParentObject != null ? currentProjector.ParentObject : currentProjector.transform;
-
-            // Reset Y and Z for staight allignment (X is forward, so it can be left unchanged):
-            Vector3 localEuler = rotationTarget.localEulerAngles;
-            localEuler.y = 0f;
-            localEuler.z = 0f;
-            rotationTarget.localEulerAngles = localEuler;
-
-            // Reset Offsets to match new base rotation:
+            // Set light rotation offset to identity, so it matches the projector's forward exactly.
             currentProjector.lightRotationOffset = Quaternion.Euler(currentProjector.baseRotationEuler);
             currentProjector.cameraRotationOffset = Quaternion.identity;
         }
@@ -242,6 +259,13 @@ public class ProjectorTraversal : MonoBehaviour
         isInsideProjector = false;
         if (currentProjector != null) currentProjector.isPlayerInside = false;
         currentProjector.lightRotationOffset = Quaternion.Euler(currentProjector.baseRotationEuler);
+
+        //Reset Player Y Rotation to Prevent Unintended Facing Direction After Exiting:
+        if (player != null)
+        {
+            Vector3 currentEuler = player.transform.eulerAngles;
+            player.transform.rotation = Quaternion.Euler(0f, currentEuler.y, 0f);
+        }
 
         currentProjector = null;
         transform.position = transform.position;
