@@ -2013,7 +2013,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 894de0686af6c9b4fac81cacd6d7ac6a, type: 2}
+  - {fileID: 2100000, guid: 9f2d47700255b3b49b89d0bf4898f630, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5261,12 +5261,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 551289941}
 --- !u!114 &551289940
 MonoBehaviour:
@@ -8583,12 +8606,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 0
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 784275204}
 --- !u!114 &784275203
 MonoBehaviour:
@@ -10072,12 +10118,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 0
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 889439354}
 --- !u!114 &889439353
 MonoBehaviour:
@@ -12220,9 +12289,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: a813ee87ef6d0054ca1450f2b731aca5, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a813ee87ef6d0054ca1450f2b731aca5, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f5365536d557a174eb880a137c5941e6, type: 2}
+      objectReference: {fileID: 2100000, guid: 79f7c17f2e1723c45a452fbf6618e903, type: 2}
     - target: {fileID: 919132149155446097, guid: a813ee87ef6d0054ca1450f2b731aca5, type: 3}
       propertyPath: m_Name
       value: Barrel
@@ -14366,12 +14439,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 1343707178}
 --- !u!114 &1343707177
 MonoBehaviour:
@@ -17065,6 +17161,8 @@ MonoBehaviour:
   playerCamera: {fileID: 484995125}
   lightReflection: {fileID: 1528931276}
   lightModeToggle: {fileID: 1528931283}
+  activeWhenNear: 0
+  straightAlignWhenEntering: 0
   rotateYLeftKey: 97
   rotateYRightKey: 100
   ySpeedDegPerSec: 120
@@ -24321,12 +24419,35 @@ MonoBehaviour:
   nextLantern: {fileID: 0}
   previousLantern: {fileID: 0}
   activationTime: 2
+  detectionRadius: 5
   activationMode: 0
   activeLantern: 1
   currentActivation: 0
   hitsThisFrame: 0
-  unlitMaterial: {fileID: 2100000, guid: 36d72ad9e04c5fc4a9e6485bedbcc137, type: 2}
-  litMaterial: {fileID: 2100000, guid: 569ddaa21eeb3a64e96f1fd322af11cb, type: 2}
+  defaultMaterial: {fileID: 0}
+  unlitColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  litColor: {r: 1, g: 1, b: 1, a: 1}
+  closeColorMaterial: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  insideColorMaterial: {r: 0, g: 1, b: 1, a: 1}
+  colorPropertyName: _BaseColor
+  unlitGlow: 0
+  litGlow: 1
+  closeGlow: 2
+  insideGlow: 4
+  emissionPropertyName: _EmissionColor
+  outline: {fileID: 0}
+  insideOutlineColor: {r: 0, g: 1, b: 1, a: 1}
+  closeColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  litOutlineColor: {r: 1, g: 1, b: 1, a: 1}
+  offColor: {r: 1, g: 1, b: 1, a: 1}
+  insideOutlineWidth: 8
+  closeWidth: 5
+  litOutlineWidth: 2
+  offWidth: 0
+  lerpTime: 0.5
+  inputCanvas: {fileID: 0}
+  buttonPromptText: {fileID: 0}
+  lightModel: {fileID: 0}
   lanternLight: {fileID: 1813849276}
 --- !u!114 &1813849275
 MonoBehaviour:
