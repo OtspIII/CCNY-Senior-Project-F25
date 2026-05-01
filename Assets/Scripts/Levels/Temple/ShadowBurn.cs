@@ -39,6 +39,10 @@ public class ShadowBurn : MonoBehaviour
     [SerializeField] ShadowCheck[] multChecks, multBoundaries;
     [SerializeField] bool committalLevel;
     [SerializeField] ShadowDetection shadowDetection;
+    [Space]
+    [Header("Testing New Mechanic")]
+    [SerializeField] ShadowPuzzleTrigger shadowTrigger;
+
 
 
     void Awake()
