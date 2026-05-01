@@ -12,6 +12,7 @@ TagManager:
   - Obstruction
   - Burn
   - Ladder Start Point
+  - Shadow
   - Ladder End Point
   - Gem 1
   layers:
